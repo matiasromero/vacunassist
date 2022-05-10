@@ -9,7 +9,7 @@ using VacunassistBackend.Data;
 
 #nullable disable
 
-namespace VacunnasistBackend.Migrations
+namespace VacunassistBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
     [Migration("20220510021108_UsersSchema")]
@@ -24,7 +24,7 @@ namespace VacunnasistBackend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("VacunnasistBackend.Models.User", b =>
+            modelBuilder.Entity("VacunassistBackend.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace VacunnasistBackend.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("VacunnasistBackend.Models.UserRefreshToken", b =>
+            modelBuilder.Entity("VacunassistBackend.Models.UserRefreshToken", b =>
                 {
                     b.Property<DateTime?>("Expiration")
                         .HasColumnType("datetime2");
@@ -74,9 +74,9 @@ namespace VacunnasistBackend.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("VacunnasistBackend.Models.UserRefreshToken", b =>
+            modelBuilder.Entity("VacunassistBackend.Models.UserRefreshToken", b =>
                 {
-                    b.HasOne("VacunnasistBackend.Models.User", "User")
+                    b.HasOne("VacunassistBackend.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

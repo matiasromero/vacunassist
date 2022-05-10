@@ -1,4 +1,4 @@
-namespace VacunnasistBackend.Models;
+namespace VacunassistBackend.Models;
 
 public class User
 {

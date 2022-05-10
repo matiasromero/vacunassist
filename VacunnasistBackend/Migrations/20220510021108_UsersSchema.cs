@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace VacunnasistBackend.Migrations
+namespace VacunassistBackend.Migrations
 {
     public partial class UsersSchema : Migration
     {

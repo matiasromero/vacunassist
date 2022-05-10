@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace VacunnasistBackend.Models;
+namespace VacunassistBackend.Models;
 
 public class UserRefreshToken
 {

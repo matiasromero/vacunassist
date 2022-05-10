@@ -1,13 +1,16 @@
 using Microsoft.EntityFrameworkCore;
-using VacunnasistBackend.Models;
+using VacunassistBackend.Models;
+using VacunassistBackend.Utils;
 
 namespace VacunassistBackend.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
+        private IConfiguration Configuration { get; }
 
+        public DataContext(DbContextOptions<DataContext> options, IConfiguration configuration) : base(options)
+        {
+            Configuration = configuration;
         }
 
         public DbSet<User> Users { get; set; }
@@ -18,6 +21,18 @@ namespace VacunassistBackend.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserEntityTypeConfiguration).Assembly);
 
+            if (bool.Parse(Configuration.GetValue<String>("SeedDatabase", "false")))
+            {
+                modelBuilder.Entity<User>().HasData(new User
+                {
+                    Id = 1,
+                    Email = "admin@mail.com",
+                    Name = "Admin",
+                    Role = "administrator",
+                    IsActive = true,
+                    PasswordHash = PasswordHash.CreateHash("1234")
+                });
+            }
         }
         #endregion
     }
