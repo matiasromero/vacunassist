@@ -1,4 +1,4 @@
-CREATE LOGIN Vacunnasist   
+CREATE LOGIN Vacunassist   
     WITH PASSWORD = 'Inge2022';  
 GO
 
