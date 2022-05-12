@@ -1,8 +1,9 @@
 export class User {
     id!: string;
-    name!: string;
+    username!: string;
+    address!: string;
     password!: string;
-    email!: string;
+    belongsToRiskGroup: boolean = false;
     role!: string;
     token!: string;
 }

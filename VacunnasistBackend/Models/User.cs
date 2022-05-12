@@ -6,19 +6,20 @@ public class User
     {
     }
 
-    public User(string email)
+    public User(string username)
         : this()
     {
-        Email = email;
+        UserName = username;
     }
 
     public int Id { get; set; }
 
     public string? PasswordHash { get; set; }
 
-    public string Name { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
 
-    public string Email { get; set; } = string.Empty;
+    public bool BelongsToRiskGroup { get; set; } = false;
 
     public string Role { get; set; } = string.Empty;
 

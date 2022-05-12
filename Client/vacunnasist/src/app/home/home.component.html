@@ -1,7 +1,16 @@
+
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <img class="brand-logo lazy" alt="stack admin logo" src="../../assets/logo.png" width="400">
+        </div>
+    </div>
+  </header>
+  
 <div class="p-4">
     <div class="container">
-        <h1 *ngIf="user">Hi {{user.name}}!</h1>
-        <p>You're logged in with Angular 10!!</p>
-        <p><a routerLink="/users">Manage Users</a></p>
+        <h2 class="text-center">Al servicio de la vacunación y la salud preventiva</h2>
+        <h3 class="text-center" *ngIf="user">Bienvenido/a {{user.username}}!</h3>
     </div>
 </div>
