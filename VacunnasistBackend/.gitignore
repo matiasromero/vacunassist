@@ -10,6 +10,8 @@
 *.userosscache
 *.sln.docstates
 
+docker-compose.override.yml
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -386,5 +388,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
-docker-compose.override.yml
