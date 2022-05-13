@@ -20,6 +20,7 @@ export class AlertService {
     }
 
     error(message: string, options?: any) {
+        console.log(message);
         this.alert(new Alert({ ...options, type: AlertType.Error, message }));
     }
 

@@ -50,7 +50,10 @@ namespace VacunassistBackend.Controllers
                 });
             }
 
-            return Unauthorized();
+            return Unauthorized(new
+            {
+                message = "Usuario y/o cotraseña incorrecta"
+            });
         }
 
 
