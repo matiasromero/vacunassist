@@ -8,8 +8,8 @@ namespace VacunassistBackend.Data
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(b => b.Email).HasMaxLength(100).IsRequired();
-            builder.Property(b => b.Name).HasMaxLength(100).IsRequired();
+            builder.Property(b => b.UserName).HasMaxLength(100).IsRequired();
+            builder.Property(b => b.Address).HasMaxLength(200).IsRequired();
         }
     }
 }

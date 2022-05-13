@@ -25,3 +25,10 @@ public class User
 
     public bool IsActive { get; set; } = true;
 }
+
+public static class UserRoles
+{
+    public static string Administrator = "administrator";
+    public static string Vacunator = "vacunator";
+    public static string Patient = "patient";
+}

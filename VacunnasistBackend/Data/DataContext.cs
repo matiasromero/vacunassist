@@ -14,7 +14,6 @@ namespace VacunassistBackend.Data
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<UserRefreshToken> RefreshTokens { get; set; }
 
         #region Required
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,15 +22,40 @@ namespace VacunassistBackend.Data
 
             if (bool.Parse(Configuration.GetValue<String>("SeedDatabase", "false")))
             {
-                modelBuilder.Entity<User>().HasData(new User
+                var admin = new User
                 {
                     Id = 1,
-                    Email = "admin@mail.com",
-                    Name = "Admin",
-                    Role = "administrator",
+                    UserName = "Admin",
+                    Role = UserRoles.Administrator,
+                    Address = "Calle Falsa 1234, La Plata",
+                    BelongsToRiskGroup = false,
                     IsActive = true,
                     PasswordHash = PasswordHash.CreateHash("1234")
-                });
+                };
+
+                var vacunador1 = new User
+                {
+                    Id = 2,
+                    UserName = "Vacunador",
+                    Role = UserRoles.Vacunator,
+                    Address = "Calle Falsa 4567, La Plata",
+                    BelongsToRiskGroup = false,
+                    IsActive = true,
+                    PasswordHash = PasswordHash.CreateHash("1234")
+                };
+
+                var patient1 = new User
+                {
+                    Id = 3,
+                    UserName = "Paciente",
+                    Role = UserRoles.Patient,
+                    Address = "Calle Falsa 789, La Plata",
+                    BelongsToRiskGroup = false,
+                    IsActive = true,
+                    PasswordHash = PasswordHash.CreateHash("1234")
+                };
+
+                modelBuilder.Entity<User>().HasData(admin, vacunador1, patient1);
             }
         }
         #endregion
