@@ -14,15 +14,15 @@ services:
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sql1
-    depends_on: 
+    depends_on:
       - migrations
   migrations:
     container_name: migrations
     restart: always
-    build: 
+    build:
       context: .
       dockerfile: Migrations.Dockerfile
-  frontend:
+  proxy:
     image: nginx:alpine
     container_name: nginx
     volumes:
