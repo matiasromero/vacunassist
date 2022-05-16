@@ -3,7 +3,6 @@ services:
   backend:
     image: vacunassist
     container_name: backend
-    restart: always
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,7 +17,6 @@ services:
       - migrations
   migrations:
     container_name: migrations
-    restart: always
     build:
       context: .
       dockerfile: Migrations.Dockerfile
