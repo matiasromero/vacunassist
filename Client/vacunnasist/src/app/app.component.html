@@ -37,13 +37,23 @@
           >Ingresar</a
         >
 
-        <button
-          class="nav-item nav-link btn btn-link"
+        <mat-icon
+          mat-button
+          [matMenuTriggerFor]="menu"
           *ngIf="user"
-          (click)="logout()"
+          aria-hidden="false"
+          aria-label="Example home icon"
+          class="nav-item nav-link mb-3"
+          role="button"
+          >account_circle</mat-icon
         >
-          Salir
-        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item routerLink="/users" routerLinkActive="active">
+            Cambiar contraseña
+          </button>
+          <button mat-menu-item (click)="logout()">Salir</button>
+        </mat-menu>
+
         <a
           class="nav-item nav-link"
           *ngIf="!user"

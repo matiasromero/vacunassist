@@ -7,8 +7,8 @@ import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
 
 
-@Component({ templateUrl: 'register.component.html' })
-export class RegisterComponent implements OnInit {
+@Component({ templateUrl: 'change-password.component.html' })
+export class ChangePasswordComponent implements OnInit {
     form!: FormGroup;
     loading = false;
     submitted = false;
@@ -24,16 +24,8 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.formBuilder.group({
-            fullName: ['', [Validators.required, Validators.maxLength(100)]],
-            dni: ['', [Validators.required, Validators.maxLength(20)]],
-            username: ['', [Validators.required, Validators.maxLength(20)]],
-            password: ['', Validators.required],
-            address: ['', [Validators.required, Validators.maxLength(200)]],
-            birthDate: [new Date(), Validators.required],
-            phoneNumber: ['', [Validators.required, Validators.maxLength(30)]],
-            email:['', [Validators.required, Validators.email, Validators.maxLength(30)]],
-            gender: ['male', Validators.required],
-            belongsToRiskGroup: [false, Validators.required]
+            currentPassword: ['', Validators.required],
+            newPassword: ['', Validators.required]
         });
     }
 
@@ -52,9 +44,7 @@ export class RegisterComponent implements OnInit {
         }
 
         this.loading = true;
-        
-        this.form.value.birthDate = this.dp.transform(this.form.value.birthDate, 'yyyy-MM-dd');
-        this.form.value.dni = String(this.form.value.dni);
+       
         this.accountService.register(this.form.value)
             .pipe(first())
             .subscribe({
