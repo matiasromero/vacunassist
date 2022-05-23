@@ -48,7 +48,11 @@
           >account_circle</mat-icon
         >
         <mat-menu #menu="matMenu">
-          <button mat-menu-item routerLink="/users" routerLinkActive="active">
+          <button
+            mat-menu-item
+            routerLink="/account/change-password"
+            routerLinkActive="active"
+          >
             Cambiar contraseña
           </button>
           <button mat-menu-item (click)="logout()">Salir</button>

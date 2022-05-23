@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VacunassistBackend.Models;
 using VacunassistBackend.Utils;
 using VacunnasistBackend.Entities;
@@ -8,9 +9,13 @@ namespace VacunassistBackend.Services
     public interface IUsersService
     {
         User Authenticate(string userName, string password);
+        User Get(int id);
         bool Exists(string userName);
+        bool Exists(int id);
         bool Register(RegisterRequest model);
         User[] GetAll();
+
+        void Update(int id, string? password);
     }
 
     public class UsersService : IUsersService
@@ -23,16 +28,27 @@ namespace VacunassistBackend.Services
         }
         public User Authenticate(string userName, string password)
         {
-             var user = _context.Users.FirstOrDefault(x => x.UserName == userName && x.IsActive);
+            var user = _context.Users.FirstOrDefault(x => x.UserName == userName && x.IsActive);
             if (user != null && PasswordHash.ValidatePassword(password, user.PasswordHash))
                 return user;
 
             return null;
         }
 
+        public User Get(int id)
+        {
+            return _context.Users.FirstOrDefault(x => x.Id == id);
+        }
+
+
         public bool Exists(string userName)
         {
             return _context.Users.Any(x => x.UserName == userName);
+        }
+
+        public bool Exists(int id)
+        {
+            return _context.Users.Any(x => x.Id == id);
         }
 
         public User[] GetAll()
@@ -71,6 +87,20 @@ namespace VacunassistBackend.Services
             {
                 return false;
             }
+        }
+
+        public void Update(int id, string? password)
+        {
+            var user = _context.Users.Find(id);
+            if (user == null)
+                throw new ApplicationException("Usuario no encontrado");
+
+            if (string.IsNullOrEmpty(password) == false)
+            {
+                user.PasswordHash = PasswordHash.CreateHash(password);
+            }
+
+            _context.SaveChanges();
         }
     }
 }

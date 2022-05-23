@@ -49,6 +49,7 @@ namespace VacunassistBackend.Controllers
                 var token = GetToken(authClaims);
                 return Ok(new
                 {
+                    id = user.Id,
                     username = user.UserName,
                     role = user.Role,
                     gender = user.Gender,

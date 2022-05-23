@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
+import { DistinctValidator } from 'src/app/_helpers/distinct.validator';
 
 
 @Component({ templateUrl: 'change-password.component.html' })
@@ -24,9 +25,12 @@ export class ChangePasswordComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.formBuilder.group({
-            currentPassword: ['', Validators.required],
-            newPassword: ['', Validators.required]
-        });
+            password: ['', Validators.required],
+            newPassword: ['', [Validators.required]]
+        }, 
+        { 
+            validator: DistinctValidator('password', 'newPassword')
+          });
     }
 
     // convenience getter for easy access to form fields
@@ -45,11 +49,11 @@ export class ChangePasswordComponent implements OnInit {
 
         this.loading = true;
        
-        this.accountService.register(this.form.value)
+        this.accountService.changePassword(this.form.value, this.accountService.userValue)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Registración correcta', { keepAfterRouteChange: true });
+                    this.alertService.success('Contraseña modificada correctamente', { keepAfterRouteChange: true });
                     this.router.navigate(['../login'], { relativeTo: this.route });
                 },
                 error: error => {

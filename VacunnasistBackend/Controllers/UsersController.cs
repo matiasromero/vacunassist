@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VacunassistBackend.Models;
 using VacunassistBackend.Services;
+using VacunassistBackend.Utils;
 using VacunnasistBackend.Entities;
 
 namespace VacunassistBackend.Controllers
@@ -37,6 +38,37 @@ namespace VacunassistBackend.Controllers
             return BadRequest(new
             {
                 message = "Ocurrió un inconveniente al registrar el usuario, intente nuevamente"
+            });
+        }
+
+        [HttpPost]
+        [Route("{id}/change-password")]
+        public IActionResult ChangePassword(int id, [FromBody] ChangePasswordRequest model)
+        {
+            if (string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.NewPassword))
+                return BadRequest("Invalid Request");
+
+            var user = _usersService.Get(id);
+            if (user == null)
+                return BadRequest(new
+                {
+                    message = "El usuario no existe"
+                });
+
+            var checkCredentials = _usersService.Authenticate(user.UserName, model.Password);
+            if (checkCredentials == null)
+            {
+                return BadRequest(new
+                {
+                    message = "La contraseña ingresada es incorrecta"
+                });
+            }
+
+            _usersService.Update(id, password: model.NewPassword);
+
+            return Ok(new
+            {
+                message = "Usuario actualizado correctamente"
             });
         }
 

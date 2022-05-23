@@ -1,3 +1,5 @@
+import { AlertService } from 'src/app/_services/alert.service';
+import { ChangePasswordModel } from './../_models/change-password';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +15,8 @@ export class AccountService {
 
     constructor(
         private router: Router,
-        private http: HttpClient
+        private http: HttpClient,
+        private alertService: AlertService
     ) {
         let storageUser = localStorage.getItem('user');
         this.userSubject = new BehaviorSubject<User | null>(storageUser ? JSON.parse(storageUser) : null);
@@ -43,6 +46,18 @@ export class AccountService {
 
     register(user: User) {
         return this.http.post(`${environment.apiUrl}/users/register`, user);
+    }
+
+    changePassword(credentials: ChangePasswordModel, user: User) {
+        return this.http.post<ChangePasswordModel>(`${environment.apiUrl}/users/${user.id}/change-password`, credentials)
+            .pipe(map(x => {
+                // auto logout if the logged in user deleted their own record
+                if (user.id == this.userValue.id) {
+                    this.alertService.success('Contraseña cambiada correctamente', { keepAfterRouteChange: true });
+                    this.logout();
+                }
+                return x;
+            }));
     }
 
     getAll() {
