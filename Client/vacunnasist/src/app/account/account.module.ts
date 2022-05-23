@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { PasswordRecoveryComponent } from './password-recovery/password-recovery.component';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -29,7 +30,8 @@ export const MY_DATE_FORMATS = {
     LayoutComponent,
     LoginComponent,
     RegisterComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    PasswordRecoveryComponent
   ],
   imports: [
     CommonModule,
