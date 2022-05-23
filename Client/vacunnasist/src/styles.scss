@@ -1,3 +1,4 @@
+// MDB SCSS
 /* You can add global styles to this file, and also import other style files */
 @charset "UTF-8";
 /*!
@@ -11,6 +12,14 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+ // Font Awesome
+@import  "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+ // MDB SCSS
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -429,7 +438,7 @@ legend + * {
   padding: 0;
 }
 
-::-webkit-inner-spin-button {
+::-webkit-inner-adjust-hue-button {
   height: auto;
 }
 
@@ -6194,18 +6203,18 @@ textarea.form-control-lg {
   color: #000;
 }
 
-@-webkit-keyframes spinner-border {
+@-webkit-keyframes adjust-huener-border {
   to {
     transform: rotate(360deg) /* rtl:ignore */;
   }
 }
 
-@keyframes spinner-border {
+@keyframes adjust-huener-border {
   to {
     transform: rotate(360deg) /* rtl:ignore */;
   }
 }
-.spinner-border {
+.adjust-huener-border {
   display: inline-block;
   width: 2rem;
   height: 2rem;
@@ -6213,17 +6222,17 @@ textarea.form-control-lg {
   border: 0.25em solid currentColor;
   border-right-color: transparent;
   border-radius: 50%;
-  -webkit-animation: 0.75s linear infinite spinner-border;
-          animation: 0.75s linear infinite spinner-border;
+  -webkit-animation: 0.75s linear infinite adjust-huener-border;
+          animation: 0.75s linear infinite adjust-huener-border;
 }
 
-.spinner-border-sm {
+.adjust-huener-border-sm {
   width: 1rem;
   height: 1rem;
   border-width: 0.2em;
 }
 
-@-webkit-keyframes spinner-grow {
+@-webkit-keyframes adjust-huener-grow {
   0% {
     transform: scale(0);
   }
@@ -6233,7 +6242,7 @@ textarea.form-control-lg {
   }
 }
 
-@keyframes spinner-grow {
+@keyframes adjust-huener-grow {
   0% {
     transform: scale(0);
   }
@@ -6242,7 +6251,7 @@ textarea.form-control-lg {
     transform: none;
   }
 }
-.spinner-grow {
+.adjust-huener-grow {
   display: inline-block;
   width: 2rem;
   height: 2rem;
@@ -6250,18 +6259,18 @@ textarea.form-control-lg {
   background-color: currentColor;
   border-radius: 50%;
   opacity: 0;
-  -webkit-animation: 0.75s linear infinite spinner-grow;
-          animation: 0.75s linear infinite spinner-grow;
+  -webkit-animation: 0.75s linear infinite adjust-huener-grow;
+          animation: 0.75s linear infinite adjust-huener-grow;
 }
 
-.spinner-grow-sm {
+.adjust-huener-grow-sm {
   width: 1rem;
   height: 1rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .spinner-border,
-.spinner-grow {
+  .adjust-huener-border,
+.adjust-huener-grow {
     -webkit-animation-duration: 1.5s;
             animation-duration: 1.5s;
   }
@@ -11291,4 +11300,4 @@ textarea.form-control-lg {
 .required:after {
   content:" *";
   color: red;
-}
+}	
