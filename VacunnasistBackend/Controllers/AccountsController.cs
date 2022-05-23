@@ -36,7 +36,13 @@ namespace VacunassistBackend.Controllers
             {
                 var authClaims = new List<Claim>()
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.FullName),
+                    new Claim(ClaimTypes.Gender, user.Gender),
+                    new Claim(ClaimTypes.StreetAddress, user.Address),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+                    new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString("yyyy-MM-dd")),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.Role, user.Role)
                 };
@@ -45,6 +51,12 @@ namespace VacunassistBackend.Controllers
                 {
                     username = user.UserName,
                     role = user.Role,
+                    gender = user.Gender,
+                    fullName = user.FullName,
+                    phoneNumber = user.PhoneNumber,
+                    email = user.Email,
+                    birthdate = user.BirthDate.ToString("yyyy-MM-dd"),
+                    address = user.Address,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });

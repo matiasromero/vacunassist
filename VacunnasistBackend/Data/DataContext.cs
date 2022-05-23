@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using VacunassistBackend.Models;
 using VacunassistBackend.Utils;
+using VacunnasistBackend.Entities;
 
 namespace VacunassistBackend.Data
 {
@@ -28,6 +28,12 @@ namespace VacunassistBackend.Data
                     UserName = "Admin",
                     Role = UserRoles.Administrator,
                     Address = "Calle Falsa 1234, La Plata",
+                    FullName = "Administrador",
+                    BirthDate = DateTime.Now.Date,
+                    DNI = string.Empty,
+                    Gender = Gender.Other,
+                    PhoneNumber = "",
+                    Email = "",
                     BelongsToRiskGroup = false,
                     IsActive = true,
                     PasswordHash = PasswordHash.CreateHash("1234")
@@ -39,6 +45,12 @@ namespace VacunassistBackend.Data
                     UserName = "Vacunador",
                     Role = UserRoles.Vacunator,
                     Address = "Calle Falsa 4567, La Plata",
+                    FullName = "Vacunador",
+                    BirthDate = DateTime.Now.Date,
+                    DNI = string.Empty,
+                    Gender = Gender.Other,
+                    PhoneNumber = "",
+                    Email = "",
                     BelongsToRiskGroup = false,
                     IsActive = true,
                     PasswordHash = PasswordHash.CreateHash("1234")
@@ -50,12 +62,35 @@ namespace VacunassistBackend.Data
                     UserName = "Paciente",
                     Role = UserRoles.Patient,
                     Address = "Calle Falsa 789, La Plata",
+                    FullName = "Paciente",
+                    PhoneNumber = "11-8795-1478",
+                    Email = "email@email.com",
+                    BirthDate = DateTime.Now.Date,
+                    DNI = string.Empty,
+                    Gender = Gender.Other,
                     BelongsToRiskGroup = false,
                     IsActive = true,
                     PasswordHash = PasswordHash.CreateHash("1234")
                 };
 
-                modelBuilder.Entity<User>().HasData(admin, vacunador1, patient1);
+                var patient2 = new User
+                {
+                    Id = 4,
+                    UserName = "jperez",
+                    Role = UserRoles.Patient,
+                    Address = "Calle Falsa 111, La Plata",
+                    FullName = "Juan Perez",
+                    PhoneNumber = "211-235-1478",
+                    Email = "email2@email.com",
+                    BirthDate = new DateTime(1987, 06, 07).Date,
+                    DNI = "33170336",
+                    Gender = Gender.Male,
+                    BelongsToRiskGroup = false,
+                    IsActive = true,
+                    PasswordHash = PasswordHash.CreateHash("1234")
+                };
+
+                modelBuilder.Entity<User>().HasData(admin, vacunador1, patient1, patient2);
             }
         }
         #endregion

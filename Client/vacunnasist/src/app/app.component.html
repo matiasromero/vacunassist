@@ -1,29 +1,68 @@
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
   <div class="container px-4 px-lg-5">
-      <a class="navbar-brand" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">VACUNASSIST</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-              <li class="nav-item">
-                <a class="nav-item nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
-              </li>
-              <li class="nav-item"><a class="nav-item nav-link" routerLink="/users" routerLinkActive="active" *ngIf="user && user.role == 'administrator'">Usuarios</a></li>
-          </ul>
-          <div class="d-flex">
-            <a class="nav-item nav-link" *ngIf="!user" routerLink="/account/login" routerLinkActive="active">Ingresar</a>
-            <button class="nav-item nav-link btn btn-link" *ngIf="user" (click)="logout()">Salir</button>
-            <a class="nav-item nav-link" *ngIf="!user" routerLink="/account/register" routerLinkActive="active">Registrarse</a>
-          </div>
-          
+    <a
+      class="navbar-brand"
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >VACUNASSIST</a
+    >
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Inicio</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
+            routerLink="/users"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'administrator'"
+            >Usuarios</a
+          >
+        </li>
+      </ul>
+      <div class="d-flex">
+        <a
+          class="nav-item nav-link"
+          *ngIf="!user"
+          routerLink="/account/login"
+          routerLinkActive="active"
+          >Ingresar</a
+        >
+        <button
+          class="nav-item nav-link btn btn-link"
+          *ngIf="user"
+          (click)="logout()"
+        >
+          Salir
+        </button>
+        <a
+          class="nav-item nav-link"
+          *ngIf="!user"
+          routerLink="/account/register"
+          routerLinkActive="active"
+          >Registrarse</a
+        >
       </div>
+    </div>
   </div>
 </nav>
 
 <!-- main app container -->
-<div class="app-container" [ngClass]="{ 'bg-light': user }">
+<div class="app-container mb-2" [ngClass]="{ 'bg-light': user }">
   <alert></alert>
   <router-outlet></router-outlet>
 </div>
 
-<footer class="py-5 fixed-bottom ">
-  <div class="container"><p class="m-0 text-center">Grupo 29 | Ingeniería de Software 2 | 2022</p></div>
+<footer class="py-1 fixed-bottom">
+  <div class="container">
+    <p class="m-0 text-center">Grupo 29 | Ingeniería de Software 2 | 2022</p>
+  </div>
 </footer>
