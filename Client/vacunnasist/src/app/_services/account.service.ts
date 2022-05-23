@@ -60,6 +60,16 @@ export class AccountService {
             }));
     }
 
+    myProfile() {
+        return this.http.get<User>(`${environment.apiUrl}/users/profile`)
+        .pipe(
+            map((u:any) =>{
+                console.log(u);
+                return u.user;
+            })
+            );
+    }
+
     getAll() {
         return this.http.get<User[]>(`${environment.apiUrl}/users`);
     }

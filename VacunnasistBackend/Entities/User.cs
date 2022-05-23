@@ -1,4 +1,4 @@
-namespace VacunnasistBackend.Entities;
+namespace VacunassistBackend.Entities;
 
 public class User
 {
@@ -45,7 +45,7 @@ public static class UserRoles
 
 public static class Gender
 {
-    public static string Male = "hombre";
-    public static string Female = "mujer";
-    public static string Other = "otro";
+    public static string Male = "male";
+    public static string Female = "female";
+    public static string Other = "other";
 }

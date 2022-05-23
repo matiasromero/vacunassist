@@ -33,7 +33,6 @@ export class PasswordRecoveryComponent implements OnInit {
         // reset alerts on submit
         this.alertService.clear();
 
-        console.log(this.form.invalid);
         // stop here if form is invalid
         if (this.form.invalid) {
             return;

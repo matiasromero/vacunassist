@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using VacunassistBackend.Entities;
 using VacunassistBackend.Utils;
-using VacunnasistBackend.Entities;
 
 namespace VacunassistBackend.Data
 {

@@ -1,9 +1,8 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using VacunassistBackend.Models;
 using VacunassistBackend.Services;
-using VacunassistBackend.Utils;
-using VacunnasistBackend.Entities;
+using VacunassistBackend.Helpers;
 
 namespace VacunassistBackend.Controllers
 {
@@ -41,6 +40,7 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [Helpers.Authorize]
         [HttpPost]
         [Route("{id}/change-password")]
         public IActionResult ChangePassword(int id, [FromBody] ChangePasswordRequest model)
@@ -64,12 +64,38 @@ namespace VacunassistBackend.Controllers
                 });
             }
 
-            _usersService.Update(id, password: model.NewPassword);
+            _usersService.Update(id, new UpdateUserRequest() { Password = model.NewPassword });
 
             return Ok(new
             {
                 message = "Usuario actualizado correctamente"
             });
+        }
+
+        [HttpGet]
+        [Route("profile")]
+        [Helpers.Authorize]
+        public IActionResult MyProfile()
+        {
+            var id = User.GetId().Value;
+            var user = _usersService.Get(id);
+            return Ok(new
+            {
+                user
+            });
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Edit(int? id, [FromBody] UpdateUserRequest model)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _usersService.Update(id.Value, model);
+            return Ok();
         }
 
         [HttpGet]

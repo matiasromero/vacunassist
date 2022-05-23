@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using VacunassistBackend.Entities;
 using VacunassistBackend.Models;
 using VacunassistBackend.Utils;
-using VacunnasistBackend.Entities;
 
 namespace VacunassistBackend.Services
 {
@@ -15,7 +13,7 @@ namespace VacunassistBackend.Services
         bool Register(RegisterRequest model);
         User[] GetAll();
 
-        void Update(int id, string? password);
+        void Update(int id, UpdateUserRequest model);
     }
 
     public class UsersService : IUsersService
@@ -89,15 +87,43 @@ namespace VacunassistBackend.Services
             }
         }
 
-        public void Update(int id, string? password)
+        public void Update(int id, UpdateUserRequest model)
         {
             var user = _context.Users.Find(id);
             if (user == null)
                 throw new ApplicationException("Usuario no encontrado");
 
-            if (string.IsNullOrEmpty(password) == false)
+            if (string.IsNullOrEmpty(model.Password) == false)
             {
-                user.PasswordHash = PasswordHash.CreateHash(password);
+                user.PasswordHash = PasswordHash.CreateHash(model.Password);
+            }
+            if (string.IsNullOrEmpty(model.FullName) == false && model.FullName != user.FullName)
+            {
+                user.FullName = model.FullName;
+            }
+            if (string.IsNullOrEmpty(model.DNI) == false && model.DNI != user.DNI)
+            {
+                user.DNI = model.DNI;
+            }
+            if (string.IsNullOrEmpty(model.Email) == false && model.Email != user.Email)
+            {
+                user.Email = model.Email;
+            }
+            if (string.IsNullOrEmpty(model.PhoneNumber) == false && model.PhoneNumber != user.PhoneNumber)
+            {
+                user.PhoneNumber = model.PhoneNumber;
+            }
+            if (string.IsNullOrEmpty(model.Gender) == false && model.Gender != user.Gender)
+            {
+                user.Gender = model.Gender;
+            }
+            if (model.BelongsToRiskGroup.HasValue && model.BelongsToRiskGroup != user.BelongsToRiskGroup)
+            {
+                user.BelongsToRiskGroup = model.BelongsToRiskGroup.Value;
+            }
+            if (model.BirthDate.HasValue && model.BirthDate != user.BirthDate)
+            {
+                user.BirthDate = model.BirthDate.Value;
             }
 
             _context.SaveChanges();

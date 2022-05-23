@@ -1,3 +1,4 @@
+import { ProfileComponent } from './profile/profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -31,7 +32,8 @@ export const MY_DATE_FORMATS = {
     LoginComponent,
     RegisterComponent,
     ChangePasswordComponent,
-    PasswordRecoveryComponent
+    PasswordRecoveryComponent,
+    ProfileComponent
   ],
   imports: [
     CommonModule,

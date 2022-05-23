@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using VacunassistBackend.Entities;
 using VacunassistBackend.Models;
 using VacunassistBackend.Services;
 
@@ -13,6 +14,8 @@ namespace VacunassistBackend.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
+        private SigningCredentials _signingCredentials;
+
         private readonly DataContext _context;
         private readonly IUsersService _usersService;
         private readonly IConfiguration _configuration;
@@ -36,17 +39,18 @@ namespace VacunassistBackend.Controllers
             {
                 var authClaims = new List<Claim>()
                 {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.FullName),
                     new Claim(ClaimTypes.Gender, user.Gender),
                     new Claim(ClaimTypes.StreetAddress, user.Address),
-                    new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                    new Claim(ClaimTypes.GivenName, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                     new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString("yyyy-MM-dd")),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.Role, user.Role)
                 };
-                var token = GetToken(authClaims);
+                var token = GetToken(authClaims, user);
                 return Ok(new
                 {
                     id = user.Id,
@@ -70,19 +74,25 @@ namespace VacunassistBackend.Controllers
         }
 
 
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        private JwtSecurityToken GetToken(List<Claim> authClaims, User user)
         {
+            var accessTokenExpiry = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JWT:Expire"]));
+
+            var identity = new ClaimsIdentity(authClaims, "jwt");
+            var principal = new ClaimsPrincipal(identity);
+
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
+            var securityTokenDescriptor = new SecurityTokenDescriptor
+            {
+                SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256),
+                Subject = identity,
+                Expires = accessTokenExpiry
+            };
 
-            return token;
+            var handler = new JwtSecurityTokenHandler();
+            var securityToken = handler.CreateJwtSecurityToken(securityTokenDescriptor);
+            return securityToken;
         }
     }
 }

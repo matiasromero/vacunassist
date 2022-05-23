@@ -6,6 +6,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
     {
@@ -14,6 +15,7 @@ const routes: Routes = [
             { path: 'login', component: LoginComponent },
             { path: 'register', component: RegisterComponent },
             { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
+            { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
             { path: 'password-recovery', component: PasswordRecoveryComponent }
         ]
     },
