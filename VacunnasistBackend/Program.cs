@@ -19,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
     //Adding My Dependencies
     services.AddTransient<IUsersService, UsersService>();
     services.AddTransient<IVaccinesService, VaccinesService>();
+    services.AddTransient<IOfficesService, OfficesService>();
 
     services.AddDbContext<DataContext>(options =>
     {

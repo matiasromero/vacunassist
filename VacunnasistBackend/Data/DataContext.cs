@@ -16,6 +16,7 @@ namespace VacunassistBackend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<AppliedVaccine> AppliedVaccines { get; set; }
+        public DbSet<Office> Offices { get; set; }
 
         #region Required
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +25,28 @@ namespace VacunassistBackend.Data
 
             if (bool.Parse(Configuration.GetValue<String>("SeedDatabase", "false")))
             {
+                var office1 = new Office
+                {
+                    Id = 1,
+                    Name = "La Plata I",
+                    Address = "Calle 52 113, La Plata",
+                    IsActive = true,
+                };
+                var office2 = new Office
+                {
+                    Id = 2,
+                    Name = "Quilmes",
+                    Address = "Calle Falsa 100, La Plata",
+                    IsActive = true,
+                };
+                var office3 = new Office
+                {
+                    Id = 3,
+                    Name = "La Plata II",
+                    Address = "Calle 14 1140, La Plata",
+                    IsActive = true,
+                };
+
                 var admin = new User
                 {
                     Id = 1,
@@ -73,6 +96,7 @@ namespace VacunassistBackend.Data
                     BelongsToRiskGroup = false,
                     IsActive = true,
                     PasswordHash = PasswordHash.CreateHash("1234"),
+                    PreferedOfficeId = office1.Id
                 };
 
                 var patient2 = new User
@@ -89,7 +113,8 @@ namespace VacunassistBackend.Data
                     Gender = Gender.Male,
                     BelongsToRiskGroup = false,
                     IsActive = true,
-                    PasswordHash = PasswordHash.CreateHash("1234")
+                    PasswordHash = PasswordHash.CreateHash("1234"),
+                    PreferedOfficeId = office2.Id
                 };
 
                 var vaccine1 = new Vaccine
@@ -124,6 +149,7 @@ namespace VacunassistBackend.Data
                     AppliedDate = new DateTime(2022, 05, 10, 14, 30, 25)
                 };
 
+                modelBuilder.Entity<Office>().HasData(office1, office2, office3);
                 modelBuilder.Entity<Vaccine>().HasData(vaccine1, vaccine2, vaccine3);
                 modelBuilder.Entity<User>().HasData(admin, vacunador1, patient1, patient2);
                 modelBuilder.Entity<AppliedVaccine>().HasData(applied1, applied2);

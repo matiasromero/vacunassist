@@ -222,6 +222,19 @@
             </tbody>
           </table>
         </mat-tab>
+
+        <mat-tab label="Cambiar mi vacunatorio" *ngIf="user.role == 'patient'">
+          <div class="form-group mt-3">
+            <mat-form-field appearance="fill">
+              <mat-label>Sede preferida</mat-label>
+              <mat-select>
+                <mat-option *ngFor="let office of offices" [value]="office.id">
+                  {{ office.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-tab>
       </mat-tab-group>
 
       <div class="form-group">

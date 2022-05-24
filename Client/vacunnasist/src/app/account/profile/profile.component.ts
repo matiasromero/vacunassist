@@ -6,6 +6,8 @@ import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
 import { User } from 'src/app/_models/user';
+import { Office } from 'src/app/_models/office';
+import { OfficeService } from 'src/app/_services/office.service';
 
 
 @Component({ templateUrl: 'profile.component.html' })
@@ -19,13 +21,20 @@ export class ProfileComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
+        private officesService: OfficeService,
         private alertService: AlertService,
         private dp: DatePipe
     ) { 
     }
 
+    public offices: Office[] = [];
     public user: User = new User;
     ngOnInit() {
+        this.officesService.getAll().subscribe((res: any) => {
+            console.log(res);
+            this.offices = res.offices;
+        });
+
         this.accountService.myProfile().subscribe(res => {
             this.user = res;
             this.form.patchValue({
