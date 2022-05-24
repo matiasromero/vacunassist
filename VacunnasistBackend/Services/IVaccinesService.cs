@@ -18,7 +18,7 @@ namespace VacunassistBackend.Services
 
         public Vaccine[] GetAll()
         {
-            return _context.Vaccines.ToArray();
+            return _context.Vaccines.Where(x => x.IsActive).ToArray();
         }
     }
 }

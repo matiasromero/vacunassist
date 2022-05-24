@@ -14,6 +14,7 @@ namespace VacunassistBackend.Services
         bool Register(RegisterRequest model);
         User[] GetAll();
 
+        void AddVaccine(int id, AddVaccineRequest model);
         void Update(int id, UpdateUserRequest model);
     }
 
@@ -130,6 +131,20 @@ namespace VacunassistBackend.Services
                 user.PreferedOfficeId = model.PreferedOfficeId;
             }
 
+            _context.SaveChanges();
+        }
+
+        public void AddVaccine(int id, AddVaccineRequest model)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            if (user == null)
+                throw new ApplicationException("Usuario no encontrado");
+
+            var newVaccine = new AppliedVaccine();
+            newVaccine.AppliedDate = model.AppliedDate;
+            newVaccine.VaccineId = model.VaccineId;
+            newVaccine.Comment = model.Comment;
+            user.Vaccines.Add(newVaccine);
             _context.SaveChanges();
         }
     }

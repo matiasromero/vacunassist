@@ -1,3 +1,4 @@
+import { AppliedVaccine } from './../_models/applied-vaccine';
 import { AlertService } from 'src/app/_services/alert.service';
 import { ChangePasswordModel } from './../_models/change-password';
 import { Injectable } from '@angular/core';
@@ -75,6 +76,11 @@ export class AccountService {
 
     getById(id: string) {
         return this.http.get<User>(`${environment.apiUrl}/users/${id}`);
+    }
+
+    addVaccine(userId: number, appliedVaccine: any) {
+        console.log(userId, appliedVaccine);
+        return this.http.post(`${environment.apiUrl}/users/${userId}/add-vaccine`, appliedVaccine);
     }
 
     update(id: string, params: any) {

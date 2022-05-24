@@ -1,3 +1,4 @@
+import { ProfileAddVaccineComponent } from './profile/add-vaccine/add-vaccine.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { NgModule } from '@angular/core';
@@ -12,6 +13,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { PasswordRecoveryComponent } from './password-recovery/password-recovery.component';
@@ -35,7 +38,8 @@ export const MY_DATE_FORMATS = {
     RegisterComponent,
     ChangePasswordComponent,
     PasswordRecoveryComponent,
-    ProfileComponent
+    ProfileComponent,
+    ProfileAddVaccineComponent
   ],
   imports: [
     CommonModule,
@@ -46,7 +50,9 @@ export const MY_DATE_FORMATS = {
     MatNativeDateModule,
     MatInputModule,
     MatTabsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatTooltipModule
 ],
 providers: [
   DatePipe,

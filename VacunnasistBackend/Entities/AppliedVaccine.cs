@@ -2,7 +2,7 @@ namespace VacunassistBackend.Entities;
 
 public class AppliedVaccine
 {
-    public DateTime AppliedDate { get; set; }
+    public DateTime? AppliedDate { get; set; }
     public string? AppliedBy { get; set; }
     public string? Comment { get; set; }
 

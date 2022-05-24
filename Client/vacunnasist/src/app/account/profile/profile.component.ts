@@ -1,3 +1,5 @@
+import { AppliedVaccine } from './../../_models/applied-vaccine';
+import { Vaccine } from './../../_models/vaccine';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +10,7 @@ import { DatePipe } from '@angular/common';
 import { User } from 'src/app/_models/user';
 import { Office } from 'src/app/_models/office';
 import { OfficeService } from 'src/app/_services/office.service';
+import Swal from 'sweetalert2';
 
 
 @Component({ templateUrl: 'profile.component.html' })
@@ -92,5 +95,36 @@ export class ProfileComponent implements OnInit {
                     this.loading = false;
                 }
             });
+    }
+
+    deleteVaccineQuestion(v: AppliedVaccine) {
+        console.log(v);
+        Swal
+      .fire({
+        title: '¿Está seguro?',
+        text: 'Va a eliminar la vacuna: ' + v.vaccine.name,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'No, cancelar',
+        confirmButtonText: 'Si, eliminar!'
+      })
+      .then(result => {
+        if (result.value) {
+          this.deleteVaccine(v);
+          Swal.fire('Eliminada!', 'Vacuna eliminada', 'success');
+        }
+      });
+    }
+
+    deleteVaccine(v: any) {
+        const index = this.user.vaccines.indexOf(v, 0);
+        if (index > -1) {
+           this.user.vaccines.splice(index, 1);
+        }
+    }
+
+    addVaccine() {
+        console.log('a');
+        this.router.navigate(['account/profile/add-vaccine']);
     }
 }

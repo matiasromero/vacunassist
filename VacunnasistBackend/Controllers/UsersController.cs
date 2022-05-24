@@ -72,6 +72,26 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [Helpers.Authorize]
+        [HttpPost]
+        [Route("{id}/add-vaccine")]
+        public IActionResult AddVaccine(int id, [FromBody] AddVaccineRequest model)
+        {
+            var user = _usersService.Get(id);
+            if (user == null)
+                return BadRequest(new
+                {
+                    message = "El usuario no existe"
+                });
+
+            _usersService.AddVaccine(id, model);
+
+            return Ok(new
+            {
+                message = "Usuario actualizado correctamente"
+            });
+        }
+
         [HttpGet]
         [Route("profile")]
         [Helpers.Authorize]
