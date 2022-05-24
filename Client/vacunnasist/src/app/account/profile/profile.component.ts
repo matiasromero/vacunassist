@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
+import { User } from 'src/app/_models/user';
 
 
 @Component({ templateUrl: 'profile.component.html' })
@@ -23,8 +24,10 @@ export class ProfileComponent implements OnInit {
     ) { 
     }
 
+    public user: User = new User;
     ngOnInit() {
         this.accountService.myProfile().subscribe(res => {
+            this.user = res;
             this.form.patchValue({
               fullName: res.fullName,
               dni: res.dni,

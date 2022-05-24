@@ -1,3 +1,5 @@
+import { AppliedVaccine } from "./applied-vaccine";
+
 export class User {
     id!: string;
     username!: string;
@@ -12,4 +14,5 @@ export class User {
     belongsToRiskGroup: boolean = false;
     role!: string;
     token!: string;
+    vaccines: AppliedVaccine[] = [];
 }

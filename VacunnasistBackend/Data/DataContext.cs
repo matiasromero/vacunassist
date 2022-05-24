@@ -14,6 +14,8 @@ namespace VacunassistBackend.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Vaccine> Vaccines { get; set; }
+        public DbSet<AppliedVaccine> AppliedVaccines { get; set; }
 
         #region Required
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -70,7 +72,7 @@ namespace VacunassistBackend.Data
                     Gender = Gender.Other,
                     BelongsToRiskGroup = false,
                     IsActive = true,
-                    PasswordHash = PasswordHash.CreateHash("1234")
+                    PasswordHash = PasswordHash.CreateHash("1234"),
                 };
 
                 var patient2 = new User
@@ -90,7 +92,41 @@ namespace VacunassistBackend.Data
                     PasswordHash = PasswordHash.CreateHash("1234")
                 };
 
+                var vaccine1 = new Vaccine
+                {
+                    Id = 1,
+                    Name = "COVID-19",
+                    IsActive = true
+                };
+                var vaccine2 = new Vaccine
+                {
+                    Id = 2,
+                    Name = "Fiebre amarilla",
+                    IsActive = true
+                };
+                var vaccine3 = new Vaccine
+                {
+                    Id = 3,
+                    Name = "Gripe",
+                    IsActive = true
+                };
+
+                var applied1 = new AppliedVaccine()
+                {
+                    UserId = patient1.Id,
+                    VaccineId = vaccine1.Id,
+                    AppliedDate = new DateTime(2022, 03, 12, 10, 30, 01)
+                };
+                var applied2 = new AppliedVaccine()
+                {
+                    UserId = patient1.Id,
+                    VaccineId = vaccine2.Id,
+                    AppliedDate = new DateTime(2022, 05, 10, 14, 30, 25)
+                };
+
+                modelBuilder.Entity<Vaccine>().HasData(vaccine1, vaccine2, vaccine3);
                 modelBuilder.Entity<User>().HasData(admin, vacunador1, patient1, patient2);
+                modelBuilder.Entity<AppliedVaccine>().HasData(applied1, applied2);
             }
         }
         #endregion

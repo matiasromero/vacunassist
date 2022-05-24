@@ -1,5 +1,4 @@
 global using VacunassistBackend.Data;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using VacunassistBackend.Helpers;
 using VacunassistBackend.Services;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     //Adding My Dependencies
     services.AddTransient<IUsersService, UsersService>();
+    services.AddTransient<IVaccinesService, VaccinesService>();
 
     services.AddDbContext<DataContext>(options =>
     {
@@ -64,10 +65,11 @@ var builder = WebApplication.CreateBuilder(args);
                         };
                     });
     services.AddSingleton(signingCredentials);
+    services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 }
 
 builder.Configuration.AddEnvironmentVariables();
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

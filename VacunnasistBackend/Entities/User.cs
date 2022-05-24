@@ -33,7 +33,8 @@ public class User
 
     public string Role { get; set; } = string.Empty;
 
-    public bool IsActive { get; set; } = true;
+    public bool IsActive { get; set; }
+    public virtual List<AppliedVaccine> Vaccines { get; set; }
 }
 
 public static class UserRoles

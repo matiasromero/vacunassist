@@ -64,7 +64,6 @@ export class AccountService {
         return this.http.get<User>(`${environment.apiUrl}/users/profile`)
         .pipe(
             map((u:any) =>{
-                console.log(u);
                 return u.user;
             })
             );

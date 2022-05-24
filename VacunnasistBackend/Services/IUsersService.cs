@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using VacunassistBackend.Entities;
 using VacunassistBackend.Models;
 using VacunassistBackend.Utils;
@@ -35,9 +36,8 @@ namespace VacunassistBackend.Services
 
         public User Get(int id)
         {
-            return _context.Users.FirstOrDefault(x => x.Id == id);
+            return _context.Users.Include(u => u.Vaccines).ThenInclude(v => v.Vaccine).FirstOrDefault(x => x.Id == id);
         }
-
 
         public bool Exists(string userName)
         {
@@ -51,7 +51,7 @@ namespace VacunassistBackend.Services
 
         public User[] GetAll()
         {
-            return _context.Users.ToArray();
+            return _context.Users.Include(u => u.Vaccines).ToArray();
         }
 
         public bool Register(RegisterRequest model)

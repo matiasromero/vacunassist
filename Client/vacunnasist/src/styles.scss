@@ -20,6 +20,10 @@
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
  // MDB SCSS
 
+ .mat-tab-body-content{
+  overflow:hidden!important;
+}
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
