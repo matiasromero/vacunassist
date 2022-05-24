@@ -31,7 +31,6 @@ export class ProfileComponent implements OnInit {
     public user: User = new User;
     ngOnInit() {
         this.officesService.getAll().subscribe((res: any) => {
-            console.log(res);
             this.offices = res.offices;
         });
 
@@ -45,7 +44,8 @@ export class ProfileComponent implements OnInit {
               phoneNumber: res.phoneNumber,
               email: res.email,
               gender: res.gender,
-              belongsToRiskGroup: res.belongsToRiskGroup
+              belongsToRiskGroup: res.belongsToRiskGroup,
+              preferedOfficeId: res.preferedOfficeId
             });
     });
         
@@ -57,7 +57,8 @@ export class ProfileComponent implements OnInit {
             phoneNumber: ['', [Validators.required, Validators.maxLength(30)]],
             email:['', [Validators.required, Validators.email, Validators.maxLength(30)]],
             gender: ['male', Validators.required],
-            belongsToRiskGroup: [false, Validators.required]
+            belongsToRiskGroup: [false, Validators.required],
+            preferedOfficeId: [null, Validators.required]
         });
     }
 

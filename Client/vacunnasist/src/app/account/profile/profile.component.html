@@ -227,7 +227,7 @@
           <div class="form-group mt-3">
             <mat-form-field appearance="fill">
               <mat-label>Sede preferida</mat-label>
-              <mat-select>
+              <mat-select formControlName="preferedOfficeId">
                 <mat-option *ngFor="let office of offices" [value]="office.id">
                   {{ office.name }}
                 </mat-option>

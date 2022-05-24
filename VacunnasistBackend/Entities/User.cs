@@ -34,7 +34,7 @@ public class User
     public string Role { get; set; } = string.Empty;
 
     public int? PreferedOfficeId { get; set; }
-    public Office PreferedOffice { get; set; }
+    public Office? PreferedOffice { get; set; }
 
     public bool IsActive { get; set; }
     public virtual List<AppliedVaccine> Vaccines { get; set; }

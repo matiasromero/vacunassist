@@ -55,10 +55,10 @@ namespace VacunassistBackend.Data
                     Address = "Calle Falsa 1234, La Plata",
                     FullName = "Administrador",
                     BirthDate = DateTime.Now.Date,
-                    DNI = string.Empty,
+                    DNI = "11111111",
                     Gender = Gender.Other,
-                    PhoneNumber = "",
-                    Email = "",
+                    PhoneNumber = "2215897845",
+                    Email = "admin@vacunassist.com",
                     BelongsToRiskGroup = false,
                     IsActive = true,
                     PasswordHash = PasswordHash.CreateHash("1234")
@@ -72,13 +72,13 @@ namespace VacunassistBackend.Data
                     Address = "Calle Falsa 4567, La Plata",
                     FullName = "Vacunador",
                     BirthDate = DateTime.Now.Date,
-                    DNI = string.Empty,
+                    DNI = "11111111",
                     Gender = Gender.Other,
-                    PhoneNumber = "",
-                    Email = "",
+                    PhoneNumber = "1158987895",
+                    Email = "vacunador@email.com",
                     BelongsToRiskGroup = false,
                     IsActive = true,
-                    PasswordHash = PasswordHash.CreateHash("1234")
+                    PasswordHash = PasswordHash.CreateHash("1234"),
                 };
 
                 var patient1 = new User
@@ -91,7 +91,7 @@ namespace VacunassistBackend.Data
                     PhoneNumber = "11-8795-1478",
                     Email = "email@email.com",
                     BirthDate = DateTime.Now.Date,
-                    DNI = string.Empty,
+                    DNI = "12548987",
                     Gender = Gender.Other,
                     BelongsToRiskGroup = false,
                     IsActive = true,

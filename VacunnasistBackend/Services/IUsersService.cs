@@ -89,7 +89,7 @@ namespace VacunassistBackend.Services
 
         public void Update(int id, UpdateUserRequest model)
         {
-            var user = _context.Users.Find(id);
+            var user = _context.Users.Include(x => x.PreferedOffice).FirstOrDefault(x => x.Id == id);
             if (user == null)
                 throw new ApplicationException("Usuario no encontrado");
 
@@ -124,6 +124,10 @@ namespace VacunassistBackend.Services
             if (model.BirthDate.HasValue && model.BirthDate != user.BirthDate)
             {
                 user.BirthDate = model.BirthDate.Value;
+            }
+            if (model.PreferedOfficeId.HasValue && (user.PreferedOffice == null || user.PreferedOfficeId != model.PreferedOfficeId))
+            {
+                user.PreferedOfficeId = model.PreferedOfficeId;
             }
 
             _context.SaveChanges();

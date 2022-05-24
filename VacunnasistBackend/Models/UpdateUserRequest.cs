@@ -20,5 +20,7 @@ namespace VacunassistBackend.Models
         public string? DNI { get; set; }
 
         public string? PhoneNumber { get; set; }
+
+        public int? PreferedOfficeId { get; set; }
     }
 }

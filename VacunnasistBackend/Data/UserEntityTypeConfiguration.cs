@@ -15,7 +15,7 @@ namespace VacunassistBackend.Data
             builder.Property(b => b.Email).HasMaxLength(100).IsRequired();
             builder.Property(b => b.FullName).HasMaxLength(100).IsRequired();
             builder.Property(b => b.Gender).HasMaxLength(50).IsRequired();
-            builder.HasOne(b => b.PreferedOffice).WithOne();
+            builder.HasOne(b => b.PreferedOffice).WithMany();
         }
     }
 }
