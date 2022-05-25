@@ -228,7 +228,7 @@
             </div>
           </div>
         </mat-tab>
-        <mat-tab label="Mis Vacunas" *ngIf="user.role == 'patient'">
+        <mat-tab label="Mis Vacunas" *ngIf="user && user.role === 'patient'">
           <table class="table">
             <thead>
               <tr>
@@ -268,7 +268,10 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Cambiar mi vacunatorio">
+        <mat-tab
+          label="Cambiar mi vacunatorio"
+          *ngIf="user && user.role === 'patient'"
+        >
           <div class="form-group mt-3">
             <mat-form-field appearance="fill">
               <mat-label>Sede preferida</mat-label>

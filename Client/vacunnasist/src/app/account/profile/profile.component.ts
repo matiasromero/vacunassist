@@ -100,7 +100,6 @@ export class ProfileComponent implements OnInit {
                     this.router.navigate(['/'], { relativeTo: this.route });
                 },
                 error: error => {
-                    console.log(error);
                     this.alertService.error(error);
                     this.loading = false;
                 }
@@ -108,7 +107,6 @@ export class ProfileComponent implements OnInit {
     }
 
     deleteVaccineQuestion(v: AppliedVaccine) {
-        console.log(v);
         Swal
       .fire({
         title: '¿Está seguro?',
@@ -134,7 +132,6 @@ export class ProfileComponent implements OnInit {
     }
 
     addVaccine() {
-        console.log('a');
         this.router.navigate(['account/profile/add-vaccine']);
     }
 }
