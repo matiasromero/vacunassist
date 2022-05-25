@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using VacunassistBackend.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,7 +67,10 @@ var builder = WebApplication.CreateBuilder(args);
                         };
                     });
     services.AddSingleton(signingCredentials);
-    services.AddControllers().AddJsonOptions(x =>
+    services.AddControllers(options =>
+    {
+        options.Filters.Add<HttpResponseExceptionFilter>();
+    }).AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 }
 

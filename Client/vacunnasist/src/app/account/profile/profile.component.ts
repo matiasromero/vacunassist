@@ -2,7 +2,7 @@ import { AppliedVaccine } from './../../_models/applied-vaccine';
 import { Vaccine } from './../../_models/vaccine';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
@@ -40,6 +40,7 @@ export class ProfileComponent implements OnInit {
         this.accountService.myProfile().subscribe(res => {
             this.user = res;
             this.form.patchValue({
+                username: res.userName,
               fullName: res.fullName,
               dni: res.dni,
               address: res.address,
@@ -50,9 +51,17 @@ export class ProfileComponent implements OnInit {
               belongsToRiskGroup: res.belongsToRiskGroup,
               preferedOfficeId: res.preferedOfficeId
             });
-    });
+
+            if (this.user && this.user.role !== 'administrator') {
+                this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
+              } else {
+                this.form.controls['preferedOfficeId'].clearValidators();
+              }
+              this.form.controls['preferedOfficeId'].updateValueAndValidity();
+        });
         
         this.form = this.formBuilder.group({
+            username: ['', [Validators.required, Validators.maxLength(20)]],
             fullName: ['', [Validators.required, Validators.maxLength(100)]],
             dni: ['', [Validators.required, Validators.maxLength(20)]],
             address: ['', [Validators.required, Validators.maxLength(200)]],
@@ -61,7 +70,7 @@ export class ProfileComponent implements OnInit {
             email:['', [Validators.required, Validators.email, Validators.maxLength(30)]],
             gender: ['male', Validators.required],
             belongsToRiskGroup: [false, Validators.required],
-            preferedOfficeId: [null, Validators.required]
+            preferedOfficeId: [null]
         });
     }
 
@@ -91,6 +100,7 @@ export class ProfileComponent implements OnInit {
                     this.router.navigate(['/'], { relativeTo: this.route });
                 },
                 error: error => {
+                    console.log(error);
                     this.alertService.error(error);
                     this.loading = false;
                 }

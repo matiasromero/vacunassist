@@ -51,6 +51,30 @@
           </div>
 
           <div class="form-group">
+            <label for="username" class="required">Usuario</label>
+            <input
+              type="text"
+              formControlName="username"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.username.errors }"
+            />
+            <div
+              *ngIf="
+                f.username.invalid &&
+                (submitted || f.username.dirty || f.username.touched)
+              "
+              class="invalid-feedback"
+            >
+              <div *ngIf="f.username.errors?.['required']">
+                El nombre de usuario es requerido.
+              </div>
+              <div *ngIf="f.username.errors?.['maxlength']">
+                El nombre debe contener menos de 20 caracteres.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label for="address" class="required">Domicilio</label>
             <input
               type="text"
@@ -244,7 +268,7 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Cambiar mi vacunatorio" *ngIf="user.role == 'patient'">
+        <mat-tab label="Cambiar mi vacunatorio">
           <div class="form-group mt-3">
             <mat-form-field appearance="fill">
               <mat-label>Sede preferida</mat-label>

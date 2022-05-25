@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VacunassistBackend.Entities;
+using VacunassistBackend.Infrastructure;
 using VacunassistBackend.Models;
 using VacunassistBackend.Utils;
 
@@ -92,8 +93,18 @@ namespace VacunassistBackend.Services
         {
             var user = _context.Users.Include(x => x.PreferedOffice).FirstOrDefault(x => x.Id == id);
             if (user == null)
-                throw new ApplicationException("Usuario no encontrado");
+                throw new HttpResponseException(400, message: "Usuario no encontrado");
 
+            if (string.IsNullOrEmpty(model.UserName) == false && model.UserName != user.UserName)
+            {
+                var existOther = _context.Users.Any(x => x.UserName == model.UserName && x.Id != id);
+                if (existOther)
+                {
+                    throw new HttpResponseException(400, message: "Nombre de usuario '" + model.UserName + "' en uso");
+                }
+                user.UserName = model.UserName;
+
+            }
             if (string.IsNullOrEmpty(model.Password) == false)
             {
                 user.PasswordHash = PasswordHash.CreateHash(model.Password);
