@@ -70,7 +70,8 @@ var builder = WebApplication.CreateBuilder(args);
     services.AddControllers(options =>
     {
         options.Filters.Add<HttpResponseExceptionFilter>();
-    }).AddJsonOptions(x =>
+    })
+    .AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 }
 

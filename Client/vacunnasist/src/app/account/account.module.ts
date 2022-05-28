@@ -15,9 +15,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { PasswordRecoveryComponent } from './password-recovery/password-recovery.component';
+import { PasswordResetModalComponent } from './profile/password-reset-modal/password-reset-modal.component';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -39,7 +41,8 @@ export const MY_DATE_FORMATS = {
     ChangePasswordComponent,
     PasswordRecoveryComponent,
     ProfileComponent,
-    ProfileAddVaccineComponent
+    ProfileAddVaccineComponent,
+    PasswordResetModalComponent
   ],
   imports: [
     CommonModule,
@@ -52,7 +55,8 @@ export const MY_DATE_FORMATS = {
     MatTabsModule,
     MatSelectModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule
 ],
 providers: [
   DatePipe,

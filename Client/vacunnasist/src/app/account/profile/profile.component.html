@@ -174,6 +174,8 @@
               <mat-label>Fecha de nacimiento</mat-label>
               <input
                 matInput
+                [min]="minDate"
+                [max]="maxDate"
                 [matDatepicker]="birthDate"
                 type="text"
                 formControlName="birthDate"
@@ -229,18 +231,32 @@
           </div>
         </mat-tab>
         <mat-tab label="Mis Vacunas" *ngIf="user && user.role === 'patient'">
-          <table class="table">
+          <table class="table text-center">
             <thead>
               <tr>
                 <th scope="col">Vacuna</th>
                 <th scope="col">Fecha</th>
+                <th scope="col">Aplicada por</th>
+                <th scope="col">Comentarios</th>
                 <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let u of user.vaccines">
                 <td>{{ u.vaccine.name }}</td>
-                <td>{{ u.appliedDate | date: "dd/MM/yyyy HH:mm" }}</td>
+                <td>{{ u.appliedDate | date: "dd/MM/yyyy" }}</td>
+                <td>{{ u.appliedBy || "-" }}</td>
+                <td
+                  [matTooltip]="
+                    u.comment && u.comment.length > 20 ? u.comment : ''
+                  "
+                >
+                  {{
+                    u.comment && u.comment.length > 20
+                      ? (u.comment | slice: 0:20) + ".."
+                      : u.comment
+                  }}
+                </td>
                 <td>
                   <mat-icon
                     mat-button

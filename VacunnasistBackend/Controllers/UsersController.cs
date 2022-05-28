@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using VacunassistBackend.Models;
 using VacunassistBackend.Services;
 using VacunassistBackend.Helpers;
+using VacunassistBackend.Models.Filters;
 
 namespace VacunassistBackend.Controllers
 {
@@ -37,6 +38,26 @@ namespace VacunassistBackend.Controllers
             return BadRequest(new
             {
                 message = "Ocurrió un inconveniente al registrar el usuario, intente nuevamente"
+            });
+        }
+
+        [HttpPost]
+        [Route("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            if (_usersService.Exists(request.UserName) == false)
+                return BadRequest(new
+                {
+                    message = "Nombre de usuario no encontrado"
+                });
+
+            var user = _usersService.Get(request.UserName);
+            var model = new UpdateUserRequest();
+            model.Password = "a23sSiLp45m00B";
+            _usersService.Update(user.Id, model);
+            return Ok(new
+            {
+                message = "Contraseña reseteada correctamente"
             });
         }
 
@@ -92,6 +113,26 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [Helpers.Authorize]
+        [HttpPost]
+        [Route("{id}/delete-vaccine")]
+        public IActionResult DeleteVaccine(int id, [FromBody] int vaccineId)
+        {
+            var user = _usersService.Get(id);
+            if (user == null)
+                return BadRequest(new
+                {
+                    message = "El usuario no existe"
+                });
+
+            _usersService.DeleteVaccine(id, vaccineId);
+
+            return Ok(new
+            {
+                message = "Usuario actualizado correctamente"
+            });
+        }
+
         [HttpGet]
         [Route("profile")]
         [Helpers.Authorize]
@@ -119,11 +160,11 @@ namespace VacunassistBackend.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] UsersFilterRequest filter)
         {
             return Ok(new
             {
-                users = _usersService.GetAll()
+                users = _usersService.GetAll(filter)
             });
         }
     }

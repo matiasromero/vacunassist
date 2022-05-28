@@ -3,11 +3,12 @@ import { AlertService } from 'src/app/_services/alert.service';
 import { ChangePasswordModel } from './../_models/change-password';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment';
+import { UsersFilter } from '../_models/filters/users-filter';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -61,7 +62,19 @@ export class AccountService {
             }));
     }
 
+    resetPassword(userName: string) {
+        const headers = new HttpHeaders().set(
+            'Content-Type',
+            'application/json; charset=utf-8'
+          );
+
+        return this.http.post(`${environment.apiUrl}/users/reset-password`, {userName: userName});
+    }
+
+
     myProfile() {
+
+
         return this.http.get<User>(`${environment.apiUrl}/users/profile`)
         .pipe(
             map((u:any) =>{
@@ -70,8 +83,27 @@ export class AccountService {
             );
     }
 
-    getAll() {
-        return this.http.get<User[]>(`${environment.apiUrl}/users`);
+    getAll(filter: UsersFilter) {
+        const headers = new HttpHeaders().set(
+            'Content-Type',
+            'application/json; charset=utf-8'
+          );
+          
+          let params = new HttpParams();
+          if (filter.isActive !== undefined)
+            params = params.append('isActive', filter.isActive.toString());
+          if (filter.role)
+            params = params.append('role', filter.role.toString());
+            if (filter.userName)
+            params = params.append('userName', filter.userName.toString());
+            if (filter.email)
+            params = params.append('email', filter.email.toString());
+          
+        return this.http.get<User[]>(`${environment.apiUrl}/users`, 
+        {
+           headers: headers,
+        params: params
+    });
     }
 
     getById(id: string) {
@@ -79,8 +111,11 @@ export class AccountService {
     }
 
     addVaccine(userId: number, appliedVaccine: any) {
-        console.log(userId, appliedVaccine);
         return this.http.post(`${environment.apiUrl}/users/${userId}/add-vaccine`, appliedVaccine);
+    }
+
+    deleteVaccine(userId: number, vaccineId: number) {
+        return this.http.post(`${environment.apiUrl}/users/${userId}/delete-vaccine`, vaccineId);
     }
 
     update(id: string, params: any) {

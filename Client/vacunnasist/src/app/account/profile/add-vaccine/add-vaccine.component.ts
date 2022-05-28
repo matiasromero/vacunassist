@@ -30,6 +30,7 @@ export class ProfileAddVaccineComponent implements OnInit {
     ) { 
     }
 
+    maxDate: Date = new Date();
     public vaccines: Vaccine[] = [];
     ngOnInit() {
         this.vaccinesService.getAll().subscribe((res: any) => {
@@ -65,7 +66,7 @@ export class ProfileAddVaccineComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success('Vacuna agregada', { keepAfterRouteChange: true });
-                    this.router.navigate(['/profile'], { relativeTo: this.route });
+                    this.router.navigate(['/account/profile'], { relativeTo: this.route });
                 },
                 error: error => {
                     this.alertService.error(error);

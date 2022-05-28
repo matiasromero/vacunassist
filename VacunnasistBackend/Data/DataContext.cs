@@ -138,12 +138,14 @@ namespace VacunassistBackend.Data
 
                 var applied1 = new AppliedVaccine()
                 {
+                    Id = 1,
                     UserId = patient1.Id,
                     VaccineId = vaccine1.Id,
                     AppliedDate = new DateTime(2022, 03, 12, 10, 30, 01)
                 };
                 var applied2 = new AppliedVaccine()
                 {
+                    Id = 2,
                     UserId = patient1.Id,
                     VaccineId = vaccine2.Id,
                     AppliedDate = new DateTime(2022, 05, 10, 14, 30, 25)

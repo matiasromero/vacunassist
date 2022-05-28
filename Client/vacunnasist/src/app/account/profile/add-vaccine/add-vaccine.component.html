@@ -21,6 +21,7 @@
           <input
             matInput
             [matDatepicker]="appliedDate"
+            [max]="maxDate"
             type="text"
             formControlName="appliedDate"
             [ngClass]="{ 'is-invalid': submitted && f.appliedDate.errors }"

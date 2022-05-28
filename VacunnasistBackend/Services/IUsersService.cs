@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using VacunassistBackend.Entities;
 using VacunassistBackend.Infrastructure;
 using VacunassistBackend.Models;
+using VacunassistBackend.Models.Filters;
 using VacunassistBackend.Utils;
 
 namespace VacunassistBackend.Services
@@ -10,12 +11,14 @@ namespace VacunassistBackend.Services
     {
         User Authenticate(string userName, string password);
         User Get(int id);
+        User Get(string userName);
         bool Exists(string userName);
         bool Exists(int id);
         bool Register(RegisterRequest model);
-        User[] GetAll();
+        User[] GetAll(UsersFilterRequest filter);
 
         void AddVaccine(int id, AddVaccineRequest model);
+        void DeleteVaccine(int id, int appliedVaccineId);
         void Update(int id, UpdateUserRequest model);
     }
 
@@ -38,7 +41,12 @@ namespace VacunassistBackend.Services
 
         public User Get(int id)
         {
-            return _context.Users.Include(u => u.Vaccines).ThenInclude(v => v.Vaccine).FirstOrDefault(x => x.Id == id);
+            return _context.Users.Include(u => u.Vaccines).ThenInclude(v => v.Vaccine).First(x => x.Id == id);
+        }
+
+        public User Get(string userName)
+        {
+            return _context.Users.Include(u => u.Vaccines).ThenInclude(v => v.Vaccine).First(x => x.UserName == userName);
         }
 
         public bool Exists(string userName)
@@ -51,9 +59,18 @@ namespace VacunassistBackend.Services
             return _context.Users.Any(x => x.Id == id);
         }
 
-        public User[] GetAll()
+        public User[] GetAll(UsersFilterRequest filter)
         {
-            return _context.Users.Include(u => u.Vaccines).ToArray();
+            var query = _context.Users.Include(u => u.Vaccines).AsQueryable();
+            if (filter.IsActive.HasValue)
+                query = query.Where(x => x.IsActive == filter.IsActive);
+            if (string.IsNullOrEmpty(filter.Role) == false)
+                query = query.Where(x => x.Role == filter.Role);
+            if (string.IsNullOrEmpty(filter.UserName) == false)
+                query = query.Where(x => x.UserName == filter.UserName);
+            if (string.IsNullOrEmpty(filter.Email) == false)
+                query = query.Where(x => x.Email == filter.Email);
+            return query.ToArray();
         }
 
         public bool Register(RegisterRequest model)
@@ -148,8 +165,7 @@ namespace VacunassistBackend.Services
         public void AddVaccine(int id, AddVaccineRequest model)
         {
             var user = _context.Users.FirstOrDefault(x => x.Id == id);
-            if (user == null)
-                throw new ApplicationException("Usuario no encontrado");
+            CheckIfExists(user);
 
             var newVaccine = new AppliedVaccine();
             newVaccine.AppliedDate = model.AppliedDate;
@@ -157,6 +173,26 @@ namespace VacunassistBackend.Services
             newVaccine.Comment = model.Comment;
             user.Vaccines.Add(newVaccine);
             _context.SaveChanges();
+        }
+
+        private static void CheckIfExists(User? user)
+        {
+            if (user == null)
+                throw new HttpResponseException(400, "Usuario no encontrado");
+        }
+
+        public void DeleteVaccine(int id, int appliedVaccineId)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            CheckIfExists(user);
+
+            if (user.Vaccines.Any(x => x.Id == appliedVaccineId) == false)
+                throw new HttpResponseException(400, "Vacuna no encontrada");
+
+            var v = user.Vaccines.Single(x => x.Id == appliedVaccineId);
+            user.Vaccines.Remove(v);
+            _context.SaveChanges();
+
         }
     }
 }

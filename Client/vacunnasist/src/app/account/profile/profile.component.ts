@@ -18,6 +18,8 @@ export class ProfileComponent implements OnInit {
     form!: FormGroup;
     loading = false;
     submitted = false;
+    minDate: Date = new Date();
+    maxDate: Date = new Date();
 
     constructor(
         private formBuilder: FormBuilder,
@@ -33,32 +35,13 @@ export class ProfileComponent implements OnInit {
     public offices: Office[] = [];
     public user: User = new User;
     ngOnInit() {
+        this.minDate = new Date(1900, 0, 1);
+
         this.officesService.getAll().subscribe((res: any) => {
             this.offices = res.offices;
         });
 
-        this.accountService.myProfile().subscribe(res => {
-            this.user = res;
-            this.form.patchValue({
-                username: res.userName,
-              fullName: res.fullName,
-              dni: res.dni,
-              address: res.address,
-              birthDate: res.birthDate,
-              phoneNumber: res.phoneNumber,
-              email: res.email,
-              gender: res.gender,
-              belongsToRiskGroup: res.belongsToRiskGroup,
-              preferedOfficeId: res.preferedOfficeId
-            });
-
-            if (this.user && this.user.role !== 'administrator') {
-                this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
-              } else {
-                this.form.controls['preferedOfficeId'].clearValidators();
-              }
-              this.form.controls['preferedOfficeId'].updateValueAndValidity();
-        });
+        this.loadData();
         
         this.form = this.formBuilder.group({
             username: ['', [Validators.required, Validators.maxLength(20)]],
@@ -71,6 +54,31 @@ export class ProfileComponent implements OnInit {
             gender: ['male', Validators.required],
             belongsToRiskGroup: [false, Validators.required],
             preferedOfficeId: [null]
+        });
+    }
+
+    loadData() {
+        this.accountService.myProfile().subscribe(res => {
+            this.user = res;
+            this.form.patchValue({
+                username: res.userName,
+                fullName: res.fullName,
+                dni: res.dni,
+                address: res.address,
+                birthDate: res.birthDate,
+                phoneNumber: res.phoneNumber,
+                email: res.email,
+                gender: res.gender,
+                belongsToRiskGroup: res.belongsToRiskGroup,
+                preferedOfficeId: res.preferedOfficeId
+            });
+
+            if (this.user && this.user.role !== 'administrator') {
+                this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
+            } else {
+                this.form.controls['preferedOfficeId'].clearValidators();
+            }
+            this.form.controls['preferedOfficeId'].updateValueAndValidity();
         });
     }
 
@@ -119,16 +127,24 @@ export class ProfileComponent implements OnInit {
       .then(result => {
         if (result.value) {
           this.deleteVaccine(v);
-          Swal.fire('Eliminada!', 'Vacuna eliminada', 'success');
+          
         }
       });
     }
 
-    deleteVaccine(v: any) {
-        const index = this.user.vaccines.indexOf(v, 0);
-        if (index > -1) {
-           this.user.vaccines.splice(index, 1);
-        }
+    deleteVaccine(v: AppliedVaccine) {
+        this.accountService.deleteVaccine(+this.accountService.userValue.id, v.id)
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                Swal.fire('Eliminada!', 'Vacuna eliminada', 'success');
+                this.loadData();
+            },
+            error: error => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        });
     }
 
     addVaccine() {

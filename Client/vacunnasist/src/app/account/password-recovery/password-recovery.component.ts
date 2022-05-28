@@ -1,7 +1,14 @@
+import { AccountService } from 'src/app/_services/account.service';
+import { ChangePasswordModel } from './../../_models/change-password';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService } from 'src/app/_services/alert.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PasswordResetModalComponent } from '../profile/password-reset-modal/password-reset-modal.component';
+import { UsersFilter } from 'src/app/_models/filters/users-filter';
+import { first, map } from 'rxjs/operators';
+import { User } from 'src/app/_models/user';
 
 
 @Component({ templateUrl: 'password-recovery.component.html' })
@@ -14,7 +21,9 @@ export class PasswordRecoveryComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private accountService: AccountService,
+        public dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -39,8 +48,47 @@ export class PasswordRecoveryComponent implements OnInit {
         }
 
         this.loading = true;
-       
-        this.alertService.success('Su contraseña ha sido generada nuevamente. Verifique su correo electrónico.', { keepAfterRouteChange: true });
-        this.router.navigate(['../login'], { relativeTo: this.route });
+
+        let filter = new UsersFilter();
+        filter.userName = this.form.get('userName')?.value;
+        filter.email = this.form.get('email')?.value;
+        console.log(filter);
+        this.accountService.getAll(filter).pipe(
+            map((u:any) => u.users)
+        ).subscribe({
+            next: (res:User[]) => {
+                if (res.length == 1 && filter.userName) {
+                    this.accountService.resetPassword(filter.userName)
+                    .pipe(first())
+            .subscribe({
+                next: () => {
+                    this.openDialog();
+                }
+            });
+                } else {
+                    this.alertService.error('Usuario/Email no encontrado');
+                }
+                this.loading = false;
+            },
+            error: error => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        });
     }
+
+    openDialog(): void {
+        const dialogRef = this.dialog.open(PasswordResetModalComponent, {
+          width: '450px',
+          height: '300px',
+          data: { email: this.form.get('email')?.value,
+                userName: this.form.get('userName')?.value
+            }
+
+        });
+    
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      }
 }
