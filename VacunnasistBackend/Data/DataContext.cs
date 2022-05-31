@@ -17,7 +17,6 @@ namespace VacunassistBackend.Data
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<AppliedVaccine> AppliedVaccines { get; set; }
         public DbSet<Office> Offices { get; set; }
-        public DbSet<Office> Offices { get; set; }
 
         #region Required
         protected override void OnModelCreating(ModelBuilder modelBuilder)
