@@ -1,0 +1,24 @@
+<div id="certificate">
+  <div class="text-center">
+    <h1 mat-dialog-title>CERTIFICADO DE VACUNACION</h1>
+    <h2 mat-dialog-title>Vacunassist</h2>
+    <h3 mat-dialog-title>
+      Vacunassist certifica que
+      <b>{{ user.fullName }} - DNI: {{ user.dni }}</b>
+      posee las siguientes vacunas aplicadas:
+    </h3>
+  </div>
+  <div mat-dialog-content>
+    <ul>
+      <li *ngFor="let v of user.vaccines">
+        {{ v.vaccine.name }} - {{ v.appliedDate | date: "dd/MM/yyyy" }} -
+        {{ v.appliedBy }}
+      </li>
+    </ul>
+  </div>
+  <div>Certificado generado: {{ date | date: "dd/MM/yyyy HH:mm:ss" }}</div>
+</div>
+<div mat-dialog-actions>
+  <button mat-dialog-close class="btn btn-secondary">Cerrar</button>
+  <button class="btn btn-primary ml-2" (click)="print()">Imprimir</button>
+</div>

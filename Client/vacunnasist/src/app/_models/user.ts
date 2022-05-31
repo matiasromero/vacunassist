@@ -15,4 +15,8 @@ export class User {
     role!: string;
     token!: string;
     vaccines: AppliedVaccine[] = [];
+    
+    public isPatient(): boolean {
+         return this.role === 'patient';
+    }
 }
