@@ -7,8 +7,8 @@ import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
 
 
-@Component({ templateUrl: 'new-appointment.component.html' })
-export class NewAppointmentComponent implements OnInit {
+@Component({ templateUrl: 'my-appointments.component.html' })
+export class MyAppointmentsComponent implements OnInit {
     form!: FormGroup;
     loading = false;
     submitted = false;

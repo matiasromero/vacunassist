@@ -2,7 +2,7 @@ import { AccountService } from 'src/app/_services/account.service';
 import { ChangePasswordModel } from './../../_models/change-password';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AlertService } from 'src/app/_services/alert.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordResetModalComponent } from '../profile/password-reset-modal/password-reset-modal.component';
@@ -13,12 +13,12 @@ import Swal from 'sweetalert2';
 
 @Component({ templateUrl: 'password-recovery.component.html' })
 export class PasswordRecoveryComponent implements OnInit {
-    form!: FormGroup;
+    form!: UntypedFormGroup;
     loading = false;
     submitted = false;
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private alertService: AlertService,
