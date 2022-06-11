@@ -17,19 +17,4 @@ export class AppComponent {
     logout() {
         this.accountService.logout();
     }
-
-    generateCertificate() {
-    this.openDialog();
-    }
-
-    openDialog(): void {
-        const dialogRef = this.dialog.open(CertificateModalComponent, {
-          width: '450px',
-          height: '400px'
-        });
-    
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('The dialog was closed');
-        });
-      }
 }

@@ -114,6 +114,23 @@ export class ProfileComponent implements OnInit {
             });
     }
 
+    downloadVaccineCertificate(v: AppliedVaccine) {
+        Swal
+      .fire({
+        title: 'Certificado de vacunación',
+        text: 'Va a generar el certificado para: ' + v.vaccine.name,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'No, cancelar',
+        confirmButtonText: 'Si, generar!'
+      })
+      .then(result => {
+        if (result.value) {
+          this.deleteVaccine(v);
+        }
+      });
+    }
+
     deleteVaccineQuestion(v: AppliedVaccine) {
         Swal
       .fire({

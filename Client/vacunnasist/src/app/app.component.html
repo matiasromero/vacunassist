@@ -30,6 +30,15 @@
         <li class="nav-item">
           <a
             class="nav-item nav-link"
+            routerLink="appointments/my-appointments"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'patient'"
+            >Mis turnos</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
             routerLink="/users"
             routerLinkActive="active"
             *ngIf="user && user.role == 'administrator'"
@@ -63,13 +72,6 @@
             routerLinkActive="active"
           >
             Mi perfil
-          </button>
-          <button
-            *ngIf="user && user.role === 'patient'"
-            mat-menu-item
-            (click)="generateCertificate()"
-          >
-            Obtener certificado
           </button>
           <button
             mat-menu-item

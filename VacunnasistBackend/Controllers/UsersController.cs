@@ -4,6 +4,8 @@ using VacunassistBackend.Models;
 using VacunassistBackend.Services;
 using VacunassistBackend.Helpers;
 using VacunassistBackend.Models.Filters;
+using System.Text;
+using VacunassistBackend.Utils;
 
 namespace VacunassistBackend.Controllers
 {
@@ -12,10 +14,12 @@ namespace VacunassistBackend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
+        private readonly IConfiguration _configuration;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IConfiguration configuration)
         {
             this._usersService = usersService;
+            this._configuration = configuration;
         }
 
         [HttpPost]
@@ -53,13 +57,28 @@ namespace VacunassistBackend.Controllers
 
             var user = _usersService.Get(request.UserName);
             var model = new UpdateUserRequest();
-            model.Password = "a23sSiLp45m00B";
+            model.Password = RandomGenerator.RandomString(10);
             _usersService.Update(user.Id, model);
+
+            var tempFolder = _configuration["TempFolder"];
+            if (Directory.Exists(tempFolder) == false)
+                Directory.CreateDirectory(tempFolder);
+            var randomName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            var path = Path.Combine(tempFolder, randomName + ".txt");
+            var text = new StringBuilder();
+            text.AppendLine("De: no-reply@vacunassist.com.ar");
+            text.AppendLine("A: " + user.Email);
+            text.AppendLine("Asunto: Cambio de contraseña");
+            text.AppendLine("Su contraseña ha sido cambiada a: " + model.Password);
+            System.IO.File.WriteAllText(path, text.ToString());
+
             return Ok(new
             {
                 message = "Contraseña reseteada correctamente"
             });
         }
+
+
 
         [Helpers.Authorize]
         [HttpPost]

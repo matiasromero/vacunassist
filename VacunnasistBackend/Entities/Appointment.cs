@@ -21,6 +21,11 @@ public class Appointment
     public bool Notified { get; set; }
     public Office? PreferedOffice { get; set; }
     public string Comment { get; set; }
+
+    public DateTime? Date { get; set; }
+    public User? Vaccinator { get; set; }
+
+    public DateTime? AppliedDate { get; set; }
 }
 
 public enum AppointmentStatus

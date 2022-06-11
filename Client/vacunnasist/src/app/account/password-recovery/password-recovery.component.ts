@@ -9,7 +9,7 @@ import { PasswordResetModalComponent } from '../profile/password-reset-modal/pas
 import { UsersFilter } from 'src/app/_models/filters/users-filter';
 import { first, map } from 'rxjs/operators';
 import { User } from 'src/app/_models/user';
-
+import Swal from 'sweetalert2';
 
 @Component({ templateUrl: 'password-recovery.component.html' })
 export class PasswordRecoveryComponent implements OnInit {
@@ -62,7 +62,8 @@ export class PasswordRecoveryComponent implements OnInit {
                     .pipe(first())
             .subscribe({
                 next: () => {
-                    this.openDialog();
+                    Swal.fire('Email enviado', 'Contraseña modificada, por favor revise su casilla de correo', 'success');
+                    //this.openDialog();
                 }
             });
                 } else {
