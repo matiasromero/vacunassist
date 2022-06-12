@@ -1,3 +1,4 @@
+import { VaccineService } from 'src/app/_services/vaccine.service';
 import { AppliedVaccine } from './../../_models/applied-vaccine';
 import { Vaccine } from './../../_models/vaccine';
 import { Component, OnInit } from '@angular/core';
@@ -26,6 +27,7 @@ export class ProfileComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
+        private vaccineService: VaccineService,
         private officesService: OfficeService,
         private alertService: AlertService,
         private dp: DatePipe
@@ -58,7 +60,7 @@ export class ProfileComponent implements OnInit {
     }
 
     loadData() {
-        this.accountService.myProfile().subscribe(res => {
+        this.accountService.myProfile().subscribe((res: any) => {
             this.user = res;
             this.form.patchValue({
                 username: res.userName,
@@ -107,7 +109,7 @@ export class ProfileComponent implements OnInit {
                     this.alertService.success('Perfil modificado correctamente', { keepAfterRouteChange: true });
                     this.router.navigate(['/'], { relativeTo: this.route });
                 },
-                error: error => {
+                error: (error: string) => {
                     this.alertService.error(error);
                     this.loading = false;
                 }
@@ -126,7 +128,7 @@ export class ProfileComponent implements OnInit {
       })
       .then(result => {
         if (result.value) {
-          this.deleteVaccine(v);
+          this.downloadCertificate(v);
         }
       });
     }
@@ -149,6 +151,21 @@ export class ProfileComponent implements OnInit {
       });
     }
 
+    downloadCertificate(v: AppliedVaccine) {
+        this.vaccineService.downloadCertificate(v)
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                Swal.fire('Certificado generado', 'Certificado generado correctamente.', 'success');
+                this.loadData();
+            },
+            error: (error: string) => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        });
+    }
+
     deleteVaccine(v: AppliedVaccine) {
         this.accountService.deleteVaccine(+this.accountService.userValue.id, v.id)
         .pipe(first())
@@ -157,7 +174,7 @@ export class ProfileComponent implements OnInit {
                 Swal.fire('Eliminada!', 'Vacuna eliminada', 'success');
                 this.loadData();
             },
-            error: error => {
+            error: (error: string) => {
                 this.alertService.error(error);
                 this.loading = false;
             }
