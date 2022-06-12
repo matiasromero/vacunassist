@@ -28,7 +28,6 @@ export class MyAppointmentsComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log('test');
         this.form = this.formBuilder.group({
             fullName: ['', [Validators.required, Validators.maxLength(100)]],
             dni: ['', [Validators.required, Validators.maxLength(20)]],

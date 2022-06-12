@@ -11,6 +11,7 @@ public class Appointment
     {
         Patient = user;
         Vaccine = vaccine;
+        Status = AppointmentStatus.Pending;
     }
 
     public int Id { get; set; }
@@ -20,7 +21,7 @@ public class Appointment
     public DateTime RequestedAt { get; set; }
     public bool Notified { get; set; }
     public Office? PreferedOffice { get; set; }
-    public string Comment { get; set; }
+    public string? Comment { get; set; }
 
     public DateTime? Date { get; set; }
     public User? Vaccinator { get; set; }

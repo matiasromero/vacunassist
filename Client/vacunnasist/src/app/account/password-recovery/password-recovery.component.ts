@@ -52,7 +52,6 @@ export class PasswordRecoveryComponent implements OnInit {
         let filter = new UsersFilter();
         filter.userName = this.form.get('userName')?.value;
         filter.email = this.form.get('email')?.value;
-        console.log(filter);
         this.accountService.getAll(filter).pipe(
             map((u:any) => u.users)
         ).subscribe({

@@ -17,6 +17,7 @@ namespace VacunassistBackend.Data
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<AppliedVaccine> AppliedVaccines { get; set; }
         public DbSet<Office> Offices { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
         #region Required
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -127,7 +128,8 @@ namespace VacunassistBackend.Data
                 {
                     Id = 2,
                     Name = "Fiebre amarilla",
-                    IsActive = true
+                    IsActive = true,
+                    CanBeRequested = false
                 };
                 var vaccine3 = new Vaccine
                 {
