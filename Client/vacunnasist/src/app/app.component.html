@@ -40,9 +40,10 @@
           <a
             class="nav-item nav-link"
             routerLink="/users"
+            [queryParams]="{ type: 'patient' }"
             routerLinkActive="active"
             *ngIf="user && user.role == 'administrator'"
-            >Usuarios</a
+            >Pacientes</a
           >
         </li>
       </ul>
@@ -54,7 +55,6 @@
           routerLinkActive="active"
           >Ingresar</a
         >
-
         <mat-icon
           mat-button
           [matMenuTriggerFor]="menu"

@@ -1,0 +1,53 @@
+<div class="card">
+  <h4 class="card-header">Pacientes</h4>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Dirección</th>
+            <th scope="col">Telefono</th>
+            <th scope="col">Grupo de riesgo</th>
+            <th scope="col">Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of appointments">
+            <th scope="row">
+              {{ a.requestedAt | date: "dd/MM/yyyy HH:mm:ss" }}
+            </th>
+            <th scope="row">
+              {{ a.vaccineName }}
+            </th>
+            <td>{{ a.preferedOfficeName || "Sin asignar" }}</td>
+            <td>{{ a.vaccinatorName || "Sin asignar" }}</td>
+            <th
+              scope="row"
+              [ngClass]="{
+                'text-danger': a.status == '3',
+                'text-success': a.status == '2'
+              }"
+            >
+              {{ a.status }}
+            </th>
+            <td>
+              <mat-icon
+                *ngIf="a.status == '0' || a.status == '1'"
+                mat-button
+                aria-hidden="false"
+                aria-label="Example cancel icon"
+                role="button"
+                color="primary"
+                matTooltip="Cancelar turno"
+                (click)="cancelAppointmentQuestion(a)"
+                >cancel</mat-icon
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
