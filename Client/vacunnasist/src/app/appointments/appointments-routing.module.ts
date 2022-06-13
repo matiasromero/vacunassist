@@ -1,13 +1,15 @@
+import { MyAppointmentsComponent } from './my-appointments/my-appointments.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LayoutComponent } from '../account/layout/layout.component';
-import { NewAppointmentComponent as NewAppointmentComponent } from './new/new-appointment.component';
+import { NewAppointmentComponent } from './new/new-appointment.component';
 
 const routes: Routes = [
     {
         path: '', component: LayoutComponent,
         children: [
             { path: 'new-appointment', component: NewAppointmentComponent },
+            { path: 'my-appointments', component: MyAppointmentsComponent },
         ]
     },
 ];

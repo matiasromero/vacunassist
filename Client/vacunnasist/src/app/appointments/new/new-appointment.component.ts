@@ -61,6 +61,7 @@ export class NewAppointmentComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success('Solicitud de turno cargada correctamente', { keepAfterRouteChange: true });
+                    this.loading = false;
                 },
                 error: error => {
                     this.alertService.error(error);

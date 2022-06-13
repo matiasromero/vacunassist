@@ -16,7 +16,15 @@ export class AppointmentService {
         return this.http.get<Appointment[]>(`${environment.apiUrl}/appointments`);
     }
 
+    getByUser() {
+        return this.http.get<Appointment[]>(`${environment.apiUrl}/users/my-appointments`);
+    }
+
     newAppointment(model: NewAppointmentModel) {       
         return this.http.post<NewAppointmentModel>(`${environment.apiUrl}/appointments`, model);
+    }
+
+    cancel(a: Appointment) {
+        return this.http.delete(`${environment.apiUrl}/appointments/${a.id}`);
     }
 }

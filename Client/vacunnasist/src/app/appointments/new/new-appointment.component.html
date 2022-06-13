@@ -11,6 +11,10 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <p>
+          * Recuerde que si aún tiene una vacuna pendiente de aplicar, no podrá
+          solicitar un nuevo turno para esa misma vacuna.
+        </p>
       </div>
       <div class="form-group">
         <button [disabled]="loading" class="btn btn-primary">
@@ -23,5 +27,15 @@
         <a routerLink="../login" class="btn btn-link">Cancelar</a>
       </div>
     </form>
+  </div>
+</div>
+<div>
+  <div class="text-center text-white">
+    <img
+      class="brand-logo lazy img-fluid mt-2"
+      style="border: solid #333 1px"
+      alt="stack admin logo"
+      src="../../assets/f.jpg"
+    />
   </div>
 </div>

@@ -1,3 +1,4 @@
+import { AppointmentService } from 'src/app/_services/appointment.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -5,7 +6,8 @@ import { first } from 'rxjs/operators';
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
-
+import { Appointment } from 'src/app/_models/appointment';
+import Swal from 'sweetalert2';
 
 @Component({ templateUrl: 'my-appointments.component.html' })
 export class MyAppointmentsComponent implements OnInit {
@@ -18,6 +20,7 @@ export class MyAppointmentsComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
+        private appointmentsService: AppointmentService,
         private alertService: AlertService,
         private dp: DatePipe
     ) { 
@@ -27,18 +30,50 @@ export class MyAppointmentsComponent implements OnInit {
         }
     }
 
+    public appointments: Appointment[] = [];
+
     ngOnInit() {
-        this.form = this.formBuilder.group({
-            fullName: ['', [Validators.required, Validators.maxLength(100)]],
-            dni: ['', [Validators.required, Validators.maxLength(20)]],
-            username: ['', [Validators.required, Validators.maxLength(20)]],
-            password: ['', Validators.required],
-            address: ['', [Validators.required, Validators.maxLength(200)]],
-            birthDate: [new Date(), Validators.required],
-            phoneNumber: ['', [Validators.required, Validators.maxLength(30)]],
-            email:['', [Validators.required, Validators.email, Validators.maxLength(30)]],
-            gender: ['male', Validators.required],
-            belongsToRiskGroup: [false, Validators.required]
+       this.loadData();
+    }
+
+    loadData() {
+        this.appointmentsService.getByUser().subscribe((res: any) => {
+            this.appointments = res.appointments;
+        });
+
+    }
+
+    cancelAppointmentQuestion(a: Appointment) {
+        Swal
+      .fire({
+        title: '¿Está seguro?',
+        text: 'Va a cancelar la solicitud del turno de la vacuna: ' + a.vaccineName,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'No',
+        confirmButtonText: 'Si, cancelar!'
+      })
+      .then(result => {
+        if (result.value) {
+          this.cancelAppointment(a);
+          
+        }
+      });
+    }
+
+    cancelAppointment(a: Appointment) {
+        this.appointmentsService.cancel(a)
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                Swal.fire('Turno cancelado', 'Su turno ha sido dado de baja correctamente.', 'success');
+                this.loadData();
+                this.loading = false;
+            },
+            error: (error: string) => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
         });
     }
 

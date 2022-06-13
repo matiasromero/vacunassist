@@ -1,250 +1,53 @@
 <div class="card">
   <h4 class="card-header">Mis Turnos</h4>
   <div class="card-body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="fullName" class="required">Nombre completo</label>
-        <input
-          type="text"
-          formControlName="fullName"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && f.fullName.errors }"
-        />
-
-        <div
-          *ngIf="
-            f.fullName.invalid &&
-            (submitted || f.fullName.dirty || f.fullName.touched)
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.fullName.errors?.['required']">
-            El nombre es requerido.
-          </div>
-          <div *ngIf="f.fullName.errors?.['maxlength']">
-            El nombre debe contener menos de 100 caracteres.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="dni" class="required">DNI</label>
-        <input
-          type="number"
-          formControlName="dni"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && f.dni.errors }"
-        />
-        <div
-          *ngIf="f.dni.invalid && (submitted || f.dni.dirty || f.dni.touched)"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.dni.errors?.['required']">El DNI es requerido.</div>
-          <div *ngIf="f.dni.errors?.['maxlength']">
-            El DNI debe contener menos de 20 caracteres.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="username" class="required">Usuario</label>
-        <input
-          type="text"
-          formControlName="username"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && f.username.errors }"
-        />
-        <div
-          *ngIf="
-            f.username.invalid &&
-            (submitted || f.username.dirty || f.username.touched)
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.username.errors?.['required']">
-            El nombre de usuario es requerido.
-          </div>
-          <div *ngIf="f.username.errors?.['maxlength']">
-            El nombre debe contener menos de 20 caracteres.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="password" class="required">Contraseña</label>
-        <input
-          type="password"
-          formControlName="password"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
-        />
-        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-          <div *ngIf="f.password.errors.required">
-            La contraseña es requerida
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="address" class="required">Domicilio</label>
-        <input
-          type="text"
-          formControlName="address"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && f.address.errors }"
-        />
-        <div
-          *ngIf="
-            f.address.invalid &&
-            (submitted || f.address.dirty || f.addresstouched)
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.address.errors?.['required']">
-            El Domicilio es requerido.
-          </div>
-          <div *ngIf="f.address.errors?.['maxlength']">
-            El Domicilio debe contener menos de 200 caracteres.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="phoneNumber" class="required">Teléfono</label>
-        <input
-          type="text"
-          formControlName="phoneNumber"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && f.phoneNumber.errors }"
-        />
-        <div
-          *ngIf="
-            f.phoneNumber.invalid &&
-            (submitted || f.phoneNumber.dirty || f.phoneNumber.touched)
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.phoneNumber.errors?.['required']">
-            El Teléfono es requerido.
-          </div>
-          <div *ngIf="f.phoneNumber.errors?.['maxlength']">
-            El Teléfono debe contener menos de 30 caracteres.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="email" class="required">Email</label>
-        <input
-          type="text"
-          formControlName="email"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
-        />
-        <div
-          *ngIf="
-            f.email.invalid && (submitted || f.email.dirty || f.email.touched)
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.email.errors?.['required']">El email es requerido.</div>
-          <div *ngIf="f.email.errors?.['email']">
-            El email no tiene el formato correcto.
-          </div>
-          <div *ngIf="f.email.errors?.['maxlength']">
-            El email debe contener menos de 100 caracteres.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="gender" class="required">Género</label>
-        <select formControlName="gender" class="form-control" id="role">
-          <option value="male">Hombre</option>
-          <option value="female">Mujer</option>
-          <option value="other">Otro</option>
-        </select>
-        <div
-          *ngIf="
-            f.gender.invalid &&
-            (submitted || f.gender.dirty || f.gender.touched)
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.gender.errors?.['required']">
-            El género es requerido.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <mat-form-field appearance="fill">
-          <mat-label>Fecha de nacimiento</mat-label>
-          <input
-            matInput
-            [matDatepicker]="birthDate"
-            type="text"
-            formControlName="birthDate"
-            [ngClass]="{ 'is-invalid': submitted && f.birthDate.errors }"
-          />
-          <mat-hint>DD/MM/YYYY</mat-hint>
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="birthDate"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #birthDate></mat-datepicker>
-        </mat-form-field>
-        <div
-          *ngIf="
-            f.birthDate.invalid &&
-            (submitted || f.birthDate.dirty || f.birthDate.touched)
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.birthDate.errors?.['required']">
-            La fecha de nacimiento es requerida.
-          </div>
-          <div *ngIf="f.birthDate.errors?.['pattern']">
-            La fecha de nacimiento no tiene el formato correcto (dd/MM/yyyy) por
-            ejemplo 26/09/1994.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group form-row">
-        <div class="col-md-9">
-          <div class="form-check">
-            <input
-              formControlName="belongsToRiskGroup"
-              class="form-check-input"
-              type="checkbox"
-              name="belongsToRiskGroup"
-              id="belongsToRiskGroup"
-            />
-            <label
-              class="form-check-label"
-              for="belongsToRiskGroup"
-              [ngClass]="{ 'text-success': !form.value.belongsToRiskGroup }"
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Vacuna</th>
+            <th scope="col">Sede</th>
+            <th scope="col">Vacunador</th>
+            <th scope="col">Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of appointments">
+            <th scope="row">
+              {{ a.requestedAt | date: "dd/MM/yyyy HH:mm:ss" }}
+            </th>
+            <th scope="row">
+              {{ a.vaccineName }}
+            </th>
+            <td>{{ a.preferedOfficeName || "Sin asignar" }}</td>
+            <td>{{ a.vaccinatorName || "Sin asignar" }}</td>
+            <th
+              scope="row"
+              [ngClass]="{
+                'text-danger': a.status == '3',
+                'text-success': a.status == '2'
+              }"
             >
-              {{
-                form.value.belongsToRiskGroup
-                  ? "¿Es grupo de riesgo? Si"
-                  : "¿Es grupo de riesgo? No"
-              }}
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <button [disabled]="loading" class="btn btn-primary">
-          <span
-            *ngIf="loading"
-            class="spinner-border spinner-border-sm mr-1"
-          ></span>
-          Confirmar
-        </button>
-        <a routerLink="../login" class="btn btn-link">Cancelar</a>
-      </div>
-    </form>
+              {{ a.status | appointmentstatus }}
+            </th>
+            <td>
+              <mat-icon
+                *ngIf="a.status == '0' || a.status == '1'"
+                mat-button
+                aria-hidden="false"
+                aria-label="Example cancel icon"
+                role="button"
+                color="primary"
+                matTooltip="Cancelar turno"
+                (click)="cancelAppointmentQuestion(a)"
+                >cancel</mat-icon
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

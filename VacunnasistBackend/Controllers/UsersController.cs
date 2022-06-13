@@ -219,6 +219,19 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("my-appointments")]
+        [Helpers.Authorize]
+        public IActionResult MyAppointments()
+        {
+            var id = User.GetId()!.Value;
+            var appointments = _usersService.GetAppointments(id);
+            return Ok(new
+            {
+                appointments
+            });
+        }
+
         [HttpPut]
         [Route("{id}")]
         public IActionResult Edit(int? id, [FromBody] UpdateUserRequest model)

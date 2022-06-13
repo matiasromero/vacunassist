@@ -20,6 +20,7 @@ namespace VacunassistBackend.Services
         void AddVaccine(int id, AddVaccineRequest model);
         void DeleteVaccine(int id, int appliedVaccineId);
         void Update(int id, UpdateUserRequest model);
+        AppointmentModel[] GetAppointments(int id);
     }
 
     public class UsersService : IUsersService
@@ -193,6 +194,37 @@ namespace VacunassistBackend.Services
             user.Vaccines.Remove(v);
             _context.SaveChanges();
 
+        }
+
+        public AppointmentModel[] GetAppointments(int id)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            CheckIfExists(user);
+
+            var appointments = _context.Appointments.Where(x => x.Patient == user)
+            .Include(x => x.Patient)
+            .Include(x => x.Vaccine)
+            .Include(x => x.Vaccinator)
+            .ToArray();
+            return appointments.Select(x => new AppointmentModel()
+            {
+                Id = x.Id,
+                AppliedDate = x.AppliedDate,
+                Comment = x.Comment,
+                Notified = x.Notified,
+                PatientId = x.Patient.Id,
+                PatientName = x.Patient.FullName,
+                PreferedOfficeId = x.PreferedOffice?.Id,
+                PreferedOfficeName = x.PreferedOffice?.Name,
+                PreferedOfficeAddress = x.PreferedOffice?.Address,
+                RequestedAt = x.RequestedAt,
+                Status = x.Status,
+                VaccineId = x.Vaccine.Id,
+                VaccineName = x.Vaccine.Name,
+                VacinatorId = x.Vaccinator?.Id,
+                VacinatorName = x.Vaccinator?.FullName,
+
+            }).ToArray();
         }
     }
 }

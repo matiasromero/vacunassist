@@ -49,5 +49,27 @@ namespace VacunassistBackend.Controllers
                 message = "Turno creado correctamente"
             });
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var exist = _appointmentsService.Exist(id);
+            if (exist == false)
+            {
+                return BadRequest(new
+                {
+                    message = "No se pudo encontrar el turno a cancelar"
+                });
+
+            }
+
+            _appointmentsService.Update(id, new UpdateAppointmentRequest() { Status = AppointmentStatus.Cancelled });
+
+            return Ok(new
+            {
+                message = "Turno cancelado correctamente"
+            });
+        }
     }
 }

@@ -1,3 +1,5 @@
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MyAppointmentsComponent } from './my-appointments/my-appointments.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -8,11 +10,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppointmentsRoutingModule } from './appointments-routing.module';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { AppointmentStatusPipe } from '../_helpers/appointment-status.pipe';
 
 
 @NgModule({
   declarations: [
     NewAppointmentComponent,
+    MyAppointmentsComponent,
+    AppointmentStatusPipe
   ],
   imports: [
     CommonModule,
@@ -24,7 +30,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatTooltipModule
 ],
 providers: [
   DatePipe
