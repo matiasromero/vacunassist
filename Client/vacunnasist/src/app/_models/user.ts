@@ -14,6 +14,7 @@ export class User {
     belongsToRiskGroup: boolean = false;
     role!: string;
     token!: string;
+    isActive!: boolean;
     vaccines: AppliedVaccine[] = [];
     
     public isPatient(): boolean {

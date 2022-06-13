@@ -90,14 +90,18 @@ export class AccountService {
           );
           
           let params = new HttpParams();
-          if (filter.isActive !== undefined)
+          if (filter.isActive !== null)
             params = params.append('isActive', filter.isActive.toString());
+        if (filter.belongsToRiskGroup !== null)
+            params = params.append('belongsToRiskGroup', filter.belongsToRiskGroup!.toString());
           if (filter.role)
             params = params.append('role', filter.role.toString());
             if (filter.userName)
             params = params.append('userName', filter.userName.toString());
             if (filter.email)
             params = params.append('email', filter.email.toString());
+            if (filter.fullName)
+            params = params.append('fullName', filter.fullName.toString());
           
         return this.http.get<User[]>(`${environment.apiUrl}/users`, 
         {

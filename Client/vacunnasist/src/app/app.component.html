@@ -40,7 +40,11 @@
           <a
             class="nav-item nav-link"
             routerLink="/users"
-            [queryParams]="{ type: 'patient' }"
+            [queryParams]="{
+              type: 'patient',
+              isActive: 'true',
+              belongsToRiskGroup: 'false'
+            }"
             routerLinkActive="active"
             *ngIf="user && user.role == 'administrator'"
             >Pacientes</a

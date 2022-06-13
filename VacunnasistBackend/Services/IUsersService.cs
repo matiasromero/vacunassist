@@ -65,10 +65,14 @@ namespace VacunassistBackend.Services
             var query = _context.Users.Include(u => u.Vaccines).AsQueryable();
             if (filter.IsActive.HasValue)
                 query = query.Where(x => x.IsActive == filter.IsActive);
+            if (filter.BelongsToRiskGroup.HasValue)
+                query = query.Where(x => x.BelongsToRiskGroup == filter.BelongsToRiskGroup);
             if (string.IsNullOrEmpty(filter.Role) == false)
                 query = query.Where(x => x.Role == filter.Role);
             if (string.IsNullOrEmpty(filter.UserName) == false)
                 query = query.Where(x => x.UserName == filter.UserName);
+            if (string.IsNullOrEmpty(filter.FullName) == false)
+                query = query.Where(x => x.FullName.Contains(filter.FullName));
             if (string.IsNullOrEmpty(filter.Email) == false)
                 query = query.Where(x => x.Email == filter.Email);
             return query.ToArray();

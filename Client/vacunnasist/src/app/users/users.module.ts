@@ -1,4 +1,9 @@
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { UsersComponent } from './users.component';
@@ -15,7 +20,12 @@ import { UsersRoutingModule } from './users-routing.module';
     CommonModule,
     ReactiveFormsModule,
     UsersRoutingModule,
-    MatIconModule
+    MatIconModule,
+    MatRadioModule,
+    MatExpansionModule,
+    MatButtonToggleModule,
+    MatChipsModule,
+    MatTooltipModule
   ],
   providers: [
     DatePipe

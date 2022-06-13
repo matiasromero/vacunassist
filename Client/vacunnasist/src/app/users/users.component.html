@@ -1,6 +1,105 @@
 <div class="card">
   <h4 class="card-header">Pacientes</h4>
   <div class="card-body">
+    <mat-accordion>
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="right-aligned-header">
+          <mat-panel-title>Filtros aplicados:</mat-panel-title>
+          <mat-panel-description>
+            <mat-chip-list aria-label="isActive">
+              <mat-chip>{{
+                filter.isActive ? "Activos" : "Inactivos"
+              }}</mat-chip>
+              <mat-chip
+                >{{
+                  filter.belongsToRiskGroup
+                    ? "Dentro de grupo de riesgo"
+                    : "Fuera de grupo de riesgo"
+                }}
+              </mat-chip>
+              <mat-chip [matTooltip]="filter.fullName" *ngIf="filter.fullName"
+                >Nombre: {{ filter.fullName }}</mat-chip
+              >
+            </mat-chip-list>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <hr />
+        <form [formGroup]="formFilter" (ngSubmit)="applyFilter()">
+          <div class="form-group">
+            <label for="fullName">Nombre completo</label>
+            <input
+              type="text"
+              formControlName="fullName"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.fullName.errors }"
+            />
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input
+                formControlName="belongsToRiskGroup"
+                class="form-check-input"
+                type="checkbox"
+                name="belongsToRiskGroup"
+                id="belongsToRiskGroup"
+              />
+              <label
+                class="form-check-label"
+                for="belongsToRiskGroup"
+                [ngClass]="{
+                  'text-success': !formFilter.value.belongsToRiskGroup
+                }"
+              >
+                {{
+                  formFilter.value.belongsToRiskGroup
+                    ? "¿Es grupo de riesgo? Si"
+                    : "¿Es grupo de riesgo? No"
+                }}
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input
+                formControlName="isActive"
+                class="form-check-input"
+                type="checkbox"
+                name="isActive"
+                id="isActive"
+              />
+              <label
+                class="form-check-label"
+                for="isActive"
+                [ngClass]="{ 'text-success': !formFilter.value.isActive }"
+              >
+                {{ formFilter.value.isActive ? "Activo" : "Inactivo" }}
+              </label>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm mr-1"
+            ></span>
+            Aplicar
+          </button>
+          <button
+            [disabled]="loading"
+            class="btn btn-secondary ml-2"
+            (click)="clear()"
+          >
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm mr-1"
+            ></span>
+            Limpiar
+          </button>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
     <div class="table-responsive">
       <table class="table">
         <thead>
@@ -14,37 +113,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let a of appointments">
+          <tr *ngFor="let u of users">
             <th scope="row">
-              {{ a.requestedAt | date: "dd/MM/yyyy HH:mm:ss" }}
+              {{ u.fullName }}
             </th>
             <th scope="row">
-              {{ a.vaccineName }}
+              {{ u.address }}
             </th>
-            <td>{{ a.preferedOfficeName || "Sin asignar" }}</td>
-            <td>{{ a.vaccinatorName || "Sin asignar" }}</td>
-            <th
-              scope="row"
-              [ngClass]="{
-                'text-danger': a.status == '3',
-                'text-success': a.status == '2'
-              }"
-            >
-              {{ a.status }}
-            </th>
-            <td>
-              <mat-icon
-                *ngIf="a.status == '0' || a.status == '1'"
-                mat-button
-                aria-hidden="false"
-                aria-label="Example cancel icon"
-                role="button"
-                color="primary"
-                matTooltip="Cancelar turno"
-                (click)="cancelAppointmentQuestion(a)"
-                >cancel</mat-icon
-              >
-            </td>
+            <td>{{ u.phoneNumber }}</td>
+            <td>{{ u.belongsToRiskGroup ? "Si" : "No" }}</td>
+            <td>{{ u.isActive ? "Activo" : "Inactivo" }}</td>
+            <td></td>
           </tr>
         </tbody>
       </table>
