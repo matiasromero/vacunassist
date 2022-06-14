@@ -268,4 +268,9 @@ cancelAppointment(a: Appointment) {
         }
     });
 }
+
+confirmAppointment(a: Appointment) {
+  this.router.navigate(['appointments','confirm', a.id]);
+}
+
 }

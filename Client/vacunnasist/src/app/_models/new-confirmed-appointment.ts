@@ -4,4 +4,5 @@ export class NewConfirmedAppointmentRequest {
     officeId!: number;
     patientId!: number;
     date!: string;
+    currentId?:number;
 }

@@ -18,6 +18,7 @@ import { AppointmentStatusPipe } from '../_helpers/appointment-status.pipe';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MY_DATE_FORMATS } from '../account/account.module';
 import { NewAppointmentAdminComponent } from './new-admin/new-appointment-admin.component';
+import { ConfirmAppointmentComponent } from './confirm/confirm-appointment.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { NewAppointmentAdminComponent } from './new-admin/new-appointment-admin.
     NewAppointmentComponent,
     MyAppointmentsComponent,
     NewAppointmentAdminComponent,
+    ConfirmAppointmentComponent,
     AppointmentsComponent,
     AppointmentStatusPipe
   ],

@@ -14,5 +14,6 @@ namespace VacunassistBackend.Models
         public int OfficeId { get; set; }
         [Required]
         public DateTime Date { get; set; }
+        public int? CurrentId { get; set; }
     }
 }

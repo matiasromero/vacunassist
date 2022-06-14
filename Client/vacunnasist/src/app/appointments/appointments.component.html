@@ -135,6 +135,17 @@
             <td>
               <mat-icon
                 mat-button
+                *ngIf="a.status == '0'"
+                aria-hidden="false"
+                aria-label="Example delete icon"
+                role="button"
+                color="primary"
+                matTooltip="Confirmar"
+                (click)="confirmAppointment(a)"
+                >check_circle</mat-icon
+              >
+              <mat-icon
+                mat-button
                 *ngIf="a.status == '0' || a.status == '1'"
                 aria-hidden="false"
                 aria-label="Example delete icon"

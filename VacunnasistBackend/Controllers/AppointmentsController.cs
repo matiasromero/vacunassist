@@ -55,14 +55,16 @@ namespace VacunassistBackend.Controllers
         [Route("confirmed")]
         public IActionResult NewConfirmedAppointment([FromBody] NewConfirmedAppointmentRequest model)
         {
-            var alreadyExist = _appointmentsService.AlreadyExist(model.PatientId, model.VaccineId);
-            if (alreadyExist)
+            if (model.CurrentId.HasValue == false)
             {
-                return BadRequest(new
+                var alreadyExist = _appointmentsService.AlreadyExist(model.PatientId, model.VaccineId);
+                if (alreadyExist)
                 {
-                    message = "El usuario ya tiene un turno o solicitud pendiente para esta vacuna"
-                });
-
+                    return BadRequest(new
+                    {
+                        message = "El usuario ya tiene un turno o solicitud pendiente para esta vacuna"
+                    });
+                }
             }
 
             _appointmentsService.AddConfirmed(model);
@@ -96,6 +98,34 @@ namespace VacunassistBackend.Controllers
                 VacinatorName = x.Vaccinator?.FullName,
 
             }).ToArray();
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult Get(int id)
+        {
+            var a = _appointmentsService.Get(id);
+            var result = new AppointmentModel()
+            {
+                Id = a.Id,
+                AppliedDate = a.AppliedDate,
+                Date = a.Date,
+                Comment = a.Comment,
+                Notified = a.Notified,
+                PatientId = a.Patient.Id,
+                PatientName = a.Patient.FullName,
+                PreferedOfficeId = a.PreferedOffice?.Id,
+                PreferedOfficeName = a.PreferedOffice?.Name,
+                PreferedOfficeAddress = a.PreferedOffice?.Address,
+                RequestedAt = a.RequestedAt,
+                Status = a.Status,
+                VaccineId = a.Vaccine.Id,
+                VaccineName = a.Vaccine.Name,
+                VacinatorId = a.Vaccinator?.Id,
+                VacinatorName = a.Vaccinator?.FullName,
+
+            };
             return Ok(result);
         }
 

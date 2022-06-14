@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LayoutComponent } from '../account/layout/layout.component';
 import { NewAppointmentComponent } from './new/new-appointment.component';
 import { NewAppointmentAdminComponent } from './new-admin/new-appointment-admin.component';
+import { ConfirmAppointmentComponent } from './confirm/confirm-appointment.component';
 
 const routes: Routes = [
     {
@@ -14,6 +15,7 @@ const routes: Routes = [
             { path: 'new-appointment', component: NewAppointmentComponent },
             { path: 'my-appointments', component: MyAppointmentsComponent },
             { path: 'new', component: NewAppointmentAdminComponent },
+            { path: 'confirm/:id', component: ConfirmAppointmentComponent },
         ]
     },
 ];

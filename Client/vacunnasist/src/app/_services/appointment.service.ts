@@ -40,6 +40,10 @@ export class AppointmentService {
     });
     }
 
+    getById(id: number) {
+      return this.http.get<Appointment>(`${environment.apiUrl}/appointments/${id}`);
+  }
+
     getByUser() {
         return this.http.get<Appointment[]>(`${environment.apiUrl}/users/my-appointments`);
     }

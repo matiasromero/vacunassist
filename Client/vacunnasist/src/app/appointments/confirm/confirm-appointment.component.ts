@@ -1,3 +1,4 @@
+import { Appointment } from './../../_models/appointment';
 import { OfficeService } from './../../_services/office.service';
 import { Office } from './../../_models/office';
 import { first } from 'rxjs/operators';
@@ -15,8 +16,8 @@ import { NewConfirmedAppointmentRequest } from 'src/app/_models/new-confirmed-ap
 import { DatePipe } from '@angular/common';
 
 
-@Component({ templateUrl: 'new-appointment-admin.component.html' })
-export class NewAppointmentAdminComponent implements OnInit {
+@Component({ templateUrl: 'confirm-appointment.component.html' })
+export class ConfirmAppointmentComponent implements OnInit {
     form!: UntypedFormGroup;
     loading = false;
     submitted = false;
@@ -43,7 +44,13 @@ export class NewAppointmentAdminComponent implements OnInit {
     public offices: Office[] = [];
     public minDate: Date = new Date();
 
+    appointmentId?: number;
+
     ngOnInit() {
+
+        this.appointmentId = parseInt(this.route.snapshot.paramMap.get('id')!);
+console.log(this.appointmentId);
+
         this.officesService.getAll().subscribe((res: any) => {
             this.offices = res.offices;
         });
@@ -63,6 +70,16 @@ export class NewAppointmentAdminComponent implements OnInit {
         this.patients = res.users;
     });
 
+    this.appointmentsService.getById(this.appointmentId).subscribe((res: Appointment) => {
+        console.log(res);
+        this.form.patchValue({
+            id: res.id,
+            patientId: res.patientId,
+            vaccineId: res.vaccineId,
+            officeId: res.preferedOfficeId,
+        });
+    });
+
         this.form = this.formBuilder.group({
             vaccineId: [null, Validators.required],
             patientId: [null, Validators.required], 
@@ -77,6 +94,7 @@ export class NewAppointmentAdminComponent implements OnInit {
     get f() { return this.form.controls; }
 
     onSubmit() {
+        this.router.navigate(['../appointments'], { relativeTo: this.route });
         this.submitted = true;
         // reset alerts on submit
         this.alertService.clear();
@@ -94,6 +112,7 @@ export class NewAppointmentAdminComponent implements OnInit {
         model.vaccineId = this.form.get('vaccineId')?.value;
         model.date = this.dp.transform(this.form.value.date, 'yyyy-MM-dd')!;
         model.date = model.date +'T'+ this.form.get('time')?.value + ':00.000';
+        model.currentId = this.appointmentId!;
         this.appointmentsService.newConfirmedAppointment(model)
             .pipe(first())
             .subscribe({
@@ -101,7 +120,6 @@ export class NewAppointmentAdminComponent implements OnInit {
                     this.alertService.success('Turno cargado correctamente', { keepAfterRouteChange: true });
                     this.loading = false;
                     this.router.navigate(['../'], { relativeTo: this.route });
-                    
                 },
                 error: error => {
                     this.alertService.error(error);
