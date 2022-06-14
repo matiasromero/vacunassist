@@ -30,10 +30,33 @@
         <li class="nav-item">
           <a
             class="nav-item nav-link"
+            routerLink="appointments/my-appointments"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'patient'"
+            >Mis turnos</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
             routerLink="/users"
+            [queryParams]="{
+              type: 'patient',
+              isActive: 'true',
+              belongsToRiskGroup: 'false'
+            }"
             routerLinkActive="active"
             *ngIf="user && user.role == 'administrator'"
-            >Usuarios</a
+            >Pacientes</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
+            routerLink="/appointments"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'administrator'"
+            >Turnos</a
           >
         </li>
       </ul>
@@ -45,15 +68,14 @@
           routerLinkActive="active"
           >Ingresar</a
         >
-
         <mat-icon
           mat-button
           [matMenuTriggerFor]="menu"
           *ngIf="user"
           aria-hidden="false"
           aria-label="Example home icon"
-          class="nav-item nav-link mb-3"
           role="button"
+          color="primary"
           >account_circle</mat-icon
         >
         <mat-menu #menu="matMenu">
@@ -63,13 +85,6 @@
             routerLinkActive="active"
           >
             Mi perfil
-          </button>
-          <button
-            *ngIf="user && user.role === 'patient'"
-            mat-menu-item
-            (click)="generateCertificate()"
-          >
-            Obtener certificado
           </button>
           <button
             mat-menu-item

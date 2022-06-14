@@ -8,6 +8,7 @@ namespace VacunassistBackend.Data
     {
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
+            builder.ToTable("Appointments");
             builder.HasOne(b => b.Patient).WithMany().IsRequired();
             builder.HasOne(b => b.Vaccine).WithMany().IsRequired();
             builder.HasOne(b => b.PreferedOffice).WithMany();

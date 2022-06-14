@@ -17,5 +17,6 @@ public class Vaccine
 
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
+    public bool CanBeRequested { get; set; } = true;
     public virtual List<AppliedVaccine> Users { get; set; }
 }

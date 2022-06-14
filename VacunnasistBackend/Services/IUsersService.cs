@@ -20,6 +20,8 @@ namespace VacunassistBackend.Services
         void AddVaccine(int id, AddVaccineRequest model);
         void DeleteVaccine(int id, int appliedVaccineId);
         void Update(int id, UpdateUserRequest model);
+        AppointmentModel[] GetAppointments(int id);
+        bool CanBeDeleted(int id);
     }
 
     public class UsersService : IUsersService
@@ -64,10 +66,14 @@ namespace VacunassistBackend.Services
             var query = _context.Users.Include(u => u.Vaccines).AsQueryable();
             if (filter.IsActive.HasValue)
                 query = query.Where(x => x.IsActive == filter.IsActive);
+            if (filter.BelongsToRiskGroup.HasValue)
+                query = query.Where(x => x.BelongsToRiskGroup == filter.BelongsToRiskGroup);
             if (string.IsNullOrEmpty(filter.Role) == false)
                 query = query.Where(x => x.Role == filter.Role);
             if (string.IsNullOrEmpty(filter.UserName) == false)
                 query = query.Where(x => x.UserName == filter.UserName);
+            if (string.IsNullOrEmpty(filter.FullName) == false)
+                query = query.Where(x => x.FullName.Contains(filter.FullName));
             if (string.IsNullOrEmpty(filter.Email) == false)
                 query = query.Where(x => x.Email == filter.Email);
             return query.ToArray();
@@ -134,6 +140,10 @@ namespace VacunassistBackend.Services
             {
                 user.DNI = model.DNI;
             }
+            if (string.IsNullOrEmpty(model.Address) == false && model.Address != user.Address)
+            {
+                user.Address = model.Address;
+            }
             if (string.IsNullOrEmpty(model.Email) == false && model.Email != user.Email)
             {
                 user.Email = model.Email;
@@ -157,6 +167,10 @@ namespace VacunassistBackend.Services
             if (model.PreferedOfficeId.HasValue && (user.PreferedOffice == null || user.PreferedOfficeId != model.PreferedOfficeId))
             {
                 user.PreferedOfficeId = model.PreferedOfficeId;
+            }
+            if (model.IsActive.HasValue && model.IsActive != user.IsActive)
+            {
+                user.IsActive = model.IsActive.Value;
             }
 
             _context.SaveChanges();
@@ -193,6 +207,52 @@ namespace VacunassistBackend.Services
             user.Vaccines.Remove(v);
             _context.SaveChanges();
 
+        }
+
+        public AppointmentModel[] GetAppointments(int id)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            CheckIfExists(user);
+
+            var appointments = _context.Appointments.Where(x => x.Patient == user)
+            .Include(x => x.Patient)
+            .Include(x => x.Vaccine)
+            .Include(x => x.Vaccinator)
+            .ToArray();
+            return appointments.Select(x => new AppointmentModel()
+            {
+                Id = x.Id,
+                AppliedDate = x.AppliedDate,
+                Comment = x.Comment,
+                Notified = x.Notified,
+                PatientId = x.Patient.Id,
+                PatientName = x.Patient.FullName,
+                PreferedOfficeId = x.PreferedOffice?.Id,
+                PreferedOfficeName = x.PreferedOffice?.Name,
+                PreferedOfficeAddress = x.PreferedOffice?.Address,
+                RequestedAt = x.RequestedAt,
+                Status = x.Status,
+                VaccineId = x.Vaccine.Id,
+                VaccineName = x.Vaccine.Name,
+                VacinatorId = x.Vaccinator?.Id,
+                VacinatorName = x.Vaccinator?.FullName,
+
+            }).ToArray();
+        }
+
+        public bool CanBeDeleted(int id)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            CheckIfExists(user);
+            if (user.Role == UserRoles.Patient)
+            {
+                var appointments = _context.Appointments
+                .Where(x => x.Patient.Id == user.Id &&
+                (x.Status == AppointmentStatus.Pending || x.Status == AppointmentStatus.Confirmed))
+                .ToArray();
+                return appointments.Any() == false;
+            }
+            return true;
         }
     }
 }

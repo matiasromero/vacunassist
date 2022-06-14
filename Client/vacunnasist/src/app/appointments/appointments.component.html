@@ -1,0 +1,173 @@
+<div class="card">
+  <h4 class="card-header">Turnos</h4>
+  <div class="card-body">
+    <mat-accordion>
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="right-aligned-header">
+          <mat-panel-title>Filtros</mat-panel-title>
+        </mat-expansion-panel-header>
+        <hr />
+        <form [formGroup]="formFilter" (ngSubmit)="applyFilter()">
+          <div class="form-group">
+            <label for="fullName">Nombre completo</label>
+            <input
+              type="text"
+              formControlName="fullName"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.fullName.errors }"
+            />
+          </div>
+          <div class="form-group">
+            <mat-form-field appearance="fill">
+              <mat-label>Sede</mat-label>
+              <mat-select formControlName="officeId">
+                <mat-option value="">Todas</mat-option>
+                <mat-option *ngFor="let office of offices" [value]="office.id">
+                  {{ office.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-group">
+            <mat-form-field appearance="fill">
+              <mat-label>Vacunador</mat-label>
+              <mat-select formControlName="vaccinatorId">
+                <mat-option value="">Todos/as</mat-option>
+                <mat-option
+                  *ngFor="let vaccinator of vaccinators"
+                  [value]="vaccinator.id"
+                >
+                  {{ vaccinator.fullName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-group">
+            <mat-form-field appearance="fill">
+              <mat-label>Estado</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="">Todos</mat-option>
+                <mat-option value="0">Pendiente</mat-option>
+                <mat-option value="1">Confirmado</mat-option>
+                <mat-option value="2">Completado</mat-option>
+                <mat-option value="3">Cancelado</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-group">
+            <mat-form-field appearance="fill">
+              <mat-label>Fecha</mat-label>
+              <input
+                matInput
+                [max]="maxDate"
+                [matDatepicker]="date"
+                type="text"
+                formControlName="date"
+                [ngClass]="{ 'is-invalid': submitted && f.date.errors }"
+              />
+              <mat-hint>DD/MM/YYYY</mat-hint>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="date"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #date></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <button [disabled]="loading" class="btn btn-primary">
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm mr-1"
+            ></span>
+            Aplicar
+          </button>
+          <button
+            [disabled]="loading"
+            class="btn btn-secondary ml-2"
+            (click)="clear()"
+          >
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm mr-1"
+            ></span>
+            Limpiar
+          </button>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Fecha Creación</th>
+            <th scope="col">Sede</th>
+            <th scope="col">Vacunador</th>
+            <th scope="col">Vacuna</th>
+            <th scope="col">Paciente</th>
+            <th scope="col">Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of appointments">
+            <th scope="row">
+              {{ a.id }}
+            </th>
+            <th scope="row">
+              {{ a.requestedAt | date: "dd/MM/yyyy HH:mm:ss" }}
+            </th>
+            <td>{{ a.preferedOfficeName }}</td>
+            <td>{{ a.vaccinatorName }}</td>
+            <td>{{ a.vaccineName }}</td>
+            <td>
+              <a
+                [routerLink]="['../users', 'edit', a.patientId]"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                >{{ a.patientName }}</a
+              >
+            </td>
+            <td>{{ a.status | appointmentstatus }}</td>
+            <td>
+              <mat-icon
+                mat-button
+                *ngIf="a.status == '0'"
+                aria-hidden="false"
+                aria-label="Example delete icon"
+                role="button"
+                color="primary"
+                matTooltip="Confirmar"
+                (click)="confirmAppointment(a)"
+                >check_circle</mat-icon
+              >
+              <mat-icon
+                mat-button
+                *ngIf="a.status == '0' || a.status == '1'"
+                aria-hidden="false"
+                aria-label="Example delete icon"
+                role="button"
+                color="warn"
+                matTooltip="Cancelar"
+                (click)="cancelAppointmentQuestion(a)"
+                >cancel</mat-icon
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-right">
+        <button
+          type="button"
+          (click)="addAppointment()"
+          class="btn btn-outline-primary"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

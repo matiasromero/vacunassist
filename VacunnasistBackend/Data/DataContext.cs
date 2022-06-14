@@ -17,6 +17,7 @@ namespace VacunassistBackend.Data
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<AppliedVaccine> AppliedVaccines { get; set; }
         public DbSet<Office> Offices { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
         #region Required
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -127,7 +128,8 @@ namespace VacunassistBackend.Data
                 {
                     Id = 2,
                     Name = "Fiebre amarilla",
-                    IsActive = true
+                    IsActive = true,
+                    CanBeRequested = false
                 };
                 var vaccine3 = new Vaccine
                 {
@@ -150,11 +152,19 @@ namespace VacunassistBackend.Data
                     VaccineId = vaccine2.Id,
                     AppliedDate = new DateTime(2022, 05, 10, 14, 30, 25)
                 };
+                var applied3 = new AppliedVaccine()
+                {
+                    Id = 3,
+                    UserId = patient1.Id,
+                    VaccineId = vaccine3.Id,
+                    AppliedBy = vacunador1.FullName + " (" + vacunador1.UserName + ")",
+                    AppliedDate = new DateTime(2022, 05, 10, 14, 30, 25)
+                };
 
                 modelBuilder.Entity<Office>().HasData(office1, office2, office3);
                 modelBuilder.Entity<Vaccine>().HasData(vaccine1, vaccine2, vaccine3);
                 modelBuilder.Entity<User>().HasData(admin, vacunador1, patient1, patient2);
-                modelBuilder.Entity<AppliedVaccine>().HasData(applied1, applied2);
+                modelBuilder.Entity<AppliedVaccine>().HasData(applied1, applied2, applied3);
             }
         }
         #endregion

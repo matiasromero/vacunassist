@@ -4,6 +4,10 @@ using VacunassistBackend.Models;
 using VacunassistBackend.Services;
 using VacunassistBackend.Helpers;
 using VacunassistBackend.Models.Filters;
+using System.Text;
+using VacunassistBackend.Utils;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace VacunassistBackend.Controllers
 {
@@ -12,10 +16,14 @@ namespace VacunassistBackend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
+        private readonly IVaccinesService _vaccinesService;
+        private readonly IConfiguration _configuration;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IVaccinesService vaccinesService, IConfiguration configuration)
         {
             this._usersService = usersService;
+            this._vaccinesService = vaccinesService;
+            this._configuration = configuration;
         }
 
         [HttpPost]
@@ -53,12 +61,77 @@ namespace VacunassistBackend.Controllers
 
             var user = _usersService.Get(request.UserName);
             var model = new UpdateUserRequest();
-            model.Password = "a23sSiLp45m00B";
+            model.Password = RandomGenerator.RandomString(10);
             _usersService.Update(user.Id, model);
+
+            var tempFolder = _configuration["TempFolder"];
+            if (Directory.Exists(tempFolder) == false)
+                Directory.CreateDirectory(tempFolder);
+            var randomName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            var path = Path.Combine(tempFolder, randomName + ".txt");
+            var text = new StringBuilder();
+            text.AppendLine("De: no-reply@vacunassist.com.ar");
+            text.AppendLine("A: " + user.Email);
+            text.AppendLine("Asunto: Cambio de contraseña");
+            text.AppendLine("Su contraseña ha sido cambiada a: " + model.Password);
+            System.IO.File.WriteAllText(path, text.ToString());
+
             return Ok(new
             {
                 message = "Contraseña reseteada correctamente"
             });
+        }
+
+        [HttpPost]
+        [Route("generate-certificate")]
+        public IActionResult GenerateCertificate([FromBody] GenerateCertificateRequest request)
+        {
+            if (_vaccinesService.ExistsApplied(request.Id) == false)
+                return BadRequest(new
+                {
+                    message = "Error, no se encontró la vacuna aplicada"
+                });
+            GeneratePdf(request);
+            return Ok(new
+            {
+                message = "Contraseña reseteada correctamente"
+            });
+        }
+
+        private void GeneratePdf(GenerateCertificateRequest request)
+        {
+            var appliedVaccine = _vaccinesService.GetApplied(request.Id);
+
+            var tempFolder = _configuration["TempFolder"];
+            if (Directory.Exists(tempFolder) == false)
+                Directory.CreateDirectory(tempFolder);
+            var randomName = "certificate_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            var path = Path.Combine(tempFolder, randomName + ".pdf");
+            var text = new StringBuilder();
+
+            Document doc = new Document(PageSize.A4);
+            PdfWriter writer = PdfWriter.GetInstance(doc,
+                                        new FileStream(path, FileMode.Create));
+
+            doc.AddTitle("Certificado de vacunación");
+            doc.Open();
+            iTextSharp.text.Font _titleFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 18, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font _subtitle = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 15, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 13, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+
+            var p1 = new Paragraph("VACUNASSIST", _titleFont);
+            p1.Alignment = Element.ALIGN_CENTER;
+            var p2 = new Paragraph("Certificado de vacunación", _subtitle);
+            p2.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p1);
+            doc.Add(p2);
+            doc.Add(Chunk.NEWLINE);
+            doc.Add(new Paragraph("Vacuna: " + appliedVaccine.Vaccine.Name, _standardFont));
+            doc.Add(new Paragraph("Paciente: " + appliedVaccine.User.FullName + " (DNI: " + appliedVaccine.User.DNI + ")", _standardFont));
+            doc.Add(new Paragraph("Fecha: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont));
+
+            doc.Close();
+            writer.Close();
         }
 
         [Helpers.Authorize]
@@ -146,6 +219,27 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("my-appointments")]
+        [Helpers.Authorize]
+        public IActionResult MyAppointments()
+        {
+            var id = User.GetId()!.Value;
+            var appointments = _usersService.GetAppointments(id);
+            return Ok(new
+            {
+                appointments
+            });
+        }
+
+        [HttpGet]
+        [Route("{id}/can-delete")]
+        [Helpers.Authorize]
+        public IActionResult CanBeDeleted(int id)
+        {
+            return Ok(_usersService.CanBeDeleted(id));
+        }
+
         [HttpPut]
         [Route("{id}")]
         public IActionResult Edit(int? id, [FromBody] UpdateUserRequest model)
@@ -157,6 +251,13 @@ namespace VacunassistBackend.Controllers
 
             _usersService.Update(id.Value, model);
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult Get(int id)
+        {
+            return Ok(_usersService.Get(id));
         }
 
         [HttpGet]

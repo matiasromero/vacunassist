@@ -1,8 +1,9 @@
+import { VaccineService } from 'src/app/_services/vaccine.service';
 import { AppliedVaccine } from './../../_models/applied-vaccine';
 import { Vaccine } from './../../_models/vaccine';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
@@ -15,17 +16,18 @@ import Swal from 'sweetalert2';
 
 @Component({ templateUrl: 'profile.component.html' })
 export class ProfileComponent implements OnInit {
-    form!: FormGroup;
+    form!: UntypedFormGroup;
     loading = false;
     submitted = false;
     minDate: Date = new Date();
     maxDate: Date = new Date();
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
+        private vaccineService: VaccineService,
         private officesService: OfficeService,
         private alertService: AlertService,
         private dp: DatePipe
@@ -58,7 +60,7 @@ export class ProfileComponent implements OnInit {
     }
 
     loadData() {
-        this.accountService.myProfile().subscribe(res => {
+        this.accountService.myProfile().subscribe((res: any) => {
             this.user = res;
             this.form.patchValue({
                 username: res.userName,
@@ -100,18 +102,35 @@ export class ProfileComponent implements OnInit {
         
         this.form.value.birthDate = this.dp.transform(this.form.value.birthDate, 'yyyy-MM-dd');
         this.form.value.dni = String(this.form.value.dni);
-        this.accountService.update(this.accountService.userValue.id, this.form.value)
+        this.accountService.update(+this.accountService.userValue.id, this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {
                     this.alertService.success('Perfil modificado correctamente', { keepAfterRouteChange: true });
                     this.router.navigate(['/'], { relativeTo: this.route });
                 },
-                error: error => {
+                error: (error: string) => {
                     this.alertService.error(error);
                     this.loading = false;
                 }
             });
+    }
+
+    downloadVaccineCertificate(v: AppliedVaccine) {
+        Swal
+      .fire({
+        title: 'Certificado de vacunación',
+        text: 'Va a generar el certificado para: ' + v.vaccine.name,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'No, cancelar',
+        confirmButtonText: 'Si, generar!'
+      })
+      .then(result => {
+        if (result.value) {
+          this.downloadCertificate(v);
+        }
+      });
     }
 
     deleteVaccineQuestion(v: AppliedVaccine) {
@@ -132,6 +151,21 @@ export class ProfileComponent implements OnInit {
       });
     }
 
+    downloadCertificate(v: AppliedVaccine) {
+        this.vaccineService.downloadCertificate(v)
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                Swal.fire('Certificado generado', 'Certificado generado correctamente.', 'success');
+                this.loadData();
+            },
+            error: (error: string) => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        });
+    }
+
     deleteVaccine(v: AppliedVaccine) {
         this.accountService.deleteVaccine(+this.accountService.userValue.id, v.id)
         .pipe(first())
@@ -140,7 +174,7 @@ export class ProfileComponent implements OnInit {
                 Swal.fire('Eliminada!', 'Vacuna eliminada', 'success');
                 this.loadData();
             },
-            error: error => {
+            error: (error: string) => {
                 this.alertService.error(error);
                 this.loading = false;
             }

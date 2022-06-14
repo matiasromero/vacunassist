@@ -23,5 +23,6 @@ namespace VacunassistBackend.Models
         public string? PhoneNumber { get; set; }
 
         public int? PreferedOfficeId { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 import { Vaccine } from './../../../_models/vaccine';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
@@ -15,12 +15,12 @@ import { VaccineService } from 'src/app/_services/vaccine.service';
 
 @Component({ templateUrl: 'add-vaccine.component.html' })
 export class ProfileAddVaccineComponent implements OnInit {
-    form!: FormGroup;
+    form!: UntypedFormGroup;
     loading = false;
     submitted = false;
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
