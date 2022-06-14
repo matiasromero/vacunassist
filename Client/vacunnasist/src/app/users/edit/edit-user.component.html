@@ -230,16 +230,9 @@
           ></span>
           Confirmar
         </button>
-        <a
-          routerLink="../../../users"
-          [queryParams]="{
-            type: 'patient',
-            isActive: 'true',
-            belongsToRiskGroup: 'false'
-          }"
-          class="btn btn-link"
-          >Cancelar</a
-        >
+        <button type="button" (click)="backClicked()" class="btn btn-link">
+          Cancelar
+        </button>
       </div>
     </form>
   </div>

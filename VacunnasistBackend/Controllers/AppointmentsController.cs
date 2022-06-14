@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using VacunassistBackend.Entities;
 using VacunassistBackend.Helpers;
 using VacunassistBackend.Models;
+using VacunassistBackend.Models.Filters;
 using VacunassistBackend.Services;
 
 namespace VacunassistBackend.Controllers
@@ -48,6 +49,32 @@ namespace VacunassistBackend.Controllers
             {
                 message = "Turno creado correctamente"
             });
+        }
+
+        [HttpGet]
+        public IActionResult Get([FromQuery] AppointmentsFilterRequest filter)
+        {
+            var result = _appointmentsService.GetAll(filter).Select(x => new AppointmentModel()
+            {
+                Id = x.Id,
+                AppliedDate = x.AppliedDate,
+                Date = x.Date,
+                Comment = x.Comment,
+                Notified = x.Notified,
+                PatientId = x.Patient.Id,
+                PatientName = x.Patient.FullName,
+                PreferedOfficeId = x.PreferedOffice?.Id,
+                PreferedOfficeName = x.PreferedOffice?.Name,
+                PreferedOfficeAddress = x.PreferedOffice?.Address,
+                RequestedAt = x.RequestedAt,
+                Status = x.Status,
+                VaccineId = x.Vaccine.Id,
+                VaccineName = x.Vaccine.Name,
+                VacinatorId = x.Vaccinator?.Id,
+                VacinatorName = x.Vaccinator?.FullName,
+
+            }).ToArray();
+            return Ok(result);
         }
 
         [HttpDelete]

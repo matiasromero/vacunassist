@@ -50,6 +50,15 @@
             >Pacientes</a
           >
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
+            routerLink="/appointments"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'administrator'"
+            >Turnos</a
+          >
+        </li>
       </ul>
       <div class="d-flex">
         <a

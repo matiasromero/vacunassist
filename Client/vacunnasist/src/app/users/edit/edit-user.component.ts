@@ -9,7 +9,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
 import { AppointmentService } from 'src/app/_services/appointment.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { trigger } from '@angular/animations';
 
 
@@ -29,7 +29,8 @@ export class EditUserComponent implements OnInit {
         private officesService: OfficeService,
         private appointmentsService: AppointmentService,
         private alertService: AlertService,
-        private dp: DatePipe
+        private dp: DatePipe,
+        private _location: Location
     ) { 
         if (this.accountService.userValue.role !== 'administrator') {
             this.router.navigate(['/']);
@@ -87,6 +88,11 @@ export class EditUserComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
+    
+    backClicked()
+    {
+        this._location.back();
+      }
 
     onSubmit() {
         this.submitted = true;

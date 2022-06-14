@@ -13,6 +13,7 @@ namespace VacunassistBackend.Services
         void Add(int userId, int vaccineId);
         bool Exist(int appointmentId);
         void Update(int id, UpdateAppointmentRequest request);
+        Appointment[] GetAll(AppointmentsFilterRequest filter);
     }
 
     public class AppointmentsService : IAppointmentsService
@@ -55,6 +56,22 @@ namespace VacunassistBackend.Services
             return _context.Appointments.Any(x => x.Id == appointmentId);
         }
 
+        public Appointment[] GetAll(AppointmentsFilterRequest filter)
+        {
+            var query = _context.Appointments.Include(u => u.Patient).Include(x => x.PreferedOffice).Include(x => x.Vaccinator).Include(x => x.Vaccine).AsQueryable();
+            if (filter.Status.HasValue)
+                query = query.Where(x => x.Status == filter.Status);
+            if (filter.Date.HasValue)
+                query = query.Where(x => x.RequestedAt.Date == filter.Date.Value.Date);
+            if (string.IsNullOrEmpty(filter.FullName) == false)
+                query = query.Where(x => x.Patient.FullName.Contains(filter.FullName));
+            if (filter.OfficeId.HasValue)
+                query = query.Where(x => x.PreferedOffice.Id == filter.OfficeId.Value);
+            if (filter.VaccinatorId.HasValue)
+                query = query.Where(x => x.Vaccinator.Id == filter.VaccinatorId.Value);
+            return query.ToArray();
+        }
+
         public void Update(int id, UpdateAppointmentRequest request)
         {
             var appointment = _context.Appointments.Include(x => x.Patient).Include(x => x.Vaccine).Include(x => x.Vaccinator).FirstOrDefault(x => x.Id == id);
@@ -67,7 +84,6 @@ namespace VacunassistBackend.Services
             }
 
             _context.SaveChanges();
-
         }
     }
 }

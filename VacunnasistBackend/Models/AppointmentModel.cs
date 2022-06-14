@@ -22,5 +22,6 @@ namespace VacunassistBackend.Models
 
         public string? Comment { get; set; }
         public DateTime? AppliedDate { get; set; }
+        public DateTime? Date { get; set; }
     }
 }
