@@ -51,6 +51,28 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("confirmed")]
+        public IActionResult NewConfirmedAppointment([FromBody] NewConfirmedAppointmentRequest model)
+        {
+            var alreadyExist = _appointmentsService.AlreadyExist(model.PatientId, model.VaccineId);
+            if (alreadyExist)
+            {
+                return BadRequest(new
+                {
+                    message = "El usuario ya tiene un turno o solicitud pendiente para esta vacuna"
+                });
+
+            }
+
+            _appointmentsService.AddConfirmed(model);
+
+            return Ok(new
+            {
+                message = "Turno creado correctamente"
+            });
+        }
+
         [HttpGet]
         public IActionResult Get([FromQuery] AppointmentsFilterRequest filter)
         {

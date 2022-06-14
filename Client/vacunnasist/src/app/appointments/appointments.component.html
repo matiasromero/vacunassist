@@ -103,9 +103,10 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Fecha</th>
+            <th scope="col">Fecha Creación</th>
             <th scope="col">Sede</th>
             <th scope="col">Vacunador</th>
+            <th scope="col">Vacuna</th>
             <th scope="col">Paciente</th>
             <th scope="col">Estado</th>
             <th></th>
@@ -121,6 +122,7 @@
             </th>
             <td>{{ a.preferedOfficeName }}</td>
             <td>{{ a.vaccinatorName }}</td>
+            <td>{{ a.vaccineName }}</td>
             <td>
               <a
                 [routerLink]="['../users', 'edit', a.patientId]"
@@ -133,20 +135,13 @@
             <td>
               <mat-icon
                 mat-button
-                aria-hidden="false"
-                aria-label="Example delete icon"
-                role="button"
-                color="primary"
-                matTooltip="Editar"
-                >edit</mat-icon
-              >
-              <mat-icon
-                mat-button
+                *ngIf="a.status == '0' || a.status == '1'"
                 aria-hidden="false"
                 aria-label="Example delete icon"
                 role="button"
                 color="warn"
-                matTooltip="Desactivar"
+                matTooltip="Cancelar"
+                (click)="cancelAppointmentQuestion(a)"
                 >cancel</mat-icon
               >
             </td>

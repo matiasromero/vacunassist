@@ -17,12 +17,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { AppointmentStatusPipe } from '../_helpers/appointment-status.pipe';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MY_DATE_FORMATS } from '../account/account.module';
+import { NewAppointmentAdminComponent } from './new-admin/new-appointment-admin.component';
 
 
 @NgModule({
   declarations: [
     NewAppointmentComponent,
     MyAppointmentsComponent,
+    NewAppointmentAdminComponent,
     AppointmentsComponent,
     AppointmentStatusPipe
   ],

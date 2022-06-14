@@ -1,9 +1,11 @@
+import { NewAppointmentAdminComponent } from './../appointments/new-admin/new-appointment-admin.component';
 import { AppointmentsFilter } from './../_models/filters/appointments-filter';
 import { NewAppointmentModel } from './../_models/new-appointment';
 import { Appointment } from './../_models/appointment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { NewConfirmedAppointmentRequest } from '../_models/new-confirmed-appointment';
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
@@ -20,7 +22,6 @@ export class AppointmentService {
           );
           
         let params = new HttpParams();
-        console.log(filter);
         if (filter.status)
           params = params.append('status', filter.status.toString());
         if (filter.fullName)
@@ -46,6 +47,10 @@ export class AppointmentService {
     newAppointment(model: NewAppointmentModel) {       
         return this.http.post<NewAppointmentModel>(`${environment.apiUrl}/appointments`, model);
     }
+
+    newConfirmedAppointment(model: NewConfirmedAppointmentRequest) {       
+      return this.http.post<NewConfirmedAppointmentRequest>(`${environment.apiUrl}/appointments/confirmed`, model);
+  }
 
     cancel(a: Appointment) {
         return this.http.delete(`${environment.apiUrl}/appointments/${a.id}`);

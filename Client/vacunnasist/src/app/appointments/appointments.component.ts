@@ -53,7 +53,6 @@ export class AppointmentsComponent implements OnInit {
                       });
                 }
                 if (params.status) {
-                  console.log(params.status);
                   this.formFilter.controls.status.setValue(params.status);
               }
               if (params.date) {
@@ -234,6 +233,39 @@ export class AppointmentsComponent implements OnInit {
   }
 
   addAppointment() {
-    this.router.navigate(['appointments','new'], { queryParams: { type: 'patient' }});
+    this.router.navigate(['appointments','new']);
   }
+
+  cancelAppointmentQuestion(a: Appointment) {
+    Swal
+  .fire({
+    title: '¿Está seguro?',
+    text: 'Va a cancelar la solicitud del turno de la vacuna: ' + a.vaccineName,
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: 'No',
+    confirmButtonText: 'Si, cancelar!'
+  })
+  .then(result => {
+    if (result.value) {
+      this.cancelAppointment(a);
+    }
+  });
+}
+
+cancelAppointment(a: Appointment) {
+    this.appointmentService.cancel(a)
+    .pipe(first())
+    .subscribe({
+        next: () => {
+            Swal.fire('Turno cancelado', 'El turno ha sido dado de baja correctamente.', 'success');
+            this.loadData();
+            this.loading = false;
+        },
+        error: (error: string) => {
+            this.alertService.error(error);
+            this.loading = false;
+        }
+    });
+}
 }
