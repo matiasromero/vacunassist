@@ -21,6 +21,7 @@ namespace VacunassistBackend.Services
         void DeleteVaccine(int id, int appliedVaccineId);
         void Update(int id, UpdateUserRequest model);
         AppointmentModel[] GetAppointments(int id);
+        bool CanBeDeleted(int id);
     }
 
     public class UsersService : IUsersService
@@ -139,6 +140,10 @@ namespace VacunassistBackend.Services
             {
                 user.DNI = model.DNI;
             }
+            if (string.IsNullOrEmpty(model.Address) == false && model.Address != user.Address)
+            {
+                user.Address = model.Address;
+            }
             if (string.IsNullOrEmpty(model.Email) == false && model.Email != user.Email)
             {
                 user.Email = model.Email;
@@ -162,6 +167,10 @@ namespace VacunassistBackend.Services
             if (model.PreferedOfficeId.HasValue && (user.PreferedOffice == null || user.PreferedOfficeId != model.PreferedOfficeId))
             {
                 user.PreferedOfficeId = model.PreferedOfficeId;
+            }
+            if (model.IsActive.HasValue && model.IsActive != user.IsActive)
+            {
+                user.IsActive = model.IsActive.Value;
             }
 
             _context.SaveChanges();
@@ -229,6 +238,21 @@ namespace VacunassistBackend.Services
                 VacinatorName = x.Vaccinator?.FullName,
 
             }).ToArray();
+        }
+
+        public bool CanBeDeleted(int id)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            CheckIfExists(user);
+            if (user.Role == UserRoles.Patient)
+            {
+                var appointments = _context.Appointments
+                .Where(x => x.Patient.Id == user.Id &&
+                (x.Status == AppointmentStatus.Pending || x.Status == AppointmentStatus.Confirmed))
+                .ToArray();
+                return appointments.Any() == false;
+            }
+            return true;
         }
     }
 }

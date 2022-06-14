@@ -62,7 +62,7 @@ export class PasswordRecoveryComponent implements OnInit {
             .subscribe({
                 next: () => {
                     Swal.fire('Email enviado', 'Contraseña modificada, por favor revise su casilla de correo', 'success');
-                    //this.openDialog();
+                    this.router.navigate(['../login'], { relativeTo: this.route });
                 }
             });
                 } else {

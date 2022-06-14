@@ -102,7 +102,7 @@ export class ProfileComponent implements OnInit {
         
         this.form.value.birthDate = this.dp.transform(this.form.value.birthDate, 'yyyy-MM-dd');
         this.form.value.dni = String(this.form.value.dni);
-        this.accountService.update(this.accountService.userValue.id, this.form.value)
+        this.accountService.update(+this.accountService.userValue.id, this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {

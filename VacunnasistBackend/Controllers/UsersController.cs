@@ -232,6 +232,14 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("{id}/can-delete")]
+        [Helpers.Authorize]
+        public IActionResult CanBeDeleted(int id)
+        {
+            return Ok(_usersService.CanBeDeleted(id));
+        }
+
         [HttpPut]
         [Route("{id}")]
         public IActionResult Edit(int? id, [FromBody] UpdateUserRequest model)
@@ -243,6 +251,13 @@ namespace VacunassistBackend.Controllers
 
             _usersService.Update(id.Value, model);
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult Get(int id)
+        {
+            return Ok(_usersService.Get(id));
         }
 
         [HttpGet]

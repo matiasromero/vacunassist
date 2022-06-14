@@ -76,7 +76,6 @@ export class UsersComponent implements OnInit {
         this.filter.fullName =fullName;
         this.filter.isActive =isActive;
         this.filter.belongsToRiskGroup=belongsToRiskGroup;
-        console.log(this.filter);
         this.accountService.getAll(this.filter).subscribe((res: any) => {
             this.users = res.users;
         });
@@ -87,6 +86,64 @@ export class UsersComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.formFilter.controls; }
+
+    deleteUserQuestion(u: User) {
+      Swal
+      .fire({
+        title: '¿Está seguro?',
+        text: 'Dar de baja a ' + u.fullName + ' con DNI ' + u.dni,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'No, cancelar',
+        confirmButtonText: 'Si, dar de baja!'
+      })
+      .then(result => {
+        if (result.value) {
+          this.deleteUser(u);
+          
+        }
+      });
+    }
+
+    deleteUser(u: User) {
+      this.accountService.canBeDeleted(+u.id).subscribe((res: boolean) => {
+        if (!res) {
+          Swal
+      .fire({
+        title: 'Oops...',
+        text: 'No se puede dar de baja ya que posee turnos pendientes y/o confirmados. Por favor, cancelelos primero.',
+        icon: 'error',
+      })
+        } else {
+          this.doDelete(u);
+        }
+    });
+  }
+
+  doDelete(u: User) {
+    this.loading = true;
+    this.accountService.update(+u.id, {isActive: false}).pipe(first())
+      .subscribe({
+          next: () => {
+            Swal
+            .fire({
+              title: 'Hecho',
+              text: 'Usuario desactivado correctamente.',
+              icon: 'success',
+            });
+                this.loadData();
+                this.loading = false;
+          },
+          error: (error: string) => {
+              this.alertService.error(error);
+              this.loading = false;
+          }
+      });
+  }
+
+    editUser(u: User) {
+        this.router.navigate(['users/edit/', u.id]);
+    }
 
     applyFilter() {
         this.submitted = true;
@@ -108,8 +165,6 @@ export class UsersComponent implements OnInit {
 
         queryParams.type = this.route.snapshot.queryParamMap.get('type');
         //const filter = this.route.snapshot.queryParamMap.get('filter');
-
-        console.log(this.route.snapshot.queryParamMap.get('type'));
 
           if (fullName) {
             queryParams.fullName = fullName;
@@ -139,5 +194,9 @@ export class UsersComponent implements OnInit {
       this.formFilter.controls.belongsToRiskGroup.setValue(false);
 
       this.applyFilter();
+  }
+
+  addUser() {
+    this.router.navigate(['users','new'], { queryParams: { type: 'patient' }});
   }
 }

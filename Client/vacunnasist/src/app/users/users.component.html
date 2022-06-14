@@ -123,10 +123,41 @@
             <td>{{ u.phoneNumber }}</td>
             <td>{{ u.belongsToRiskGroup ? "Si" : "No" }}</td>
             <td>{{ u.isActive ? "Activo" : "Inactivo" }}</td>
-            <td></td>
+            <td>
+              <mat-icon
+                mat-button
+                aria-hidden="false"
+                aria-label="Example delete icon"
+                role="button"
+                color="primary"
+                matTooltip="Editar"
+                (click)="editUser(u)"
+                >edit</mat-icon
+              >
+              <mat-icon
+                mat-button
+                aria-hidden="false"
+                *ngIf="u.isActive"
+                aria-label="Example delete icon"
+                role="button"
+                color="warn"
+                matTooltip="Desactivar"
+                (click)="deleteUserQuestion(u)"
+                >cancel</mat-icon
+              >
+            </td>
           </tr>
         </tbody>
       </table>
+      <div class="text-right">
+        <button
+          type="button"
+          (click)="addUser()"
+          class="btn btn-outline-primary"
+        >
+          Agregar
+        </button>
+      </div>
     </div>
   </div>
 </div>
