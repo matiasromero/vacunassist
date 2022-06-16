@@ -59,6 +59,7 @@ namespace VacunassistBackend.Services
             var appointment = model.CurrentId.HasValue ?
             this._context.Appointments.First(x => x.Id == model.CurrentId.Value)
             : new Appointment(user, vaccine);
+            appointment.Vaccine = vaccine;
             appointment.RequestedAt = DateTime.Now;
             appointment.Date = model.Date;
             appointment.PreferedOffice = office;

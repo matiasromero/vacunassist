@@ -14,6 +14,11 @@
           </tr>
         </thead>
         <tbody>
+          <tr class="mat-row" *ngIf="!appointments.length">
+            <td class="mat-cell text-center" [attr.colspan]="8">
+              Sin resultados
+            </td>
+          </tr>
           <tr *ngFor="let a of appointments">
             <th scope="row">
               {{ a.requestedAt | date: "dd/MM/yyyy HH:mm:ss" }}

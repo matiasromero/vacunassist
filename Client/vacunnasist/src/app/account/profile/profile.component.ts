@@ -75,7 +75,7 @@ export class ProfileComponent implements OnInit {
                 preferedOfficeId: res.preferedOfficeId
             });
 
-            if (this.user && this.user.role !== 'administrator') {
+            if (this.user && this.user.role == 'patient') {
                 this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
             } else {
                 this.form.controls['preferedOfficeId'].clearValidators();

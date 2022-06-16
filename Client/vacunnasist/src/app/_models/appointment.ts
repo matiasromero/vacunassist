@@ -10,7 +10,7 @@ export class Appointment {
     preferedOfficeId?: number;
     preferedOfficeName?: string;
     preferedOfficeAddress?: string;
-    vaccinatorId?:string;
+    vaccinatorId?:number;
     vaccinatorName?:string;
     comment?:string;
     appliedDate?:Date;

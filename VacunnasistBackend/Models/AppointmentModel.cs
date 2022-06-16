@@ -13,8 +13,8 @@ namespace VacunassistBackend.Models
         public bool Notified { get; set; }
         public DateTime RequestedAt { get; set; }
 
-        public int? VacinatorId { get; set; }
-        public string? VacinatorName { get; set; }
+        public int? VaccinatorId { get; set; }
+        public string? VaccinatorName { get; set; }
 
         public int? PreferedOfficeId { get; set; }
         public string? PreferedOfficeName { get; set; }

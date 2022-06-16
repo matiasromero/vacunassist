@@ -49,7 +49,6 @@ export class ConfirmAppointmentComponent implements OnInit {
     ngOnInit() {
 
         this.appointmentId = parseInt(this.route.snapshot.paramMap.get('id')!);
-console.log(this.appointmentId);
 
         this.officesService.getAll().subscribe((res: any) => {
             this.offices = res.offices;
@@ -71,7 +70,6 @@ console.log(this.appointmentId);
     });
 
     this.appointmentsService.getById(this.appointmentId).subscribe((res: Appointment) => {
-        console.log(res);
         this.form.patchValue({
             id: res.id,
             patientId: res.patientId,

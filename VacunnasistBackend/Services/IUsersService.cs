@@ -234,8 +234,8 @@ namespace VacunassistBackend.Services
                 Status = x.Status,
                 VaccineId = x.Vaccine.Id,
                 VaccineName = x.Vaccine.Name,
-                VacinatorId = x.Vaccinator?.Id,
-                VacinatorName = x.Vaccinator?.FullName,
+                VaccinatorId = x.Vaccinator?.Id,
+                VaccinatorName = x.Vaccinator?.FullName,
 
             }).ToArray();
         }

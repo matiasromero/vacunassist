@@ -94,8 +94,8 @@ namespace VacunassistBackend.Controllers
                 Status = x.Status,
                 VaccineId = x.Vaccine.Id,
                 VaccineName = x.Vaccine.Name,
-                VacinatorId = x.Vaccinator?.Id,
-                VacinatorName = x.Vaccinator?.FullName,
+                VaccinatorId = x.Vaccinator?.Id,
+                VaccinatorName = x.Vaccinator?.FullName,
 
             }).ToArray();
             return Ok(result);
@@ -122,8 +122,8 @@ namespace VacunassistBackend.Controllers
                 Status = a.Status,
                 VaccineId = a.Vaccine.Id,
                 VaccineName = a.Vaccine.Name,
-                VacinatorId = a.Vaccinator?.Id,
-                VacinatorName = a.Vaccinator?.FullName,
+                VaccinatorId = a.Vaccinator?.Id,
+                VaccinatorName = a.Vaccinator?.FullName,
 
             };
             return Ok(result);
