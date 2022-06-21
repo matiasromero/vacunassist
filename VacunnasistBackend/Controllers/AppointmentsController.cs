@@ -150,5 +150,18 @@ namespace VacunassistBackend.Controllers
                 message = "Turno cancelado correctamente"
             });
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Edit(int? id, [FromBody] UpdateAppointmentRequest model)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _appointmentsService.Update(id.Value, model);
+            return Ok();
+        }
     }
 }

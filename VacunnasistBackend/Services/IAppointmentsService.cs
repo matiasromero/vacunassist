@@ -122,6 +122,30 @@ namespace VacunassistBackend.Services
                 appointment.Status = request.Status.Value;
             }
 
+            if (request.Date.HasValue && request.Date != appointment.Date)
+            {
+                appointment.Date = request.Date.Value;
+                appointment.Notified = false;
+            }
+
+            if (request.OfficeId.HasValue && appointment.PreferedOffice != null && request.OfficeId != appointment.PreferedOffice.Id)
+            {
+                appointment.PreferedOffice = this._context.Offices.First(x => x.Id == request.OfficeId);
+                appointment.Notified = false;
+            }
+
+            if (request.VaccinatorId.HasValue && appointment.Vaccinator != null && request.VaccinatorId != appointment.Vaccinator.Id)
+            {
+                appointment.Vaccinator = this._context.Users.First(x => x.Id == request.VaccinatorId);
+                appointment.Notified = false;
+            }
+
+            if (request.VaccineId.HasValue && appointment.Vaccine != null && request.VaccineId != appointment.Vaccine.Id)
+            {
+                appointment.Vaccine = this._context.Vaccines.First(x => x.Id == request.VaccineId);
+                appointment.Notified = false;
+            }
+
             _context.SaveChanges();
         }
     }
