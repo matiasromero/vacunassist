@@ -39,6 +39,17 @@
             </th>
             <td>
               <mat-icon
+                *ngIf="a.status == '2'"
+                mat-button
+                aria-hidden="false"
+                aria-label="Example delete icon"
+                role="button"
+                color="primary"
+                matTooltip="Descargar certificado"
+                (click)="downloadVaccineCertificate(a)"
+                >download</mat-icon
+              >
+              <mat-icon
                 *ngIf="a.status == '0' || a.status == '1'"
                 mat-button
                 aria-hidden="false"

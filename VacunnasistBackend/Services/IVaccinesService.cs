@@ -8,6 +8,7 @@ namespace VacunassistBackend.Services
         Vaccine[] GetAll();
         bool ExistsApplied(int id);
         AppliedVaccine GetApplied(int id);
+        AppliedVaccine GetAppliedByAppointment(int id);
     }
 
     public class VaccinesService : IVaccinesService
@@ -32,6 +33,11 @@ namespace VacunassistBackend.Services
         public AppliedVaccine GetApplied(int id)
         {
             return _context.AppliedVaccines.Include(u => u.Vaccine).First(x => x.Id == id);
+        }
+
+        public AppliedVaccine GetAppliedByAppointment(int id)
+        {
+            return _context.AppliedVaccines.Include(u => u.Vaccine).First(x => x.Appointment != null && x.Appointment.Id == id);
         }
     }
 }

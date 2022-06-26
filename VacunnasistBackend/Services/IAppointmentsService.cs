@@ -136,6 +136,7 @@ namespace VacunassistBackend.Services
                     var newApplied = new AppliedVaccine();
                     newApplied.AppliedBy = appointment.Vaccinator!.FullName;
                     newApplied.AppliedDate = DateTime.Now;
+                    newApplied.AppointmentId = appointment.Id;
                     newApplied.Comment = request.Comment;
                     newApplied.UserId = appointment.Patient.Id;
                     newApplied.VaccineId = appointment.Vaccine.Id;

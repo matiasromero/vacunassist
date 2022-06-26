@@ -1,3 +1,4 @@
+import { VaccineService } from 'src/app/_services/vaccine.service';
 import { AppointmentService } from 'src/app/_services/appointment.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -8,6 +9,7 @@ import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
 import { Appointment } from 'src/app/_models/appointment';
 import Swal from 'sweetalert2';
+import { AppliedVaccine } from 'src/app/_models/applied-vaccine';
 
 @Component({ templateUrl: 'my-appointments.component.html' })
 export class MyAppointmentsComponent implements OnInit {
@@ -20,6 +22,7 @@ export class MyAppointmentsComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
+        private vaccineService: VaccineService,
         private appointmentsService: AppointmentService,
         private alertService: AlertService,
         private dp: DatePipe
@@ -79,6 +82,38 @@ export class MyAppointmentsComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
+
+    downloadVaccineCertificate(v: Appointment) {
+        Swal
+      .fire({
+        title: 'Certificado de vacunación',
+        text: 'Va a generar el certificado para: ' + v.vaccineName,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'No, cancelar',
+        confirmButtonText: 'Si, generar!'
+      })
+      .then(result => {
+        if (result.value) {
+          this.downloadCertificate(v);
+        }
+      });
+    }
+
+    downloadCertificate(v: Appointment) {
+        this.vaccineService.downloadCertificateAppointment(v)
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                Swal.fire('Certificado generado', 'Certificado generado correctamente.', 'success');
+                this.loadData();
+            },
+            error: (error: string) => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        });
+    }
 
     onSubmit() {
         this.submitted = true;

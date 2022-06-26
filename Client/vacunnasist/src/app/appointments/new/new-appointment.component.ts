@@ -38,6 +38,7 @@ export class NewAppointmentComponent implements OnInit {
                 let v = new Vaccine();
                 v.id = x.id;
                 v.name = x.name;
+                console.log(userAge, userRisk);
                 return x.canBeRequested && v.canApply(userAge, userRisk);
             });
         });
