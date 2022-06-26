@@ -48,15 +48,12 @@
           <input
             matInput
             [disabled]="true"
-            [min]="minDate"
             [matDatepicker]="date"
             type="text"
             readonly="true"
             formControlName="date"
             [ngClass]="{ 'is-invalid': submitted && f.date.errors }"
           />
-          <mat-hint>DD/MM/YYYY</mat-hint>
-          <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
           <mat-datepicker #date></mat-datepicker>
         </mat-form-field>
       </div>
@@ -97,14 +94,14 @@
             *ngIf="loading"
             class="spinner-border spinner-border-sm mr-1"
           ></span>
-          Completar
+          Aplicada
         </button>
         <button [disabled]="loading" class="btn btn-danger" (click)="cancel()">
           <span
             *ngIf="loading"
             class="spinner-border spinner-border-sm mr-1"
           ></span>
-          Cancelar
+          No aplicada
         </button>
         <a routerLink="../../" class="btn btn-link">Volver</a>
       </div>

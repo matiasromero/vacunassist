@@ -131,7 +131,7 @@ export class CompleteAppointmentComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Turno completado correctamente', { keepAfterRouteChange: true });
+                    this.alertService.success('Vacunada aplicada correctamente', { keepAfterRouteChange: true });
                     this.loading = false;
                     this.router.navigate(['../../'], { relativeTo: this.route });
                 },
@@ -146,8 +146,8 @@ export class CompleteAppointmentComponent implements OnInit {
         Swal
         .fire({
           title: '¿Está seguro?',
-          text: 'Va a cancelar el turno ya confirmado para aplicar la vacuna ' + this.vaccineName + ' a ' + this.patientName + ' en el turno: ' + this.date,
-          icon: 'warning',
+          text: 'Va a confirmar que NO ha aplicado la vacuna ' + this.vaccineName + ' a ' + this.patientName + ' en el turno: ' + this.date,
+          icon: 'error',
           showCancelButton: true,
           cancelButtonText: 'No',
           confirmButtonText: 'Si, cancelar!'
@@ -168,7 +168,7 @@ export class CompleteAppointmentComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.info('Turno cancelado correctamente', { keepAfterRouteChange: true });
+                    this.alertService.warn('Turno cancelado correctamente', { keepAfterRouteChange: true });
                     this.loading = false;
                     this.router.navigate(['../../'], { relativeTo: this.route });
                 },
