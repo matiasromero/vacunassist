@@ -42,6 +42,7 @@ export class NewAppointmentAdminComponent implements OnInit {
     public vaccinators: User[] = [];
     public offices: Office[] = [];
     public minDate: Date = new Date();
+    public maxDate: Date = new Date();
 
     ngOnInit() {
         this.officesService.getAll().subscribe((res: any) => {
@@ -92,9 +93,24 @@ export class NewAppointmentAdminComponent implements OnInit {
                         vaccineId: null
                     });
                 }
+                if (this.form.get('vaccineId')?.value) {
+                    let v = new Vaccine();
+                    v.id = this.form.get('vaccineId')?.value.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+                }
             });
         });
     }
+
+    changeVaccine(vaccineId: number) {
+        this.accountService.getById(this.form.get('patientId')?.value).subscribe((u: User) => {
+                    let v = new Vaccine();
+                    v.id = vaccineId.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+            });
+      }
 
     onSubmit() {
         this.submitted = true;

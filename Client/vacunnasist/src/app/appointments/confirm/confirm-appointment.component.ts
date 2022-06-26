@@ -43,8 +43,7 @@ export class ConfirmAppointmentComponent implements OnInit {
     public vaccinators: User[] = [];
     public offices: Office[] = [];
     public minDate: Date = new Date();
-    public patientAge: number = 0;
-    public patientRisk: boolean = false;
+    public maxDate: Date = new Date();
     public patientVaccine!: Vaccine;
 
     appointmentId?: number;
@@ -56,9 +55,6 @@ export class ConfirmAppointmentComponent implements OnInit {
         this.officesService.getAll().subscribe((res: any) => {
             this.offices = res.offices;
         });
-        // this.vaccinesServices.getAll().subscribe((res: any) => {
-        //     this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
-        // });
 
         let filter1 = new UsersFilter();
       filter1.role = 'vacunator';
@@ -73,13 +69,11 @@ export class ConfirmAppointmentComponent implements OnInit {
     });
 
     this.appointmentsService.getById(this.appointmentId).subscribe((res: Appointment) => {
-        this.patientAge = res.patientAge;
-        this.patientRisk = res.patientRisk;
         this.patientVaccine = new Vaccine();
         this.patientVaccine.id = res.vaccineId.toString();
         this.patientVaccine.name = res.vaccineName!;
         this.changePatient(res.patientId);
-
+        
         this.form.patchValue({
             id: res.id,
             patientId: res.patientId,
@@ -117,10 +111,25 @@ export class ConfirmAppointmentComponent implements OnInit {
                         vaccineId: null
                     });
                 }
+                if (this.form.get('vaccineId')?.value) {
+                    let v = new Vaccine();
+                    v.id = this.form.get('vaccineId')?.value.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+                }
             });
         });
 
         
+      }
+
+      changeVaccine(vaccineId: number) {
+        this.accountService.getById(this.form.get('patientId')?.value).subscribe((u: User) => {
+                    let v = new Vaccine();
+                    v.id = vaccineId.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+            });
       }
 
     onSubmit() {

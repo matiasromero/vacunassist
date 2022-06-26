@@ -43,6 +43,8 @@ export class EditAppointmentComponent implements OnInit {
     public vaccinators: User[] = [];
     public offices: Office[] = [];
     public minDate: Date = new Date();
+    public maxDate: Date = new Date();
+    public patientVaccine!: Vaccine;
 
     appointmentId?: number;
 
@@ -52,9 +54,6 @@ export class EditAppointmentComponent implements OnInit {
 
         this.officesService.getAll().subscribe((res: any) => {
             this.offices = res.offices;
-        });
-        this.vaccinesServices.getAll().subscribe((res: any) => {
-            this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
         });
 
         let filter1 = new UsersFilter();
@@ -70,6 +69,10 @@ export class EditAppointmentComponent implements OnInit {
     });
 
     this.appointmentsService.getById(this.appointmentId).subscribe((res: Appointment) => {
+        this.patientVaccine = new Vaccine();
+        this.patientVaccine.id = res.vaccineId.toString();
+        this.patientVaccine.name = res.vaccineName!;
+        this.changePatient(res.patientId);
         let date = new Date(res.date!);
         this.form.patchValue({
             id: res.id,
@@ -94,6 +97,43 @@ export class EditAppointmentComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
+
+    changePatient(patientId: number) {
+        this.accountService.getById(patientId).subscribe((u: User) => {
+            this.vaccinesServices.getAll().subscribe((res: any) => {
+                this.vaccines = res.vaccines.filter((x:Vaccine) => {
+                    let v = new Vaccine();
+                    v.id = x.id;
+                    v.name = x.name;
+                    return x.canBeRequested && v.canApply(u.age, u.belongsToRiskGroup);
+                });
+                if (!this.vaccines.find(v => {
+                    return v.id == this.patientVaccine.id;
+                })) {
+                    this.form.patchValue({
+                        vaccineId: null
+                    });
+                }
+                if (this.form.get('vaccineId')?.value) {
+                    let v = new Vaccine();
+                    v.id = this.form.get('vaccineId')?.value.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+                }
+            });
+        });
+
+        
+      }
+
+      changeVaccine(vaccineId: number) {
+        this.accountService.getById(this.form.get('patientId')?.value).subscribe((u: User) => {
+                    let v = new Vaccine();
+                    v.id = vaccineId.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+            });
+      }
 
     onSubmit() {
         this.submitted = true;

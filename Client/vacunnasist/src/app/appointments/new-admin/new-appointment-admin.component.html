@@ -18,7 +18,10 @@
       <div class="form-group">
         <mat-form-field appearance="fill">
           <mat-label>Vacuna</mat-label>
-          <mat-select formControlName="vaccineId">
+          <mat-select
+            formControlName="vaccineId"
+            (valueChange)="changeVaccine($event)"
+          >
             <mat-option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
               {{ vaccine.name }}
             </mat-option>
@@ -51,12 +54,20 @@
           <input
             matInput
             [min]="minDate"
+            [max]="maxDate"
             [matDatepicker]="date"
             type="text"
             formControlName="date"
             [ngClass]="{ 'is-invalid': submitted && f.date.errors }"
           />
-          <mat-hint>DD/MM/YYYY</mat-hint>
+          <mat-hint
+            >Min. {{ minDate | date: "dd/MM/yyyy" }}
+            {{
+              (maxDate | date: "dd/MM/yyyy") !== "30/12/2050"
+                ? "- Max. " + (maxDate | date: "dd/MM/yyyy")
+                : ""
+            }}</mat-hint
+          >
           <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
           <mat-datepicker #date></mat-datepicker>
         </mat-form-field>
