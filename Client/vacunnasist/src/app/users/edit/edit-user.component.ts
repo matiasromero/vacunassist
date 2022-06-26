@@ -1,3 +1,4 @@
+import { User } from 'src/app/_models/user';
 import { Office } from 'src/app/_models/office';
 import { OfficeService } from 'src/app/_services/office.service';
 import { first } from 'rxjs/operators';
@@ -40,6 +41,8 @@ export class EditUserComponent implements OnInit {
     public offices: Office[] = [];
     public type: String = "patient";
     userId?: number;
+    userRole?:string;
+    user: User = new User();
 
     ngOnInit() {
         this.officesService.getAll().subscribe((res: any) => {
@@ -54,6 +57,8 @@ export class EditUserComponent implements OnInit {
 
         this.userId = parseInt(this.route.snapshot.paramMap.get('id')!);
         this.accountService.getById(this.userId).subscribe(res => {
+            this.userRole = res.role;
+            this.user = res;
         this.form.patchValue({
             id: res.id,
             username: res.userName,
@@ -85,6 +90,9 @@ export class EditUserComponent implements OnInit {
         });
     }
 
+    addVaccine() {
+        this.router.navigate(['account/profile/add-vaccine']);
+    }
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }

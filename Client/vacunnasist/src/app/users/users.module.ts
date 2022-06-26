@@ -1,3 +1,4 @@
+import { MatTabsModule } from '@angular/material/tabs';
 import { EditUserComponent } from './edit/edit-user.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -39,7 +40,8 @@ import { MY_DATE_FORMATS } from '../account/account.module';
     MatChipsModule,
     MatTooltipModule,
     MatNativeDateModule,
-    MatInputModule
+    MatInputModule,
+    MatTabsModule
   ],
   providers: [
     DatePipe,
