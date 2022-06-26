@@ -9,5 +9,6 @@ namespace VacunassistBackend.Models
         public int? VaccinatorId { get; set; }
         public int? OfficeId { get; set; }
         public int? VaccineId { get; set; }
+        public string? Comment { get; set; }
     }
 }

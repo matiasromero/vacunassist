@@ -64,6 +64,8 @@ namespace VacunassistBackend.Controllers
                     phoneNumber = user.PhoneNumber,
                     email = user.Email,
                     birthdate = user.BirthDate.ToString("yyyy-MM-dd"),
+                    belongsToRiskGroup = user.BelongsToRiskGroup,
+                    age = user.GetAge(),
                     address = user.Address,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo

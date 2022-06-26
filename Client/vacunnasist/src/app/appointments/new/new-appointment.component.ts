@@ -31,8 +31,15 @@ export class NewAppointmentComponent implements OnInit {
     public vaccines: Vaccine[] = [];
 
     ngOnInit() {
+        let userAge = this.accountService.userValue.age;
+        let userRisk = this.accountService.userValue.belongsToRiskGroup;
         this.vaccinesServices.getAll().subscribe((res: any) => {
-            this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
+            this.vaccines = res.vaccines.filter((x:Vaccine) => {
+                let v = new Vaccine();
+                v.id = x.id;
+                v.name = x.name;
+                return x.canBeRequested && v.canApply(userAge, userRisk);
+            });
         });
 
         this.form = this.formBuilder.group({

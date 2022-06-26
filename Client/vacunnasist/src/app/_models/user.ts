@@ -10,6 +10,7 @@ export class User {
     phoneNumber!: string;
     email!: string;
     birthDate!: Date;
+    age!:number;
     dni!: string;
     belongsToRiskGroup: boolean = false;
     role!: string;

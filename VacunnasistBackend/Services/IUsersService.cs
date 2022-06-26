@@ -218,15 +218,19 @@ namespace VacunassistBackend.Services
             .Include(x => x.Patient)
             .Include(x => x.Vaccine)
             .Include(x => x.Vaccinator)
+            .Include(x => x.PreferedOffice)
             .ToArray();
             return appointments.Select(x => new AppointmentModel()
             {
                 Id = x.Id,
                 AppliedDate = x.AppliedDate,
+                Date = x.Date,
                 Comment = x.Comment,
                 Notified = x.Notified,
                 PatientId = x.Patient.Id,
                 PatientName = x.Patient.FullName,
+                PatientAge = x.Patient.GetAge(),
+                PatientRisk = x.Patient.BelongsToRiskGroup,
                 PreferedOfficeId = x.PreferedOffice?.Id,
                 PreferedOfficeName = x.PreferedOffice?.Name,
                 PreferedOfficeAddress = x.PreferedOffice?.Address,

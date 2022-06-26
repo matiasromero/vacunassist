@@ -76,6 +76,26 @@ export class NewAppointmentAdminComponent implements OnInit {
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
+    changePatient(patientId: number) {
+        this.accountService.getById(patientId).subscribe((u: User) => {
+            this.vaccinesServices.getAll().subscribe((res: any) => {
+                this.vaccines = res.vaccines.filter((x:Vaccine) => {
+                    let v = new Vaccine();
+                    v.id = x.id;
+                    v.name = x.name;
+                    return x.canBeRequested && v.canApply(u.age, u.belongsToRiskGroup);
+                });
+                if (!this.vaccines.find(v => {
+                    return v.id == this.form.get('vaccineId')?.value;
+                })) {
+                    this.form.patchValue({
+                        vaccineId: null
+                    });
+                }
+            });
+        });
+    }
+
     onSubmit() {
         this.submitted = true;
         // reset alerts on submit

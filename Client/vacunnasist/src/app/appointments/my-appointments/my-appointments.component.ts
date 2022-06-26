@@ -99,7 +99,7 @@ export class MyAppointmentsComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Registración correcta', { keepAfterRouteChange: true });
+                    this.alertService.success('Turno registrado', { keepAfterRouteChange: true });
                     this.router.navigate(['../login'], { relativeTo: this.route });
                 },
                 error: error => {

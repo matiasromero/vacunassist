@@ -55,7 +55,9 @@
             class="nav-item nav-link"
             routerLink="/appointments"
             routerLinkActive="active"
-            *ngIf="user && user.role == 'administrator'"
+            *ngIf="
+              user && (user.role == 'administrator' || user.role == 'vacunator')
+            "
             >Turnos</a
           >
         </li>

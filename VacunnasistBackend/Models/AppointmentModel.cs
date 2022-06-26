@@ -7,6 +7,8 @@ namespace VacunassistBackend.Models
         public int Id { get; set; }
         public int PatientId { get; set; }
         public string PatientName { get; set; }
+        public int PatientAge { get; set; }
+        public bool PatientRisk { get; set; }
         public int VaccineId { get; set; }
         public string VaccineName { get; set; }
         public AppointmentStatus Status { get; set; }

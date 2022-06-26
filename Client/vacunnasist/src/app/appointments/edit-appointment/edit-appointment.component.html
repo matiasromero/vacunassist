@@ -1,14 +1,11 @@
 <div class="card">
-  <h4 class="card-header">Nuevo Turno</h4>
+  <h4 class="card-header">Editar Turno</h4>
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <mat-form-field appearance="fill">
           <mat-label>Paciente</mat-label>
-          <mat-select
-            formControlName="patientId"
-            (valueChange)="changePatient($event)"
-          >
+          <mat-select formControlName="patientId" [disabled]="true">
             <mat-option *ngFor="let patient of patients" [value]="patient.id">
               {{ patient.fullName + " (" + patient.dni + ")" }}
             </mat-option>
@@ -80,7 +77,7 @@
           ></span>
           Confirmar
         </button>
-        <a routerLink="../" class="btn btn-link">Cancelar</a>
+        <a routerLink="../../" class="btn btn-link">Cancelar</a>
       </div>
     </form>
   </div>

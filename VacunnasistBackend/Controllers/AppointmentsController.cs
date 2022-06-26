@@ -78,7 +78,14 @@ namespace VacunassistBackend.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] AppointmentsFilterRequest filter)
         {
-            var result = _appointmentsService.GetAll(filter).Select(x => new AppointmentModel()
+            //var id = User.GetId()!.Value;
+            var role = User.GetRole()!;
+            var appointments = _appointmentsService.GetAll(filter);
+            if (role == UserRoles.Vacunator)
+            {
+                appointments = appointments.Where(x => x.Vaccinator != null && x.Vaccinator.Id == User.GetId()!.Value).ToArray();
+            }
+            var result = appointments.Select(x => new AppointmentModel()
             {
                 Id = x.Id,
                 AppliedDate = x.AppliedDate,
@@ -115,6 +122,8 @@ namespace VacunassistBackend.Controllers
                 Notified = a.Notified,
                 PatientId = a.Patient.Id,
                 PatientName = a.Patient.FullName,
+                PatientAge = a.Patient.GetAge(),
+                PatientRisk = a.Patient.BelongsToRiskGroup,
                 PreferedOfficeId = a.PreferedOffice?.Id,
                 PreferedOfficeName = a.PreferedOffice?.Name,
                 PreferedOfficeAddress = a.PreferedOffice?.Address,

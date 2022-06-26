@@ -5,6 +5,7 @@ public class User
     public User()
     {
         IsActive = true;
+        Vaccines = new List<AppliedVaccine>();
     }
 
     public User(string username)
@@ -23,6 +24,17 @@ public class User
     public string Address { get; set; } = string.Empty;
 
     public DateTime BirthDate { get; set; }
+    public int Age
+    {
+        get
+        {
+            var now = DateTime.Today;
+            int age = now.Year - BirthDate.Year;
+            if (now < BirthDate.AddYears(age))
+                age--;
+            return age;
+        }
+    }
     public string FullName { get; set; } = string.Empty;
 
     public string DNI { get; set; }
@@ -38,6 +50,13 @@ public class User
 
     public bool IsActive { get; set; }
     public virtual List<AppliedVaccine> Vaccines { get; set; }
+
+    public virtual int GetAge()
+    {
+        int Age = (int)(DateTime.Today - BirthDate).TotalDays;
+        Age = Age / 365;
+        return Age;
+    }
 }
 
 public static class UserRoles

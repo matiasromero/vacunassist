@@ -16,8 +16,8 @@ import { NewConfirmedAppointmentRequest } from 'src/app/_models/new-confirmed-ap
 import { DatePipe } from '@angular/common';
 
 
-@Component({ templateUrl: 'confirm-appointment.component.html' })
-export class ConfirmAppointmentComponent implements OnInit {
+@Component({ templateUrl: 'edit-appointment.component.html' })
+export class EditAppointmentComponent implements OnInit {
     form!: UntypedFormGroup;
     loading = false;
     submitted = false;
@@ -43,9 +43,6 @@ export class ConfirmAppointmentComponent implements OnInit {
     public vaccinators: User[] = [];
     public offices: Office[] = [];
     public minDate: Date = new Date();
-    public patientAge: number = 0;
-    public patientRisk: boolean = false;
-    public patientVaccine!: Vaccine;
 
     appointmentId?: number;
 
@@ -56,9 +53,9 @@ export class ConfirmAppointmentComponent implements OnInit {
         this.officesService.getAll().subscribe((res: any) => {
             this.offices = res.offices;
         });
-        // this.vaccinesServices.getAll().subscribe((res: any) => {
-        //     this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
-        // });
+        this.vaccinesServices.getAll().subscribe((res: any) => {
+            this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
+        });
 
         let filter1 = new UsersFilter();
       filter1.role = 'vacunator';
@@ -73,18 +70,15 @@ export class ConfirmAppointmentComponent implements OnInit {
     });
 
     this.appointmentsService.getById(this.appointmentId).subscribe((res: Appointment) => {
-        this.patientAge = res.patientAge;
-        this.patientRisk = res.patientRisk;
-        this.patientVaccine = new Vaccine();
-        this.patientVaccine.id = res.vaccineId.toString();
-        this.patientVaccine.name = res.vaccineName!;
-        this.changePatient(res.patientId);
-
+        let date = new Date(res.date!);
         this.form.patchValue({
             id: res.id,
             patientId: res.patientId,
             vaccineId: res.vaccineId,
             officeId: res.preferedOfficeId,
+            vaccinatorId: res.vaccinatorId,
+            date: res.date,
+            time: date.toLocaleTimeString('en-US', { hour12: false })
         });
     });
 
@@ -100,28 +94,6 @@ export class ConfirmAppointmentComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
-
-    changePatient(patientId: number) {
-        this.accountService.getById(patientId).subscribe((u: User) => {
-            this.vaccinesServices.getAll().subscribe((res: any) => {
-                this.vaccines = res.vaccines.filter((x:Vaccine) => {
-                    let v = new Vaccine();
-                    v.id = x.id;
-                    v.name = x.name;
-                    return x.canBeRequested && v.canApply(u.age, u.belongsToRiskGroup);
-                });
-                if (!this.vaccines.find(v => {
-                    return v.id == this.patientVaccine.id;
-                })) {
-                    this.form.patchValue({
-                        vaccineId: null
-                    });
-                }
-            });
-        });
-
-        
-      }
 
     onSubmit() {
         this.submitted = true;
@@ -140,15 +112,15 @@ export class ConfirmAppointmentComponent implements OnInit {
         model.vaccinatorId = this.form.get('vaccinatorId')?.value;
         model.vaccineId = this.form.get('vaccineId')?.value;
         model.date = this.dp.transform(this.form.value.date, 'yyyy-MM-dd')!;
-        model.date = model.date +'T'+ this.form.get('time')?.value + ':00.000';
+        model.date = model.date +'T'+ this.form.get('time')?.value;
         model.currentId = this.appointmentId!;
-        this.appointmentsService.newConfirmedAppointment(model)
+        this.appointmentsService.update(model.currentId, model)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Turno cargado correctamente', { keepAfterRouteChange: true });
+                    this.alertService.success('Turno editado correctamente', { keepAfterRouteChange: true });
                     this.loading = false;
-                    this.router.navigate(['../'], { relativeTo: this.route });
+                    this.router.navigate(['../../'], { relativeTo: this.route });
                 },
                 error: error => {
                     this.alertService.error(error);
