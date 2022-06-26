@@ -128,7 +128,10 @@ namespace VacunassistBackend.Controllers
             doc.Add(Chunk.NEWLINE);
             doc.Add(new Paragraph("Vacuna: " + appliedVaccine.Vaccine.Name, _standardFont));
             doc.Add(new Paragraph("Paciente: " + appliedVaccine.User.FullName + " (DNI: " + appliedVaccine.User.DNI + ")", _standardFont));
-            doc.Add(new Paragraph("Fecha: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont));
+            doc.Add(new Paragraph("Vacunador/a: " + appliedVaccine.AppliedBy, _standardFont));
+            doc.Add(new Paragraph("Fecha de aplicación: " + appliedVaccine.AppliedDate, _standardFont));
+            doc.Add(Chunk.NEWLINE);
+            doc.Add(new Paragraph("Fecha certificado: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont));
 
             doc.Close();
             writer.Close();
