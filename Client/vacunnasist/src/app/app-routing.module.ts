@@ -7,6 +7,7 @@ const accountModule = () => import('./account/account.module').then(x => x.Accou
 const usersModule = () => import('./users/users.module').then(x => x.UsersModule);
 const appointmentsModule = () => import('./appointments/appointments.module').then(x => x.AppointmentsModule);
 const vaccinesModule = () => import('./vaccines/vaccines.module').then(x => x.VaccinesModule);
+const officesModule = () => import('./offices/offices.module').then(x => x.OfficesModule);
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'users', loadChildren: usersModule, canActivate: [AuthGuard] },
   { path: 'appointments', loadChildren: appointmentsModule, canActivate: [AuthGuard] },
   { path: 'vaccines', loadChildren: vaccinesModule, canActivate: [AuthGuard] },
+  { path: 'offices', loadChildren: officesModule, canActivate: [AuthGuard] },
   // otherwise redirect to home
   { path: '**', redirectTo: '' }
 ];

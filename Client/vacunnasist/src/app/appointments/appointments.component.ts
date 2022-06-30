@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import { User } from '../_models/user';
 import { AppointmentsFilter } from '../_models/filters/appointments-filter';
 import { Office } from '../_models/office';
+import { OfficesFilter } from '../_models/filters/offices-filter';
 
 @Component({ templateUrl: 'appointments.component.html' })
 export class AppointmentsComponent implements OnInit {
@@ -88,7 +89,9 @@ export class AppointmentsComponent implements OnInit {
         this.vaccinators = res.users;
     });
 
-    this.officesService.getAll().subscribe((res: any) => {
+    let officesFilter = new OfficesFilter();
+    officesFilter.isActive = true;
+    this.officesService.getAll(officesFilter).subscribe((res: any) => {
       this.offices = res.offices;
   });
     }

@@ -72,7 +72,7 @@ namespace VacunassistBackend.Services
 
             if (string.IsNullOrEmpty(model.Name) == false && model.Name != office.Name)
             {
-                var existOther = _context.Vaccines.Any(x => x.Name == model.Name && x.Id != id);
+                var existOther = _context.Offices.Any(x => x.Name == model.Name && x.Id != id);
                 if (existOther)
                 {
                     throw new HttpResponseException(400, message: "Nombre de sede '" + model.Name + "' en uso");

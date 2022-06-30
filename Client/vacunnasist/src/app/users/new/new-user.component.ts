@@ -1,3 +1,4 @@
+import { OfficesFilter } from './../../_models/filters/offices-filter';
 import { Office } from 'src/app/_models/office';
 import { OfficeService } from 'src/app/_services/office.service';
 import { first } from 'rxjs/operators';
@@ -40,7 +41,9 @@ export class NewUserComponent implements OnInit {
     public type: String = "patient";
 
     ngOnInit() {
-        this.officesService.getAll().subscribe((res: any) => {
+        let filter = new OfficesFilter();
+        filter.isActive = true;
+        this.officesService.getAll(filter).subscribe((res: any) => {
             this.offices = res.offices;
         });
 

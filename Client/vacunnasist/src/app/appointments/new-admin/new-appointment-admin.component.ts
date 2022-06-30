@@ -14,6 +14,7 @@ import { UsersFilter } from 'src/app/_models/filters/users-filter';
 import { NewConfirmedAppointmentRequest } from 'src/app/_models/new-confirmed-appointment';
 import { DatePipe } from '@angular/common';
 import { VaccinesFilter } from 'src/app/_models/filters/vaccines-filter';
+import { OfficesFilter } from 'src/app/_models/filters/offices-filter';
 
 
 @Component({ templateUrl: 'new-appointment-admin.component.html' })
@@ -46,7 +47,9 @@ export class NewAppointmentAdminComponent implements OnInit {
     public maxDate: Date = new Date();
 
     ngOnInit() {
-        this.officesService.getAll().subscribe((res: any) => {
+        let officesFilter = new OfficesFilter();
+        officesFilter.isActive = true;
+        this.officesService.getAll(officesFilter).subscribe((res: any) => {
             this.offices = res.offices;
         });
         let filter = new VaccinesFilter();

@@ -16,6 +16,7 @@ import { NewConfirmedAppointmentRequest } from 'src/app/_models/new-confirmed-ap
 import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import { VaccinesFilter } from 'src/app/_models/filters/vaccines-filter';
+import { OfficesFilter } from 'src/app/_models/filters/offices-filter';
 
 @Component({ templateUrl: 'complete-appointment.component.html' })
 export class CompleteAppointmentComponent implements OnInit {
@@ -55,7 +56,9 @@ export class CompleteAppointmentComponent implements OnInit {
 
         this.appointmentId = parseInt(this.route.snapshot.paramMap.get('id')!);
 
-        this.officesService.getAll().subscribe((res: any) => {
+        let officesFilter = new OfficesFilter();
+        officesFilter.isActive = true;
+        this.officesService.getAll(officesFilter).subscribe((res: any) => {
             this.offices = res.offices;
         });
         let filter = new VaccinesFilter();

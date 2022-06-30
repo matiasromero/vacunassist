@@ -1,13 +1,14 @@
+import { OfficeService } from 'src/app/_services/office.service';
 import { first } from 'rxjs/operators';
-import { VaccineService } from 'src/app/_services/vaccine.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
 
-@Component({ templateUrl: 'new-vaccine.component.html' })
-export class NewVaccineComponent implements OnInit {
+
+@Component({ templateUrl: 'new-office.component.html' })
+export class NewOfficeComponent implements OnInit {
     form!: UntypedFormGroup;
     loading = false;
     submitted = false;
@@ -17,7 +18,7 @@ export class NewVaccineComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private accountService: AccountService,
-        private vaccineService: VaccineService,
+        private officeService: OfficeService,
         private alertService: AlertService
     ) { 
         if (this.accountService.userValue.role !== 'administrator') {
@@ -27,8 +28,7 @@ export class NewVaccineComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.formBuilder.group({
-            name: ['', [Validators.required, Validators.maxLength(100)]],
-            canBeRequested: [true, Validators.required]
+            name: ['', [Validators.required, Validators.maxLength(100)]]
         });
     }
 
@@ -48,12 +48,12 @@ export class NewVaccineComponent implements OnInit {
 
         this.loading = true;
         
-        this.vaccineService.newVaccine(this.form.value)
+        this.officeService.newOffice(this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Vacuna creada correctamente', { keepAfterRouteChange: true });
-                    this.router.navigate(['../../vaccines'],{
+                    this.alertService.success('Sede creada correctamente', { keepAfterRouteChange: true });
+                    this.router.navigate(['../../offices'],{
                      relativeTo: this.route });
                 },
                 error: error => {

@@ -24,7 +24,7 @@ namespace VacunassistBackend.Controllers
         {
             return Ok(new
             {
-                vaccines = _officesService.GetAll(filter)
+                offices = _officesService.GetAll(filter)
             });
         }
 

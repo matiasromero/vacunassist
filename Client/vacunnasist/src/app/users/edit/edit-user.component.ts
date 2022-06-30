@@ -12,6 +12,7 @@ import { AlertService } from 'src/app/_services/alert.service';
 import { AppointmentService } from 'src/app/_services/appointment.service';
 import { DatePipe, Location } from '@angular/common';
 import { trigger } from '@angular/animations';
+import { OfficesFilter } from 'src/app/_models/filters/offices-filter';
 
 
 @Component({ templateUrl: 'edit-user.component.html' })
@@ -45,13 +46,11 @@ export class EditUserComponent implements OnInit {
     user: User = new User();
 
     ngOnInit() {
-        this.officesService.getAll().subscribe((res: any) => {
-            this.offices = res.offices;
-        });
-
         this.minDate = new Date(1900, 0, 1);
 
-        this.officesService.getAll().subscribe((res: any) => {
+        let filter = new OfficesFilter();
+        filter.isActive = true;
+        this.officesService.getAll(filter).subscribe((res: any) => {
             this.offices = res.offices;
         });
 
