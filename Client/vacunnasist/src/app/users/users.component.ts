@@ -16,7 +16,7 @@ export class UsersComponent implements OnInit {
     formFilter!: FormGroup;
     loading = false;
     submitted = false;
-
+    public type: String = "patient";
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -41,6 +41,7 @@ export class UsersComponent implements OnInit {
             this.route.queryParams.subscribe((params) => {
                 if (params.type) {
                     this.filter.role = params.type;
+                    this.type = params.type;
                 }
                 if (params.fullName) {
                     this.formFilter.controls.fullName.setValue(params.fullName, {
@@ -197,6 +198,6 @@ export class UsersComponent implements OnInit {
   }
 
   addUser() {
-    this.router.navigate(['users','new'], { queryParams: { type: 'patient' }});
+    this.router.navigate(['users','new'], { queryParams: { type: this.type }});
   }
 }

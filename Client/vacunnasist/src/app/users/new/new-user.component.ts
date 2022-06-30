@@ -91,7 +91,7 @@ export class NewUserComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : 'Usuario') + ' creado correctamente', { keepAfterRouteChange: true });
+                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : (this.type == 'vacunator' ? 'Vacunador' : 'Usuario')) + ' creado correctamente', { keepAfterRouteChange: true });
                     this.router.navigate(['../../users'], { 
                         queryParams: {type: this.type, isActive: true, belongsToRiskGroup: false},
                      relativeTo: this.route });

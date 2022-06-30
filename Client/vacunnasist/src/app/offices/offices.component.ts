@@ -97,7 +97,7 @@ export class OfficesComponent implements OnInit {
           Swal
       .fire({
         title: 'Oops...',
-        text: 'No se puede dar de baja ya que posee turnos pendientes y/o confirmados. Por favor, cancelelos primero.',
+        text: 'No se puede dar de baja ya que posee turnos pendientes y/o confirmados. Por favor, cancélelos primero.',
         icon: 'error',
       })
         } else {

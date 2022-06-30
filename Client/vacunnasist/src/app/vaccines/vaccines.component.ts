@@ -75,7 +75,6 @@ export class VaccinesComponent implements OnInit {
         const name = this.formFilter.get('name')?.value;
         const isActive = this.formFilter.get('isActive')?.value;
         const canBeRequested = this.formFilter.get('canBeRequested')?.value;
-        console.log(canBeRequested);
         this.filter.name =name;
         this.filter.isActive =isActive;
         this.filter.canBeRequested=canBeRequested;
@@ -114,7 +113,7 @@ export class VaccinesComponent implements OnInit {
           Swal
       .fire({
         title: 'Oops...',
-        text: 'No se puede dar de baja ya que posee turnos pendientes y/o confirmados. Por favor, cancelelos primero.',
+        text: 'No se puede dar de baja ya que posee turnos pendientes y/o confirmados. Por favor, cancélelos primero.',
         icon: 'error',
       })
         } else {

@@ -256,6 +256,14 @@ namespace VacunassistBackend.Services
                 .ToArray();
                 return appointments.Any() == false;
             }
+            if (user.Role == UserRoles.Vacunator)
+            {
+                var appointments = _context.Appointments
+                .Where(x => x.Vaccinator.Id == user.Id &&
+                (x.Status == AppointmentStatus.Pending || x.Status == AppointmentStatus.Confirmed))
+                .ToArray();
+                return appointments.Any() == false;
+            }
             return true;
         }
     }

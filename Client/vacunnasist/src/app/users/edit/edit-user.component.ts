@@ -56,6 +56,7 @@ export class EditUserComponent implements OnInit {
 
         this.userId = parseInt(this.route.snapshot.paramMap.get('id')!);
         this.accountService.getById(this.userId).subscribe(res => {
+            this.type = res.role;
             this.userRole = res.role;
             this.user = res;
         this.form.patchValue({
@@ -120,7 +121,7 @@ export class EditUserComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : 'Usuario') + ' modificado correctamente', { keepAfterRouteChange: true });
+                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : (this.type == 'vacunator' ? 'Vacunador ' : 'Usuario')) + ' modificado correctamente', { keepAfterRouteChange: true });
                     this.router.navigate(['../../../users'], { 
                         queryParams: {type: this.type, isActive: true, belongsToRiskGroup: false},
                      relativeTo: this.route });

@@ -1,6 +1,13 @@
 <div class="card">
   <h4 class="card-header">
-    Nuevo {{ type == "patient" ? "Paciente" : "Usuario" }}
+    Nuevo
+    {{
+      type == "patient"
+        ? "Paciente"
+        : type == "vacunator"
+        ? "Vacunador"
+        : "Usuario"
+    }}
   </h4>
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
