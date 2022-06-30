@@ -22,6 +22,7 @@ import { MY_DATE_FORMATS } from '../account/account.module';
 import { NewAppointmentAdminComponent } from './new-admin/new-appointment-admin.component';
 import { ConfirmAppointmentComponent } from './confirm/confirm-appointment.component';
 import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
+import { AddVaccineToUserComponent } from './add-vaccine-to-user/add-vaccine-to-user.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { EditAppointmentComponent } from './edit-appointment/edit-appointment.co
     EditAppointmentComponent,
     CompleteAppointmentComponent,
     AppointmentsComponent,
+    AddVaccineToUserComponent,
     AppointmentStatusPipe
   ],
   imports: [

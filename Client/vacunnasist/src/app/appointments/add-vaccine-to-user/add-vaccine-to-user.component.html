@@ -1,0 +1,103 @@
+<div class="card">
+  <h4 class="card-header">Editar Turno</h4>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Paciente</mat-label>
+          <mat-select
+            formControlName="patientId"
+            [disabled]="true"
+            (valueChange)="changePatient($event)"
+          >
+            <mat-option *ngFor="let patient of patients" [value]="patient.id">
+              {{ patient.fullName + " (" + patient.dni + ")" }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Vacuna</mat-label>
+          <mat-select
+            formControlName="vaccineId"
+            (valueChange)="changeVaccine($event)"
+          >
+            <mat-option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
+              {{ vaccine.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Vacunador</mat-label>
+          <mat-select formControlName="vaccinatorId">
+            <mat-option *ngFor="let v of vaccinators" [value]="v.id">
+              {{ v.fullName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Sede</mat-label>
+          <mat-select formControlName="officeId">
+            <mat-option *ngFor="let o of offices" [value]="o.id">
+              {{ o.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Fecha</mat-label>
+          <input
+            matInput
+            [min]="minDate"
+            [max]="maxDate"
+            [matDatepicker]="date"
+            type="text"
+            formControlName="date"
+            [ngClass]="{ 'is-invalid': submitted && f.date.errors }"
+          />
+          <mat-hint
+            >Min. {{ minDate | date: "dd/MM/yyyy" }}
+            {{
+              (maxDate | date: "dd/MM/yyyy") !== "30/12/2050"
+                ? "- Max. " + (maxDate | date: "dd/MM/yyyy")
+                : ""
+            }}</mat-hint
+          >
+          <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+          <mat-datepicker #date></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Hora</mat-label>
+          <input matInput type="time" formControlName="time" />
+        </mat-form-field>
+      </div>
+      <p>
+        * Recuerde que si el paciente aún tiene una vacuna pendiente de aplicar,
+        no podrá solicitar un nuevo turno para ese paciente, para la misma
+        vacuna.
+      </p>
+      <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Confirmar
+        </button>
+        <a
+          [routerLink]="['../../../users', 'edit', userId]"
+          class="btn btn-link"
+          >Cancelar</a
+        >
+      </div>
+    </form>
+  </div>
+</div>

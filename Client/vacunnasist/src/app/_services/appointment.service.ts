@@ -57,6 +57,10 @@ export class AppointmentService {
       return this.http.post<NewConfirmedAppointmentRequest>(`${environment.apiUrl}/appointments/confirmed`, model);
   }
 
+  newVaccine(model: NewAppointmentModel) {       
+    return this.http.post<NewAppointmentModel>(`${environment.apiUrl}/appointments/new-vaccine`, model);
+}
+
     cancel(a: Appointment) {
         return this.http.delete(`${environment.apiUrl}/appointments/${a.id}`);
     }

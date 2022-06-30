@@ -1,3 +1,4 @@
+import { AddVaccineToUserComponent } from './add-vaccine-to-user/add-vaccine-to-user.component';
 import { CompleteAppointmentComponent } from './complete-appointment/complete-appointment.component';
 import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
 import { AppointmentsComponent } from './appointments.component';
@@ -19,6 +20,7 @@ const routes: Routes = [
             { path: 'new', component: NewAppointmentAdminComponent },
             { path: 'confirm/:id', component: ConfirmAppointmentComponent },
             { path: 'edit/:id', component: EditAppointmentComponent },
+            { path: 'add-vaccine-to-user/:id', component: AddVaccineToUserComponent },
             { path: 'complete/:id', component: CompleteAppointmentComponent },
         ]
     },

@@ -75,6 +75,18 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("new-vaccine")]
+        public IActionResult AddNewVaccine([FromBody] NewConfirmedAppointmentRequest model)
+        {
+            _appointmentsService.AddVaccine(model);
+
+            return Ok(new
+            {
+                message = "Vacuna agregada correctamente al paciente"
+            });
+        }
+
         [HttpGet]
         public IActionResult Get([FromQuery] AppointmentsFilterRequest filter)
         {

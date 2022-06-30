@@ -16,6 +16,7 @@ namespace VacunassistBackend.Services
         Appointment[] GetAll(AppointmentsFilterRequest filter);
         Appointment Get(int id);
         void AddConfirmed(NewConfirmedAppointmentRequest model);
+        void AddVaccine(NewConfirmedAppointmentRequest model);
     }
 
     public class AppointmentsService : IAppointmentsService
@@ -49,11 +50,7 @@ namespace VacunassistBackend.Services
 
         public void AddConfirmed(NewConfirmedAppointmentRequest model)
         {
-            var user = _context.Users.First(x => x.Id == model.PatientId);
-            if (user.Role != UserRoles.Patient)
-            {
-                throw new ApplicationException("El usuario no es un paciente");
-            }
+            var user = ValidatePatient(model.PatientId);
 
             var vaccine = this._context.Vaccines.First(x => x.Id == model.VaccineId);
             var vaccinator = this._context.Users.First(x => x.Id == model.VaccinatorId);
@@ -70,6 +67,43 @@ namespace VacunassistBackend.Services
 
             if (model.CurrentId.HasValue == false)
                 _context.Appointments.Add(appointment);
+            _context.SaveChanges();
+        }
+
+        private User ValidatePatient(int patientId)
+        {
+            var user = _context.Users.First(x => x.Id == patientId);
+            if (user.Role != UserRoles.Patient)
+            {
+                throw new ApplicationException("El usuario no es un paciente");
+            }
+            return user;
+        }
+
+        public void AddVaccine(NewConfirmedAppointmentRequest model)
+        {
+            var user = ValidatePatient(model.PatientId);
+            var vaccine = this._context.Vaccines.First(x => x.Id == model.VaccineId);
+            var vaccinator = this._context.Users.First(x => x.Id == model.VaccinatorId);
+            var office = this._context.Offices.First(x => x.Id == model.OfficeId);
+            var appointment = new Appointment(user, vaccine);
+            appointment.Vaccine = vaccine;
+            appointment.RequestedAt = DateTime.Now;
+            appointment.Date = model.Date;
+            appointment.PreferedOffice = office;
+            appointment.Vaccinator = vaccinator;
+            appointment.Status = AppointmentStatus.Done;
+            _context.Appointments.Add(appointment);
+            _context.SaveChanges();
+
+            var newApplied = new AppliedVaccine();
+            newApplied.AppliedBy = vaccinator.FullName;
+            newApplied.AppliedDate = model.Date;
+            newApplied.AppointmentId = appointment.Id;
+            newApplied.UserId = model.PatientId;
+            newApplied.VaccineId = model.VaccineId;
+            user.Vaccines.Add(newApplied);
+            _context.AppliedVaccines.Add(newApplied);
             _context.SaveChanges();
         }
 
