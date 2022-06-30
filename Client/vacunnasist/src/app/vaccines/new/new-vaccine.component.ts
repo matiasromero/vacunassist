@@ -1,4 +1,5 @@
-import { VaccinesFilter } from './../../_models/filters/vaccines-filter';
+import { Office } from 'src/app/_models/office';
+import { OfficeService } from 'src/app/_services/office.service';
 import { first } from 'rxjs/operators';
 import { Vaccine } from './../../_models/vaccine';
 import { VaccineService } from 'src/app/_services/vaccine.service';
@@ -8,10 +9,12 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { AccountService } from 'src/app/_services/account.service';
 import { AlertService } from 'src/app/_services/alert.service';
 import { AppointmentService } from 'src/app/_services/appointment.service';
+import { DatePipe } from '@angular/common';
+import { trigger } from '@angular/animations';
 
 
-@Component({ templateUrl: 'new-appointment.component.html' })
-export class NewAppointmentComponent implements OnInit {
+@Component({ templateUrl: 'new-vaccine.component.html' })
+export class NewVaccineComponent implements OnInit {
     form!: UntypedFormGroup;
     loading = false;
     submitted = false;
@@ -19,36 +22,21 @@ export class NewAppointmentComponent implements OnInit {
     constructor(
         private formBuilder: UntypedFormBuilder,
         private router: Router,
+        private route: ActivatedRoute,
         private accountService: AccountService,
-        private vaccinesServices: VaccineService,
-        private appointmentsService: AppointmentService,
-        private alertService: AlertService
+        private vaccineService: VaccineService,
+        private alertService: AlertService,
+        private dp: DatePipe
     ) { 
-        if (this.accountService.userValue.role !== 'patient') {
+        if (this.accountService.userValue.role !== 'administrator') {
             this.router.navigate(['/']);
         }
     }
 
-    public vaccines: Vaccine[] = [];
-
     ngOnInit() {
-        let userAge = this.accountService.userValue.age;
-        let userRisk = this.accountService.userValue.belongsToRiskGroup;
-
-        let filter = new VaccinesFilter();
-        filter.isActive = true;
-        filter.canBeRequested = true;
-        this.vaccinesServices.getAll(filter).subscribe((res: any) => {
-            this.vaccines = res.vaccines.filter((x:Vaccine) => {
-                let v = new Vaccine();
-                v.id = x.id;
-                v.name = x.name;
-                return v.canApply(userAge, userRisk);
-            });
-        });
-
         this.form = this.formBuilder.group({
-            vaccineId: [null, Validators.required]
+            name: ['', [Validators.required, Validators.maxLength(100)]],
+            canBeRequested: [true, Validators.required]
         });
     }
 
@@ -68,12 +56,13 @@ export class NewAppointmentComponent implements OnInit {
 
         this.loading = true;
         
-        this.appointmentsService.newAppointment(this.form.value)
+        this.vaccineService.newVaccine(this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Solicitud de turno cargada correctamente', { keepAfterRouteChange: true });
-                    this.loading = false;
+                    this.alertService.success('Vacuna creada correctamente', { keepAfterRouteChange: true });
+                    this.router.navigate(['../../vaccines'],{
+                     relativeTo: this.route });
                 },
                 error: error => {
                     this.alertService.error(error);

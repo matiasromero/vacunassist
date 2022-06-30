@@ -14,6 +14,7 @@ import { User } from 'src/app/_models/user';
 import { UsersFilter } from 'src/app/_models/filters/users-filter';
 import { NewConfirmedAppointmentRequest } from 'src/app/_models/new-confirmed-appointment';
 import { DatePipe } from '@angular/common';
+import { VaccinesFilter } from 'src/app/_models/filters/vaccines-filter';
 
 
 @Component({ templateUrl: 'add-vaccine-to-user.component.html' })
@@ -92,12 +93,15 @@ export class AddVaccineToUserComponent implements OnInit {
 
     changePatient(patientId: number) {
         this.accountService.getById(patientId).subscribe((u: User) => {
-            this.vaccinesServices.getAll().subscribe((res: any) => {
+            let filter = new VaccinesFilter();
+        filter.isActive = true;
+        filter.canBeRequested = true;
+            this.vaccinesServices.getAll(filter).subscribe((res: any) => {
                 this.vaccines = res.vaccines.filter((x:Vaccine) => {
                     let v = new Vaccine();
                     v.id = x.id;
                     v.name = x.name;
-                    return x.canBeRequested && v.canApply(u.age, u.belongsToRiskGroup);
+                    return v.canApply(u.age, u.belongsToRiskGroup);
                 });
                 if (!this.vaccines.find(v => {
                     return v.id == this.patientVaccine.id;

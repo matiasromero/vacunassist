@@ -15,6 +15,7 @@ import { UsersFilter } from 'src/app/_models/filters/users-filter';
 import { NewConfirmedAppointmentRequest } from 'src/app/_models/new-confirmed-appointment';
 import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
+import { VaccinesFilter } from 'src/app/_models/filters/vaccines-filter';
 
 @Component({ templateUrl: 'complete-appointment.component.html' })
 export class CompleteAppointmentComponent implements OnInit {
@@ -57,7 +58,10 @@ export class CompleteAppointmentComponent implements OnInit {
         this.officesService.getAll().subscribe((res: any) => {
             this.offices = res.offices;
         });
-        this.vaccinesServices.getAll().subscribe((res: any) => {
+        let filter = new VaccinesFilter();
+        filter.isActive = true;
+        filter.canBeRequested = true;
+        this.vaccinesServices.getAll(filter).subscribe((res: any) => {
             this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
         });
 

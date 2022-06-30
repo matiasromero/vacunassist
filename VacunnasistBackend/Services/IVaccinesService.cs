@@ -14,6 +14,7 @@ namespace VacunassistBackend.Services
         void Update(int id, UpdateVaccineRequest model);
         bool CanBeDeleted(int id);
         bool Exist(int id);
+        bool AlreadyExist(string name);
         bool New(NewVaccineRequest model);
         AppliedVaccine GetApplied(int id);
         AppliedVaccine GetAppliedByAppointment(int id);
@@ -133,6 +134,11 @@ namespace VacunassistBackend.Services
         public bool Exist(int id)
         {
             return _context.Vaccines.Any(x => x.Id == id);
+        }
+
+        public bool AlreadyExist(string name)
+        {
+            return _context.Vaccines.Any(x => x.Name == name);
         }
     }
 }

@@ -35,6 +35,27 @@ namespace VacunassistBackend.Controllers
             return Ok(_vaccinesService.Get(id));
         }
 
+        [HttpPost]
+        public IActionResult New([FromBody] NewVaccineRequest model)
+        {
+            var alreadyExist = _vaccinesService.AlreadyExist(model.Name);
+            if (alreadyExist)
+            {
+                return BadRequest(new
+                {
+                    message = "Ya existe una vacuna con el mismo nombre"
+                });
+
+            }
+
+            _vaccinesService.New(model);
+
+            return Ok(new
+            {
+                message = "Vacuna creada correctamente"
+            });
+        }
+
         [HttpPut]
         [Route("{id}")]
         public IActionResult Edit(int? id, [FromBody] UpdateVaccineRequest model)
