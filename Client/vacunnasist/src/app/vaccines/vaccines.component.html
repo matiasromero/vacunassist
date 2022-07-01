@@ -144,6 +144,22 @@
       <div class="text-right">
         <button
           type="button"
+          (click)="reportVaccinesQuestion()"
+          class="btn btn-warning mr-3"
+          matTooltip="Reporte de vacunas aplicadas para este mes"
+        >
+          <i class="fa-solid fa-pie-chart"></i> | Aplicadas del mes
+        </button>
+        <button
+          type="button"
+          (click)="reportPatientsQuestion()"
+          class="btn btn-warning mr-3"
+          matTooltip="Pacientes vacunados por día"
+        >
+          <i class="fa-solid fa-pie-chart"></i> | Pacientes vacunados
+        </button>
+        <button
+          type="button"
           (click)="addVaccine()"
           class="btn btn-outline-primary"
         >

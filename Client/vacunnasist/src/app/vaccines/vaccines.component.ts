@@ -143,6 +143,79 @@ export class VaccinesComponent implements OnInit {
       });
   }
 
+
+  reportVaccinesQuestion() {
+    Swal
+    .fire({
+      title: 'Reporte',
+      text: 'Generará un reporte de vacunas aplicadas en este mes',
+      icon: 'info',
+      showCancelButton: true,
+      cancelButtonText: 'No, cancelar',
+      confirmButtonText: 'Si, generar!'
+    })
+    .then(result => {
+      if (result.value) {
+        this.reportVaccines();
+      }
+    });
+  }
+
+  reportVaccines() {
+    this.vaccineService.reportVaccines().pipe(first())
+    .subscribe({
+        next: () => {
+          Swal
+          .fire({
+            title: 'Hecho',
+            text: 'Reporte generado correctamente.',
+            icon: 'success',
+          });
+        },
+        error: (error: string) => {
+            this.alertService.error(error);
+            this.loading = false;
+        }
+    });
+  }
+
+  reportPatientsQuestion() {
+    Swal
+    .fire({
+      title: 'Reporte',
+      text: 'Generará un reporte de pacientes vacunados por día en este mes',
+      icon: 'info',
+      showCancelButton: true,
+      cancelButtonText: 'No, cancelar',
+      confirmButtonText: 'Si, generar!'
+    })
+    .then(result => {
+      if (result.value) {
+        this.reportPatients();
+      }
+    });
+  }
+
+  reportPatients() {
+    this.vaccineService.reportPatients().pipe(first())
+    .subscribe({
+        next: () => {
+          Swal
+          .fire({
+            title: 'Hecho',
+            text: 'Reporte generado correctamente.',
+            icon: 'success',
+          });
+        },
+        error: (error: string) => {
+            this.alertService.error(error);
+            this.loading = false;
+        }
+    });
+  }
+
+  
+
     editVaccine(v: Vaccine) {
         this.router.navigate(['vaccines/edit/', v.id]);
     }

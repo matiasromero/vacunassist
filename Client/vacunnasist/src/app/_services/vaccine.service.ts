@@ -79,4 +79,12 @@ export class VaccineService {
     cancel(id: number) {
         return this.http.delete(`${environment.apiUrl}/vaccines/${id}`);
     }
+
+    reportVaccines() {
+      return this.http.post(`${environment.apiUrl}/vaccines/report-vaccines`, null);
+  }
+
+  reportPatients() {
+    return this.http.post(`${environment.apiUrl}/vaccines/report-patients`, null);
+}
 }
