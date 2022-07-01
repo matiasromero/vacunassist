@@ -200,4 +200,8 @@ export class UsersComponent implements OnInit {
   addUser() {
     this.router.navigate(['users','new'], { queryParams: { type: this.type }});
   }
+
+  notifyUsers() {
+    this.router.navigate(['users','notify']);
+  }
 }

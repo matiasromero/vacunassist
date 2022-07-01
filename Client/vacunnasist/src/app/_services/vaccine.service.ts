@@ -27,7 +27,6 @@ export class VaccineService {
         if (filter.isActive !== undefined)
             params = params.append('isActive', filter.isActive.toString());
           if (filter.canBeRequested !== undefined && filter.canBeRequested !== null) {
-            console.log(filter.canBeRequested);
             params = params.append('canBeRequested', filter.canBeRequested!.toString());
           }
           if (filter.name)

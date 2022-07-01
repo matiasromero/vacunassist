@@ -9,6 +9,7 @@ import { map, first } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment';
 import { UsersFilter } from '../_models/filters/users-filter';
+import { NotifyModel } from '../_models/notify';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -49,6 +50,11 @@ export class AccountService {
     register(user: User) {
         return this.http.post(`${environment.apiUrl}/users/register`, user);
     }
+
+    notify(model: NotifyModel) {
+        return this.http.post(`${environment.apiUrl}/users/notify`, model);
+    }
+
 
     changePassword(credentials: ChangePasswordModel, user: User) {
         return this.http.post<ChangePasswordModel>(`${environment.apiUrl}/users/${user.id}/change-password`, credentials)

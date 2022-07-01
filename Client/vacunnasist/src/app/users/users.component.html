@@ -156,9 +156,13 @@
       <div class="text-right">
         <button
           type="button"
-          (click)="addUser()"
-          class="btn btn-outline-primary"
+          (click)="notifyUsers()"
+          class="btn btn-warning mr-3"
+          *ngIf="type == 'patient'"
         >
+          <i class="fa-solid fa-bullhorn"></i> | Notificar
+        </button>
+        <button type="button" (click)="addUser()" class="btn btn-primary">
           Agregar
         </button>
       </div>

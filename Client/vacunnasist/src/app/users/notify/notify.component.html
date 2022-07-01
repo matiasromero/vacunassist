@@ -1,0 +1,61 @@
+<div class="card">
+  <h4 class="card-header">Notificación masiva</h4>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <p>
+        * Se notificarán a <b>todos</b> los/as pacientes activos registrados en
+        el sistema.
+      </p>
+      <div class="form-group">
+        <mat-form-field
+          class="example-full-width"
+          appearance="fill"
+          [style.width.px]="500"
+        >
+          <mat-label>Comentarios...</mat-label>
+          <textarea
+            matInput
+            formControlName="comment"
+            [style.width.px]="500"
+            [style.height.px]="300"
+            placeholder="Ej. A partir del mes entrante ingresan nuevas dósis de fiebre amarilla"
+          ></textarea>
+        </mat-form-field>
+        <div
+          *ngIf="
+            f.comment.invalid &&
+            (submitted || f.comment.dirty || f.comment.touched)
+          "
+          class="invalid-feedback"
+        >
+          <div *ngIf="f.comment.errors?.['required']">
+            El comentario es requerido.
+          </div>
+          <div *ngIf="f.comment.errors?.['maxlength']">
+            El comentario debe contener menos de 500 caracteres.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Enviar
+        </button>
+        <a
+          routerLink="../../users"
+          [queryParams]="{
+            type: 'patient',
+            isActive: 'true',
+            belongsToRiskGroup: 'false'
+          }"
+          class="btn btn-link"
+          >Cancelar</a
+        >
+      </div>
+    </form>
+  </div>
+</div>
