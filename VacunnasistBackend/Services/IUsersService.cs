@@ -63,7 +63,7 @@ namespace VacunassistBackend.Services
 
         public User[] GetAll(UsersFilterRequest filter)
         {
-            var query = _context.Users.Include(u => u.Vaccines).AsQueryable();
+            var query = _context.Users.Include(u => u.Vaccines).Include(x => x.PreferedOffice).AsQueryable();
             if (filter.IsActive.HasValue)
                 query = query.Where(x => x.IsActive == filter.IsActive);
             if (filter.BelongsToRiskGroup.HasValue)
@@ -97,9 +97,12 @@ namespace VacunassistBackend.Services
                     FullName = model.FullName,
                     Gender = model.Gender,
                     PasswordHash = PasswordHash.CreateHash(model.Password),
-                    PhoneNumber = model.PhoneNumber,
-                    Role = UserRoles.Patient
+                    PhoneNumber = model.PhoneNumber
                 };
+
+                user.Role = model.Role;
+                if (model.PreferedOfficeId.HasValue)
+                    user.PreferedOfficeId = model.PreferedOfficeId;
 
                 // save user
                 _context.Users.Add(user);

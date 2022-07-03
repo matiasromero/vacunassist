@@ -80,7 +80,7 @@ export class EditVaccineComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success('Vacuna modificada correctamente', { keepAfterRouteChange: true });
-                    this.router.navigate(['../../../vaccines'], { relativeTo: this.route });
+                    this._location.back();
                 },
                 error: error => {
                     this.alertService.error(error);

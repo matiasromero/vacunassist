@@ -110,6 +110,7 @@
             <th scope="col">Dirección</th>
             <th scope="col">Telefono</th>
             <th *ngIf="type == 'patient'" scope="col">Grupo de riesgo</th>
+            <th *ngIf="type == 'vacunator'" scope="col">Sede</th>
             <th scope="col">Estado</th>
             <th></th>
           </tr>
@@ -125,6 +126,9 @@
             <td>{{ u.phoneNumber }}</td>
             <td *ngIf="type == 'patient'">
               {{ u.belongsToRiskGroup ? "Si" : "No" }}
+            </td>
+            <td *ngIf="type == 'vacunator'">
+              {{ u.preferedOffice?.name }}
             </td>
             <td>{{ u.isActive ? "Activo" : "Inactivo" }}</td>
             <td>

@@ -220,7 +220,18 @@
         </div>
       </div>
 
-      <div class="form-group form-row">
+      <div class="form-group mt-3" *ngIf="type == 'vacunator'">
+        <mat-form-field appearance="fill">
+          <mat-label>Sede</mat-label>
+          <mat-select formControlName="preferedOfficeId">
+            <mat-option *ngFor="let office of offices" [value]="office.id">
+              {{ office.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-group form-row" *ngIf="type == 'patient'">
         <div class="col-md-9">
           <div class="form-check">
             <input
@@ -255,7 +266,7 @@
         <a
           routerLink="../../users"
           [queryParams]="{
-            type: 'patient',
+            type: type,
             isActive: 'true',
             belongsToRiskGroup: 'false'
           }"

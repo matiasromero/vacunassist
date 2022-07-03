@@ -74,6 +74,7 @@
         <thead>
           <tr>
             <th scope="col">Nombre</th>
+            <th scope="col">Dirección</th>
             <th scope="col">Estado</th>
             <th></th>
           </tr>
@@ -83,6 +84,7 @@
             <th scope="row">
               {{ o.name }}
             </th>
+            <td>{{ o.address }}</td>
             <td>{{ o.isActive ? "Activa" : "Inactiva" }}</td>
             <td>
               <mat-icon

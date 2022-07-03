@@ -60,6 +60,7 @@ export class RegisterComponent implements OnInit {
         
         this.form.value.birthDate = this.dp.transform(this.form.value.birthDate, 'yyyy-MM-dd');
         this.form.value.dni = String(this.form.value.dni);
+        this.form.value.role = 'patient';
         this.accountService.register(this.form.value)
             .pipe(first())
             .subscribe({

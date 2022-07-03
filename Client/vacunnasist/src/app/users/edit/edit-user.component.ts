@@ -74,6 +74,13 @@ export class EditUserComponent implements OnInit {
             role: res.role,
             isActive: res.isActive
         });
+
+        if (this.type == 'vacunator') {
+            this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
+        } else {
+            this.form.controls['preferedOfficeId'].clearValidators();
+        }
+        this.form.controls['preferedOfficeId'].updateValueAndValidity();
     });
 
         this.form = this.formBuilder.group({
@@ -122,9 +129,10 @@ export class EditUserComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success((this.type == 'patient' ? 'Paciente ' : (this.type == 'vacunator' ? 'Vacunador ' : 'Usuario')) + ' modificado correctamente', { keepAfterRouteChange: true });
-                    this.router.navigate(['../../../users'], { 
-                        queryParams: {type: this.type, isActive: true, belongsToRiskGroup: false},
-                     relativeTo: this.route });
+                    // this.router.navigate(['../../../users'], { 
+                    //     queryParams: {type: this.type, isActive: true, belongsToRiskGroup: false},
+                    //  relativeTo: this.route });
+                     this._location.back();
                 },
                 error: error => {
                     this.alertService.error(error);

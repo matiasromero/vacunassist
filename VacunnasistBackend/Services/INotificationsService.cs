@@ -130,6 +130,7 @@ namespace VacunassistBackend.Services
             doc.Add(new Paragraph("Paciente: " + a.Patient.FullName + " (DNI: " + a.Patient.DNI + ")", _standardFont));
             doc.Add(new Paragraph("Recuerde que tiene un turno pendiente para aplicarse la vacuna de " + a.Vaccine.Name, _standardFont));
             doc.Add(new Paragraph("Fecha/Hora de turno: " + a.Date.Value.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont));
+            doc.Add(new Paragraph("Sede: " + a.PreferedOffice.Name + " (" + a.PreferedOffice.Address + ")", _standardFont));
             doc.Add(new Paragraph("Su vacunador/a será: " + a.Vaccinator.FullName, _standardFont));
             doc.Add(Chunk.NEWLINE);
             var p3 = new Paragraph((a.Patient.Gender == "male" ? "Lo esperamos" : "La esperamos"), _subtitle);

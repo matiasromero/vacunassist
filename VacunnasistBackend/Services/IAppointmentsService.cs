@@ -137,7 +137,7 @@ namespace VacunassistBackend.Services
             if (filter.Status.HasValue)
                 query = query.Where(x => x.Status == filter.Status);
             if (filter.Date.HasValue)
-                query = query.Where(x => x.RequestedAt.Date == filter.Date.Value.Date);
+                query = query.Where(x => x.Date != null && x.Date.Value.Date == filter.Date.Value.Date);
             if (string.IsNullOrEmpty(filter.FullName) == false)
                 query = query.Where(x => x.Patient.FullName.Contains(filter.FullName));
             if (filter.OfficeId.HasValue)
@@ -191,7 +191,7 @@ namespace VacunassistBackend.Services
                 shouldNotify = true;
             }
 
-            if (request.OfficeId.HasValue && appointment.PreferedOffice != null && request.OfficeId != appointment.PreferedOffice.Id)
+            if (request.OfficeId.HasValue && appointment.PreferedOffice == null || (appointment.PreferedOffice != null && request.OfficeId != appointment.PreferedOffice.Id))
             {
                 appointment.PreferedOffice = this._context.Offices.First(x => x.Id == request.OfficeId);
                 appointment.Notified = false;

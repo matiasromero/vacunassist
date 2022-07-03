@@ -45,7 +45,8 @@ namespace VacunassistBackend.Services
             {
                 var office = new Office()
                 {
-                    Name = model.Name
+                    Name = model.Name,
+                    Address = model.Address
                 };
 
                 // save vaccine
@@ -80,6 +81,11 @@ namespace VacunassistBackend.Services
                 office.Name = model.Name;
 
             }
+            if (string.IsNullOrEmpty(model.Address) == false && model.Address != office.Address)
+            {
+                office.Address = model.Address;
+            }
+
             if (model.IsActive.HasValue && model.IsActive != office.IsActive)
             {
                 office.IsActive = model.IsActive.Value;

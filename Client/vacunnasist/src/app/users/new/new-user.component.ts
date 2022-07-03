@@ -67,6 +67,13 @@ export class NewUserComponent implements OnInit {
             belongsToRiskGroup: [false, Validators.required],
             preferedOfficeId: [null]
         });
+
+        if (this.type == 'vacunator') {
+            this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
+        } else {
+            this.form.controls['preferedOfficeId'].clearValidators();
+        }
+        this.form.controls['preferedOfficeId'].updateValueAndValidity();
     }
 
     // convenience getter for easy access to form fields
@@ -87,6 +94,7 @@ export class NewUserComponent implements OnInit {
         
         this.form.value.birthDate = this.dp.transform(this.form.value.birthDate, 'yyyy-MM-dd');
         this.form.value.dni = String(this.form.value.dni);
+        this.form.value.role = this.type;
         this.accountService.register(this.form.value)
             .pipe(first())
             .subscribe({

@@ -59,10 +59,9 @@
           </div>
           <div class="form-group">
             <mat-form-field appearance="fill">
-              <mat-label>Fecha de creación</mat-label>
+              <mat-label>Fecha de turno</mat-label>
               <input
                 matInput
-                [max]="maxDate"
                 [matDatepicker]="date"
                 type="text"
                 formControlName="date"
@@ -132,7 +131,17 @@
             </th>
             <td>{{ a.preferedOfficeName }}</td>
             <td>{{ a.vaccinatorName }}</td>
-            <td>{{ a.vaccineName }}</td>
+            <td>
+              <a
+                *ngIf="role == 'administrator'"
+                [routerLink]="['../vaccines', 'edit', a.vaccineId]"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                >{{ a.vaccineName }}</a
+              >
+              <span *ngIf="role != 'administrator'">{{ a.vaccineName }}</span>
+            </td>
+
             <td>
               <a
                 *ngIf="role == 'administrator'"
