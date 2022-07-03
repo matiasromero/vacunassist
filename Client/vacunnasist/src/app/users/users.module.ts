@@ -1,3 +1,6 @@
+import { MatSelectModule } from '@angular/material/select';
+import { NotifyComponent } from './notify/notify.component';
+import { MatTabsModule } from '@angular/material/tabs';
 import { EditUserComponent } from './edit/edit-user.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,7 +27,8 @@ import { MY_DATE_FORMATS } from '../account/account.module';
   declarations: [
     UsersComponent,
     NewUserComponent,
-    EditUserComponent
+    EditUserComponent,
+    NotifyComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +43,9 @@ import { MY_DATE_FORMATS } from '../account/account.module';
     MatChipsModule,
     MatTooltipModule,
     MatNativeDateModule,
-    MatInputModule
+    MatInputModule,
+    MatTabsModule,
+    MatSelectModule
   ],
   providers: [
     DatePipe,

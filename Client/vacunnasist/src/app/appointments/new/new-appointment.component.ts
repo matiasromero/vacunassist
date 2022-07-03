@@ -1,3 +1,4 @@
+import { VaccinesFilter } from './../../_models/filters/vaccines-filter';
 import { first } from 'rxjs/operators';
 import { Vaccine } from './../../_models/vaccine';
 import { VaccineService } from 'src/app/_services/vaccine.service';
@@ -31,8 +32,19 @@ export class NewAppointmentComponent implements OnInit {
     public vaccines: Vaccine[] = [];
 
     ngOnInit() {
-        this.vaccinesServices.getAll().subscribe((res: any) => {
-            this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
+        let userAge = this.accountService.userValue.age;
+        let userRisk = this.accountService.userValue.belongsToRiskGroup;
+
+        let filter = new VaccinesFilter();
+        filter.isActive = true;
+        filter.canBeRequested = true;
+        this.vaccinesServices.getAll(filter).subscribe((res: any) => {
+            this.vaccines = res.vaccines.filter((x:Vaccine) => {
+                let v = new Vaccine();
+                v.id = x.id;
+                v.name = x.name;
+                return v.canApply(userAge, userRisk);
+            });
         });
 
         this.form = this.formBuilder.group({

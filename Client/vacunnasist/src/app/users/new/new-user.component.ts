@@ -1,3 +1,4 @@
+import { OfficesFilter } from './../../_models/filters/offices-filter';
 import { Office } from 'src/app/_models/office';
 import { OfficeService } from 'src/app/_services/office.service';
 import { first } from 'rxjs/operators';
@@ -40,7 +41,9 @@ export class NewUserComponent implements OnInit {
     public type: String = "patient";
 
     ngOnInit() {
-        this.officesService.getAll().subscribe((res: any) => {
+        let filter = new OfficesFilter();
+        filter.isActive = true;
+        this.officesService.getAll(filter).subscribe((res: any) => {
             this.offices = res.offices;
         });
 
@@ -64,6 +67,13 @@ export class NewUserComponent implements OnInit {
             belongsToRiskGroup: [false, Validators.required],
             preferedOfficeId: [null]
         });
+
+        if (this.type == 'vacunator') {
+            this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
+        } else {
+            this.form.controls['preferedOfficeId'].clearValidators();
+        }
+        this.form.controls['preferedOfficeId'].updateValueAndValidity();
     }
 
     // convenience getter for easy access to form fields
@@ -84,11 +94,12 @@ export class NewUserComponent implements OnInit {
         
         this.form.value.birthDate = this.dp.transform(this.form.value.birthDate, 'yyyy-MM-dd');
         this.form.value.dni = String(this.form.value.dni);
+        this.form.value.role = this.type;
         this.accountService.register(this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : 'Usuario') + ' creado correctamente', { keepAfterRouteChange: true });
+                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : (this.type == 'vacunator' ? 'Vacunador' : 'Usuario')) + ' creado correctamente', { keepAfterRouteChange: true });
                     this.router.navigate(['../../users'], { 
                         queryParams: {type: this.type, isActive: true, belongsToRiskGroup: false},
                      relativeTo: this.route });

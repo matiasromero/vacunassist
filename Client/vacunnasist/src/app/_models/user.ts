@@ -1,3 +1,4 @@
+import { Office } from 'src/app/_models/office';
 import { AppliedVaccine } from "./applied-vaccine";
 
 export class User {
@@ -10,6 +11,7 @@ export class User {
     phoneNumber!: string;
     email!: string;
     birthDate!: Date;
+    age!:number;
     dni!: string;
     belongsToRiskGroup: boolean = false;
     role!: string;
@@ -17,6 +19,7 @@ export class User {
     isActive!: boolean;
     vaccines: AppliedVaccine[] = [];
     preferedOfficeId?: number;
+    preferedOffice?: Office;
     
     public isPatient(): boolean {
          return this.role === 'patient';

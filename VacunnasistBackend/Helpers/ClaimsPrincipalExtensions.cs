@@ -23,7 +23,7 @@ namespace VacunassistBackend.Helpers
 
         public static string GetRole(this ClaimsPrincipal principal)
         {
-            var claim = principal?.Claims?.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.GivenName);
+            var claim = principal?.Claims?.FirstOrDefault(x => x.Type == CustomClaimTypes.Role);
             if (claim == null)
                 throw new InvalidOperationException("Role claim not found");
 
@@ -34,5 +34,6 @@ namespace VacunassistBackend.Helpers
     public static class CustomClaimTypes
     {
         public const string IsAdmin = "isAdmin";
+        public const string Role = "role";
     }
 }

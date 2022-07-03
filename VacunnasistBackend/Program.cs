@@ -22,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
     services.AddTransient<IAppointmentsService, AppointmentsService>();
     services.AddTransient<IVaccinesService, VaccinesService>();
     services.AddTransient<IOfficesService, OfficesService>();
+    services.AddTransient<INotificationsService, NotificationsService>();
 
     services.AddDbContext<DataContext>(options =>
     {

@@ -91,7 +91,7 @@ namespace VacunassistBackend.Data
                     FullName = "Paciente",
                     PhoneNumber = "11-8795-1478",
                     Email = "email@email.com",
-                    BirthDate = DateTime.Now.Date,
+                    BirthDate = new DateTime(1987, 07, 06),
                     DNI = "12548987",
                     Gender = Gender.Other,
                     BelongsToRiskGroup = false,
@@ -157,8 +157,6 @@ namespace VacunassistBackend.Data
                     Id = 3,
                     UserId = patient1.Id,
                     VaccineId = vaccine3.Id,
-                    AppliedBy = vacunador1.FullName + " (" + vacunador1.UserName + ")",
-                    AppliedDate = new DateTime(2022, 05, 10, 14, 30, 25)
                 };
 
                 modelBuilder.Entity<Office>().HasData(office1, office2, office3);

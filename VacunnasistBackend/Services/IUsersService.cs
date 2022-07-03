@@ -63,7 +63,7 @@ namespace VacunassistBackend.Services
 
         public User[] GetAll(UsersFilterRequest filter)
         {
-            var query = _context.Users.Include(u => u.Vaccines).AsQueryable();
+            var query = _context.Users.Include(u => u.Vaccines).Include(x => x.PreferedOffice).AsQueryable();
             if (filter.IsActive.HasValue)
                 query = query.Where(x => x.IsActive == filter.IsActive);
             if (filter.BelongsToRiskGroup.HasValue)
@@ -97,9 +97,12 @@ namespace VacunassistBackend.Services
                     FullName = model.FullName,
                     Gender = model.Gender,
                     PasswordHash = PasswordHash.CreateHash(model.Password),
-                    PhoneNumber = model.PhoneNumber,
-                    Role = UserRoles.Patient
+                    PhoneNumber = model.PhoneNumber
                 };
+
+                user.Role = model.Role;
+                if (model.PreferedOfficeId.HasValue)
+                    user.PreferedOfficeId = model.PreferedOfficeId;
 
                 // save user
                 _context.Users.Add(user);
@@ -218,15 +221,19 @@ namespace VacunassistBackend.Services
             .Include(x => x.Patient)
             .Include(x => x.Vaccine)
             .Include(x => x.Vaccinator)
+            .Include(x => x.PreferedOffice)
             .ToArray();
             return appointments.Select(x => new AppointmentModel()
             {
                 Id = x.Id,
                 AppliedDate = x.AppliedDate,
+                Date = x.Date,
                 Comment = x.Comment,
                 Notified = x.Notified,
                 PatientId = x.Patient.Id,
                 PatientName = x.Patient.FullName,
+                PatientAge = x.Patient.GetAge(),
+                PatientRisk = x.Patient.BelongsToRiskGroup,
                 PreferedOfficeId = x.PreferedOffice?.Id,
                 PreferedOfficeName = x.PreferedOffice?.Name,
                 PreferedOfficeAddress = x.PreferedOffice?.Address,
@@ -234,8 +241,8 @@ namespace VacunassistBackend.Services
                 Status = x.Status,
                 VaccineId = x.Vaccine.Id,
                 VaccineName = x.Vaccine.Name,
-                VacinatorId = x.Vaccinator?.Id,
-                VacinatorName = x.Vaccinator?.FullName,
+                VaccinatorId = x.Vaccinator?.Id,
+                VaccinatorName = x.Vaccinator?.FullName,
 
             }).ToArray();
         }
@@ -248,6 +255,14 @@ namespace VacunassistBackend.Services
             {
                 var appointments = _context.Appointments
                 .Where(x => x.Patient.Id == user.Id &&
+                (x.Status == AppointmentStatus.Pending || x.Status == AppointmentStatus.Confirmed))
+                .ToArray();
+                return appointments.Any() == false;
+            }
+            if (user.Role == UserRoles.Vacunator)
+            {
+                var appointments = _context.Appointments
+                .Where(x => x.Vaccinator.Id == user.Id &&
                 (x.Status == AppointmentStatus.Pending || x.Status == AppointmentStatus.Confirmed))
                 .ToArray();
                 return appointments.Any() == false;

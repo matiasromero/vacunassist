@@ -16,15 +16,18 @@ namespace VacunassistBackend.Services
         Appointment[] GetAll(AppointmentsFilterRequest filter);
         Appointment Get(int id);
         void AddConfirmed(NewConfirmedAppointmentRequest model);
+        void AddVaccine(NewConfirmedAppointmentRequest model);
     }
 
     public class AppointmentsService : IAppointmentsService
     {
         private DataContext _context;
+        private INotificationsService _notificationsService;
 
-        public AppointmentsService(DataContext context)
+        public AppointmentsService(DataContext context, INotificationsService notificationsService)
         {
             this._context = context;
+            this._notificationsService = notificationsService;
         }
 
         public void Add(int userId, int vaccineId)
@@ -47,11 +50,7 @@ namespace VacunassistBackend.Services
 
         public void AddConfirmed(NewConfirmedAppointmentRequest model)
         {
-            var user = _context.Users.First(x => x.Id == model.PatientId);
-            if (user.Role != UserRoles.Patient)
-            {
-                throw new ApplicationException("El usuario no es un paciente");
-            }
+            var user = ValidatePatient(model.PatientId);
 
             var vaccine = this._context.Vaccines.First(x => x.Id == model.VaccineId);
             var vaccinator = this._context.Users.First(x => x.Id == model.VaccinatorId);
@@ -59,6 +58,7 @@ namespace VacunassistBackend.Services
             var appointment = model.CurrentId.HasValue ?
             this._context.Appointments.First(x => x.Id == model.CurrentId.Value)
             : new Appointment(user, vaccine);
+            appointment.Vaccine = vaccine;
             appointment.RequestedAt = DateTime.Now;
             appointment.Date = model.Date;
             appointment.PreferedOffice = office;
@@ -67,6 +67,43 @@ namespace VacunassistBackend.Services
 
             if (model.CurrentId.HasValue == false)
                 _context.Appointments.Add(appointment);
+            _context.SaveChanges();
+        }
+
+        private User ValidatePatient(int patientId)
+        {
+            var user = _context.Users.First(x => x.Id == patientId);
+            if (user.Role != UserRoles.Patient)
+            {
+                throw new ApplicationException("El usuario no es un paciente");
+            }
+            return user;
+        }
+
+        public void AddVaccine(NewConfirmedAppointmentRequest model)
+        {
+            var user = ValidatePatient(model.PatientId);
+            var vaccine = this._context.Vaccines.First(x => x.Id == model.VaccineId);
+            var vaccinator = this._context.Users.First(x => x.Id == model.VaccinatorId);
+            var office = this._context.Offices.First(x => x.Id == model.OfficeId);
+            var appointment = new Appointment(user, vaccine);
+            appointment.Vaccine = vaccine;
+            appointment.RequestedAt = DateTime.Now;
+            appointment.Date = model.Date;
+            appointment.PreferedOffice = office;
+            appointment.Vaccinator = vaccinator;
+            appointment.Status = AppointmentStatus.Done;
+            _context.Appointments.Add(appointment);
+            _context.SaveChanges();
+
+            var newApplied = new AppliedVaccine();
+            newApplied.AppliedBy = vaccinator.FullName;
+            newApplied.AppliedDate = model.Date;
+            newApplied.AppointmentId = appointment.Id;
+            newApplied.UserId = model.PatientId;
+            newApplied.VaccineId = model.VaccineId;
+            user.Vaccines.Add(newApplied);
+            _context.AppliedVaccines.Add(newApplied);
             _context.SaveChanges();
         }
 
@@ -100,7 +137,7 @@ namespace VacunassistBackend.Services
             if (filter.Status.HasValue)
                 query = query.Where(x => x.Status == filter.Status);
             if (filter.Date.HasValue)
-                query = query.Where(x => x.RequestedAt.Date == filter.Date.Value.Date);
+                query = query.Where(x => x.Date != null && x.Date.Value.Date == filter.Date.Value.Date);
             if (string.IsNullOrEmpty(filter.FullName) == false)
                 query = query.Where(x => x.Patient.FullName.Contains(filter.FullName));
             if (filter.OfficeId.HasValue)
@@ -112,16 +149,76 @@ namespace VacunassistBackend.Services
 
         public void Update(int id, UpdateAppointmentRequest request)
         {
+            var shouldNotify = false;
             var appointment = _context.Appointments.Include(x => x.Patient).Include(x => x.Vaccine).Include(x => x.Vaccinator).FirstOrDefault(x => x.Id == id);
             if (appointment == null)
                 throw new HttpResponseException(400, message: "Solicitud no encontrada");
 
             if (request.Status.HasValue && request.Status != appointment.Status)
             {
+                if ((appointment.Status == AppointmentStatus.Confirmed || appointment.Status == AppointmentStatus.Pending)
+                && request.Status.Value == AppointmentStatus.Cancelled)
+                {
+                    appointment.Status = request.Status.Value;
+                    _notificationsService.SendCancellation(appointment);
+                }
+                if (appointment.Status == AppointmentStatus.Confirmed
+                && request.Status.Value == AppointmentStatus.Done)
+                {
+                    appointment.Status = request.Status.Value;
+                    var patient = appointment.Patient;
+                    var newApplied = new AppliedVaccine();
+                    newApplied.AppliedBy = appointment.Vaccinator!.FullName;
+                    newApplied.AppliedDate = DateTime.Now;
+                    newApplied.AppointmentId = appointment.Id;
+                    newApplied.Comment = request.Comment;
+                    newApplied.UserId = appointment.Patient.Id;
+                    newApplied.VaccineId = appointment.Vaccine.Id;
+                    patient.Vaccines.Add(newApplied);
+                }
                 appointment.Status = request.Status.Value;
             }
 
+            if (string.IsNullOrEmpty(request.Comment) == false)
+            {
+                appointment.Comment = request.Comment;
+            }
+
+            if (request.Date.HasValue && request.Date != appointment.Date)
+            {
+                appointment.Date = request.Date.Value;
+                appointment.Notified = false;
+                shouldNotify = true;
+            }
+
+            if (request.OfficeId.HasValue && appointment.PreferedOffice == null || (appointment.PreferedOffice != null && request.OfficeId != appointment.PreferedOffice.Id))
+            {
+                appointment.PreferedOffice = this._context.Offices.First(x => x.Id == request.OfficeId);
+                appointment.Notified = false;
+                shouldNotify = true;
+            }
+
+            if (request.VaccinatorId.HasValue && appointment.Vaccinator != null && request.VaccinatorId != appointment.Vaccinator.Id)
+            {
+                appointment.Vaccinator = this._context.Users.First(x => x.Id == request.VaccinatorId);
+                appointment.Notified = false;
+                shouldNotify = true;
+            }
+
+            if (request.VaccineId.HasValue && appointment.Vaccine != null && request.VaccineId != appointment.Vaccine.Id)
+            {
+                var exist = AlreadyExist(appointment.Patient.Id, request.VaccineId.Value);
+                if (exist)
+                    throw new HttpResponseException(400, message: "El paciente ya tiene una vacuna pendiente para esta vacuna.");
+                appointment.Vaccine = this._context.Vaccines.First(x => x.Id == request.VaccineId);
+                appointment.Notified = false;
+                shouldNotify = true;
+            }
+
             _context.SaveChanges();
+
+            if (shouldNotify)
+                _notificationsService.Trigger(appointment.Id);
         }
     }
 }

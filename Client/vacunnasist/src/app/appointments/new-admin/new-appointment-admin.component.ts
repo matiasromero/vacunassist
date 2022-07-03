@@ -13,6 +13,8 @@ import { User } from 'src/app/_models/user';
 import { UsersFilter } from 'src/app/_models/filters/users-filter';
 import { NewConfirmedAppointmentRequest } from 'src/app/_models/new-confirmed-appointment';
 import { DatePipe } from '@angular/common';
+import { VaccinesFilter } from 'src/app/_models/filters/vaccines-filter';
+import { OfficesFilter } from 'src/app/_models/filters/offices-filter';
 
 
 @Component({ templateUrl: 'new-appointment-admin.component.html' })
@@ -42,13 +44,19 @@ export class NewAppointmentAdminComponent implements OnInit {
     public vaccinators: User[] = [];
     public offices: Office[] = [];
     public minDate: Date = new Date();
+    public maxDate: Date = new Date();
 
     ngOnInit() {
-        this.officesService.getAll().subscribe((res: any) => {
+        let officesFilter = new OfficesFilter();
+        officesFilter.isActive = true;
+        this.officesService.getAll(officesFilter).subscribe((res: any) => {
             this.offices = res.offices;
         });
-        this.vaccinesServices.getAll().subscribe((res: any) => {
-            this.vaccines = res.vaccines.filter((x:Vaccine) => x.canBeRequested);
+        let filter = new VaccinesFilter();
+        filter.isActive = true;
+        filter.canBeRequested = true;
+        this.vaccinesServices.getAll(filter).subscribe((res: any) => {
+            this.vaccines = res.vaccines;
         });
 
         let filter1 = new UsersFilter();
@@ -75,6 +83,44 @@ export class NewAppointmentAdminComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
+
+    changePatient(patientId: number) {
+        this.accountService.getById(patientId).subscribe((u: User) => {
+            let filter = new VaccinesFilter();
+        filter.isActive = true;
+        filter.canBeRequested = true;
+            this.vaccinesServices.getAll(filter).subscribe((res: any) => {
+                this.vaccines = res.vaccines.filter((x:Vaccine) => {
+                    let v = new Vaccine();
+                    v.id = x.id;
+                    v.name = x.name;
+                    return v.canApply(u.age, u.belongsToRiskGroup);
+                });
+                if (!this.vaccines.find(v => {
+                    return v.id == this.form.get('vaccineId')?.value;
+                })) {
+                    this.form.patchValue({
+                        vaccineId: null
+                    });
+                }
+                if (this.form.get('vaccineId')?.value) {
+                    let v = new Vaccine();
+                    v.id = this.form.get('vaccineId')?.value.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+                }
+            });
+        });
+    }
+
+    changeVaccine(vaccineId: number) {
+        this.accountService.getById(this.form.get('patientId')?.value).subscribe((u: User) => {
+                    let v = new Vaccine();
+                    v.id = vaccineId.toString();
+                    this.minDate = v.getMinDate(u.age, u.belongsToRiskGroup);
+                    this.maxDate = v.getMaxDate(u.age, u.belongsToRiskGroup);
+            });
+      }
 
     onSubmit() {
         this.submitted = true;

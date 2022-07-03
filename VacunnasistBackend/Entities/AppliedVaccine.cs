@@ -13,4 +13,6 @@ public class AppliedVaccine
     public int VaccineId { get; set; }
     public Vaccine Vaccine { get; set; }
 
+    public int? AppointmentId { get; set; }
+    public Appointment? Appointment { get; set; }
 }

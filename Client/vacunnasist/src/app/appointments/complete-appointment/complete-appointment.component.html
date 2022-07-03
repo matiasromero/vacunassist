@@ -1,0 +1,110 @@
+<div class="card">
+  <h4 class="card-header">Completar Turno</h4>
+  <div class="card-body">
+    <form [formGroup]="form">
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Paciente</mat-label>
+          <mat-select formControlName="patientId" [disabled]="true">
+            <mat-option *ngFor="let patient of patients" [value]="patient.id">
+              {{ patient.fullName + " (" + patient.dni + ")" }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Vacuna</mat-label>
+          <mat-select formControlName="vaccineId" [disabled]="true">
+            <mat-option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
+              {{ vaccine.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Vacunador</mat-label>
+          <mat-select formControlName="vaccinatorId" [disabled]="true">
+            <mat-option *ngFor="let v of vaccinators" [value]="v.id">
+              {{ v.fullName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Sede</mat-label>
+          <mat-select formControlName="officeId" [disabled]="true">
+            <mat-option *ngFor="let o of offices" [value]="o.id">
+              {{ o.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Fecha</mat-label>
+          <input
+            matInput
+            [disabled]="true"
+            [matDatepicker]="date"
+            type="text"
+            readonly="true"
+            formControlName="date"
+            [ngClass]="{ 'is-invalid': submitted && f.date.errors }"
+          />
+          <mat-datepicker #date></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Hora</mat-label>
+          <input
+            matInput
+            [disabled]="true"
+            readonly="true"
+            type="time"
+            formControlName="time"
+          />
+        </mat-form-field>
+      </div>
+      <hr />
+      <div class="form-group">
+        <mat-form-field
+          class="example-full-width"
+          appearance="fill"
+          [style.width.px]="400"
+        >
+          <mat-label>Comentarios...</mat-label>
+          <textarea
+            matInput
+            formControlName="comment"
+            placeholder="Ej. El paciente hizo referencia a una patología"
+          ></textarea>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <button
+          [disabled]="loading"
+          class="btn btn-primary mr-2"
+          (click)="complete()"
+        >
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Aplicada
+        </button>
+        <button [disabled]="loading" class="btn btn-danger" (click)="cancel()">
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          No aplicada
+        </button>
+        <a routerLink="../../" class="btn btn-link">Volver</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,3 +1,5 @@
+import { MatRadioModule } from '@angular/material/radio';
+import { CompleteAppointmentComponent } from './complete-appointment/complete-appointment.component';
 import { AppointmentsComponent } from './appointments.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
@@ -19,6 +21,8 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MY_DATE_FORMATS } from '../account/account.module';
 import { NewAppointmentAdminComponent } from './new-admin/new-appointment-admin.component';
 import { ConfirmAppointmentComponent } from './confirm/confirm-appointment.component';
+import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
+import { AddVaccineToUserComponent } from './add-vaccine-to-user/add-vaccine-to-user.component';
 
 
 @NgModule({
@@ -27,7 +31,10 @@ import { ConfirmAppointmentComponent } from './confirm/confirm-appointment.compo
     MyAppointmentsComponent,
     NewAppointmentAdminComponent,
     ConfirmAppointmentComponent,
+    EditAppointmentComponent,
+    CompleteAppointmentComponent,
     AppointmentsComponent,
+    AddVaccineToUserComponent,
     AppointmentStatusPipe
   ],
   imports: [
@@ -43,6 +50,7 @@ import { ConfirmAppointmentComponent } from './confirm/confirm-appointment.compo
     MatSelectModule,
     MatIconModule,
     MatTooltipModule,
+    MatRadioModule,
     MatExpansionModule,
     MatChipsModule
 ],

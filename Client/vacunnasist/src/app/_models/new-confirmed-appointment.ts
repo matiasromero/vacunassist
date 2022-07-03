@@ -5,4 +5,6 @@ export class NewConfirmedAppointmentRequest {
     patientId!: number;
     date!: string;
     currentId?:number;
+    status?:number;
+    comment?:string;
 }

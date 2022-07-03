@@ -1,3 +1,4 @@
+import { User } from 'src/app/_models/user';
 import { Office } from 'src/app/_models/office';
 import { OfficeService } from 'src/app/_services/office.service';
 import { first } from 'rxjs/operators';
@@ -11,6 +12,7 @@ import { AlertService } from 'src/app/_services/alert.service';
 import { AppointmentService } from 'src/app/_services/appointment.service';
 import { DatePipe, Location } from '@angular/common';
 import { trigger } from '@angular/animations';
+import { OfficesFilter } from 'src/app/_models/filters/offices-filter';
 
 
 @Component({ templateUrl: 'edit-user.component.html' })
@@ -40,20 +42,23 @@ export class EditUserComponent implements OnInit {
     public offices: Office[] = [];
     public type: String = "patient";
     userId?: number;
+    userRole?:string;
+    user: User = new User();
 
     ngOnInit() {
-        this.officesService.getAll().subscribe((res: any) => {
-            this.offices = res.offices;
-        });
-
         this.minDate = new Date(1900, 0, 1);
 
-        this.officesService.getAll().subscribe((res: any) => {
+        let filter = new OfficesFilter();
+        filter.isActive = true;
+        this.officesService.getAll(filter).subscribe((res: any) => {
             this.offices = res.offices;
         });
 
         this.userId = parseInt(this.route.snapshot.paramMap.get('id')!);
         this.accountService.getById(this.userId).subscribe(res => {
+            this.type = res.role;
+            this.userRole = res.role;
+            this.user = res;
         this.form.patchValue({
             id: res.id,
             username: res.userName,
@@ -69,6 +74,13 @@ export class EditUserComponent implements OnInit {
             role: res.role,
             isActive: res.isActive
         });
+
+        if (this.type == 'vacunator') {
+            this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
+        } else {
+            this.form.controls['preferedOfficeId'].clearValidators();
+        }
+        this.form.controls['preferedOfficeId'].updateValueAndValidity();
     });
 
         this.form = this.formBuilder.group({
@@ -85,6 +97,9 @@ export class EditUserComponent implements OnInit {
         });
     }
 
+    addVaccine() {
+        this.router.navigate(['appointments/add-vaccine-to-user', this.userId]);
+    }
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
@@ -113,10 +128,11 @@ export class EditUserComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : 'Usuario') + ' modificado correctamente', { keepAfterRouteChange: true });
-                    this.router.navigate(['../../../users'], { 
-                        queryParams: {type: this.type, isActive: true, belongsToRiskGroup: false},
-                     relativeTo: this.route });
+                    this.alertService.success((this.type == 'patient' ? 'Paciente ' : (this.type == 'vacunator' ? 'Vacunador ' : 'Usuario')) + ' modificado correctamente', { keepAfterRouteChange: true });
+                    // this.router.navigate(['../../../users'], { 
+                    //     queryParams: {type: this.type, isActive: true, belongsToRiskGroup: false},
+                    //  relativeTo: this.route });
+                     this._location.back();
                 },
                 error: error => {
                     this.alertService.error(error);

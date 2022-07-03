@@ -18,11 +18,13 @@ namespace VacunassistBackend.Controllers
 
         private readonly DataContext _context;
         private readonly IUsersService _usersService;
+        private readonly INotificationsService _notificationsService;
         private readonly IConfiguration _configuration;
 
-        public AccountsController(IUsersService usersService, IConfiguration configuration)
+        public AccountsController(IUsersService usersService, INotificationsService notificationsService, IConfiguration configuration)
         {
             this._usersService = usersService;
+            this._notificationsService = notificationsService;
             this._configuration = configuration;
         }
 
@@ -37,6 +39,7 @@ namespace VacunassistBackend.Controllers
 
             if (user != null)
             {
+                _notificationsService.Trigger();
                 var authClaims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -61,6 +64,8 @@ namespace VacunassistBackend.Controllers
                     phoneNumber = user.PhoneNumber,
                     email = user.Email,
                     birthdate = user.BirthDate.ToString("yyyy-MM-dd"),
+                    belongsToRiskGroup = user.BelongsToRiskGroup,
+                    age = user.GetAge(),
                     address = user.Address,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo

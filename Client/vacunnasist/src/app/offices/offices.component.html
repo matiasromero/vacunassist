@@ -1,0 +1,126 @@
+<div class="card">
+  <h4 class="card-header">Sedes</h4>
+  <div class="card-body">
+    <mat-accordion>
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="right-aligned-header">
+          <mat-panel-title>Filtros aplicados:</mat-panel-title>
+          <mat-panel-description>
+            <mat-chip-list aria-label="isActive">
+              <mat-chip>{{
+                filter.isActive ? "Activas" : "Inactivas"
+              }}</mat-chip>
+              <mat-chip [matTooltip]="filter.name" *ngIf="filter.name"
+                >Nombre: {{ filter.name }}</mat-chip
+              >
+            </mat-chip-list>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <hr />
+        <form [formGroup]="formFilter" (ngSubmit)="applyFilter()">
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input
+              type="text"
+              formControlName="name"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
+            />
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input
+                formControlName="isActive"
+                class="form-check-input"
+                type="checkbox"
+                name="isActive"
+                id="isActive"
+              />
+              <label
+                class="form-check-label"
+                for="isActive"
+                [ngClass]="{ 'text-success': !formFilter.value.isActive }"
+              >
+                {{ formFilter.value.isActive ? "Activa" : "Inactiva" }}
+              </label>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm mr-1"
+            ></span>
+            Aplicar
+          </button>
+          <button
+            [disabled]="loading"
+            class="btn btn-secondary ml-2"
+            (click)="clear()"
+          >
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm mr-1"
+            ></span>
+            Limpiar
+          </button>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Dirección</th>
+            <th scope="col">Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of offices">
+            <th scope="row">
+              {{ o.name }}
+            </th>
+            <td>{{ o.address }}</td>
+            <td>{{ o.isActive ? "Activa" : "Inactiva" }}</td>
+            <td>
+              <mat-icon
+                mat-button
+                aria-hidden="false"
+                aria-label="Example delete icon"
+                role="button"
+                color="primary"
+                matTooltip="Editar"
+                (click)="editOffice(o)"
+                >edit</mat-icon
+              >
+              <mat-icon
+                mat-button
+                aria-hidden="false"
+                *ngIf="o.isActive"
+                aria-label="Example delete icon"
+                role="button"
+                color="warn"
+                matTooltip="Desactivar"
+                (click)="deleteOfficeQuestion(o)"
+                >cancel</mat-icon
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-right">
+        <button
+          type="button"
+          (click)="addOffice()"
+          class="btn btn-outline-primary"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

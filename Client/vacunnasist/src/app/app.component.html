@@ -55,8 +55,41 @@
             class="nav-item nav-link"
             routerLink="/appointments"
             routerLinkActive="active"
-            *ngIf="user && user.role == 'administrator'"
+            *ngIf="
+              user && (user.role == 'administrator' || user.role == 'vacunator')
+            "
             >Turnos</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
+            routerLink="/vaccines"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'administrator'"
+            >Vacunas</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
+            routerLink="/offices"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'administrator'"
+            >Sedes</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-item nav-link"
+            routerLink="/users"
+            [queryParams]="{
+              type: 'vacunator',
+              isActive: 'true'
+            }"
+            routerLinkActive="active"
+            *ngIf="user && user.role == 'administrator'"
+            >Vacunadores</a
           >
         </li>
       </ul>

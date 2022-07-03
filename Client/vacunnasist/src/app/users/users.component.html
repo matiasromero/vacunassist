@@ -1,5 +1,7 @@
 <div class="card">
-  <h4 class="card-header">Pacientes</h4>
+  <h4 class="card-header">
+    {{ type == "vacunator" ? "Vacunadores" : "Pacientes" }}
+  </h4>
   <div class="card-body">
     <mat-accordion>
       <mat-expansion-panel
@@ -13,7 +15,7 @@
               <mat-chip>{{
                 filter.isActive ? "Activos" : "Inactivos"
               }}</mat-chip>
-              <mat-chip
+              <mat-chip *ngIf="type == 'patient'"
                 >{{
                   filter.belongsToRiskGroup
                     ? "Dentro de grupo de riesgo"
@@ -37,7 +39,7 @@
               [ngClass]="{ 'is-invalid': submitted && f.fullName.errors }"
             />
           </div>
-          <div class="form-group">
+          <div class="form-group" *ngIf="type == 'patient'">
             <div class="form-check">
               <input
                 formControlName="belongsToRiskGroup"
@@ -107,7 +109,8 @@
             <th scope="col">Nombre</th>
             <th scope="col">Dirección</th>
             <th scope="col">Telefono</th>
-            <th scope="col">Grupo de riesgo</th>
+            <th *ngIf="type == 'patient'" scope="col">Grupo de riesgo</th>
+            <th *ngIf="type == 'vacunator'" scope="col">Sede</th>
             <th scope="col">Estado</th>
             <th></th>
           </tr>
@@ -121,7 +124,12 @@
               {{ u.address }}
             </th>
             <td>{{ u.phoneNumber }}</td>
-            <td>{{ u.belongsToRiskGroup ? "Si" : "No" }}</td>
+            <td *ngIf="type == 'patient'">
+              {{ u.belongsToRiskGroup ? "Si" : "No" }}
+            </td>
+            <td *ngIf="type == 'vacunator'">
+              {{ u.preferedOffice?.name }}
+            </td>
             <td>{{ u.isActive ? "Activo" : "Inactivo" }}</td>
             <td>
               <mat-icon
@@ -152,9 +160,13 @@
       <div class="text-right">
         <button
           type="button"
-          (click)="addUser()"
-          class="btn btn-outline-primary"
+          (click)="notifyUsers()"
+          class="btn btn-warning mr-3"
+          *ngIf="type == 'patient'"
         >
+          <i class="fa-solid fa-bullhorn"></i> | Notificar
+        </button>
+        <button type="button" (click)="addUser()" class="btn btn-primary">
           Agregar
         </button>
       </div>

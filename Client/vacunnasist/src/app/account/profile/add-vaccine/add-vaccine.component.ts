@@ -11,6 +11,7 @@ import { Office } from 'src/app/_models/office';
 import { OfficeService } from 'src/app/_services/office.service';
 import Swal from 'sweetalert2';
 import { VaccineService } from 'src/app/_services/vaccine.service';
+import { VaccinesFilter } from 'src/app/_models/filters/vaccines-filter';
 
 
 @Component({ templateUrl: 'add-vaccine.component.html' })
@@ -33,7 +34,9 @@ export class ProfileAddVaccineComponent implements OnInit {
     maxDate: Date = new Date();
     public vaccines: Vaccine[] = [];
     ngOnInit() {
-        this.vaccinesService.getAll().subscribe((res: any) => {
+        let filter = new VaccinesFilter();
+        filter.isActive = true;
+        this.vaccinesService.getAll(filter).subscribe((res: any) => {
             this.vaccines = res.vaccines;
         });
         

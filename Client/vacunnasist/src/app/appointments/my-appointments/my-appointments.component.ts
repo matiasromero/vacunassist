@@ -1,3 +1,4 @@
+import { VaccineService } from 'src/app/_services/vaccine.service';
 import { AppointmentService } from 'src/app/_services/appointment.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -8,6 +9,7 @@ import { AlertService } from 'src/app/_services/alert.service';
 import { DatePipe } from '@angular/common';
 import { Appointment } from 'src/app/_models/appointment';
 import Swal from 'sweetalert2';
+import { AppliedVaccine } from 'src/app/_models/applied-vaccine';
 
 @Component({ templateUrl: 'my-appointments.component.html' })
 export class MyAppointmentsComponent implements OnInit {
@@ -20,6 +22,7 @@ export class MyAppointmentsComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
+        private vaccineService: VaccineService,
         private appointmentsService: AppointmentService,
         private alertService: AlertService,
         private dp: DatePipe
@@ -80,32 +83,35 @@ export class MyAppointmentsComponent implements OnInit {
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
-    onSubmit() {
-        this.submitted = true;
-
-        // reset alerts on submit
-        this.alertService.clear();
-
-        // stop here if form is invalid
-        if (this.form.invalid) {
-            return;
+    downloadVaccineCertificate(v: Appointment) {
+        Swal
+      .fire({
+        title: 'Certificado de vacunación',
+        text: 'Va a generar el certificado para: ' + v.vaccineName,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'No, cancelar',
+        confirmButtonText: 'Si, generar!'
+      })
+      .then(result => {
+        if (result.value) {
+          this.downloadCertificate(v);
         }
+      });
+    }
 
-        this.loading = true;
-        
-        this.form.value.birthDate = this.dp.transform(this.form.value.birthDate, 'yyyy-MM-dd');
-        this.form.value.dni = String(this.form.value.dni);
-        this.accountService.register(this.form.value)
-            .pipe(first())
-            .subscribe({
-                next: () => {
-                    this.alertService.success('Registración correcta', { keepAfterRouteChange: true });
-                    this.router.navigate(['../login'], { relativeTo: this.route });
-                },
-                error: error => {
-                    this.alertService.error(error);
-                    this.loading = false;
-                }
-            });
+    downloadCertificate(v: Appointment) {
+        this.vaccineService.downloadCertificateAppointment(v)
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                Swal.fire('Certificado generado', 'Certificado generado correctamente.', 'success');
+                this.loadData();
+            },
+            error: (error: string) => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        });
     }
 }

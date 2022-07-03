@@ -12,6 +12,7 @@ import { User } from 'src/app/_models/user';
 import { Office } from 'src/app/_models/office';
 import { OfficeService } from 'src/app/_services/office.service';
 import Swal from 'sweetalert2';
+import { OfficesFilter } from 'src/app/_models/filters/offices-filter';
 
 
 @Component({ templateUrl: 'profile.component.html' })
@@ -39,7 +40,9 @@ export class ProfileComponent implements OnInit {
     ngOnInit() {
         this.minDate = new Date(1900, 0, 1);
 
-        this.officesService.getAll().subscribe((res: any) => {
+        let officesFilter = new OfficesFilter();
+        officesFilter.isActive = true;
+        this.officesService.getAll(officesFilter).subscribe((res: any) => {
             this.offices = res.offices;
         });
 
@@ -75,7 +78,7 @@ export class ProfileComponent implements OnInit {
                 preferedOfficeId: res.preferedOfficeId
             });
 
-            if (this.user && this.user.role !== 'administrator') {
+            if (this.user && this.user.role == 'patient') {
                 this.form.controls['preferedOfficeId'].setValidators([Validators.required]);
             } else {
                 this.form.controls['preferedOfficeId'].clearValidators();

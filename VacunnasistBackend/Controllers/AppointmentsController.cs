@@ -75,10 +75,29 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("new-vaccine")]
+        public IActionResult AddNewVaccine([FromBody] NewConfirmedAppointmentRequest model)
+        {
+            _appointmentsService.AddVaccine(model);
+
+            return Ok(new
+            {
+                message = "Vacuna agregada correctamente al paciente"
+            });
+        }
+
         [HttpGet]
         public IActionResult Get([FromQuery] AppointmentsFilterRequest filter)
         {
-            var result = _appointmentsService.GetAll(filter).Select(x => new AppointmentModel()
+            //var id = User.GetId()!.Value;
+            var role = User.GetRole()!;
+            var appointments = _appointmentsService.GetAll(filter);
+            if (role == UserRoles.Vacunator)
+            {
+                appointments = appointments.Where(x => x.Vaccinator != null && x.Vaccinator.Id == User.GetId()!.Value).ToArray();
+            }
+            var result = appointments.Select(x => new AppointmentModel()
             {
                 Id = x.Id,
                 AppliedDate = x.AppliedDate,
@@ -94,8 +113,8 @@ namespace VacunassistBackend.Controllers
                 Status = x.Status,
                 VaccineId = x.Vaccine.Id,
                 VaccineName = x.Vaccine.Name,
-                VacinatorId = x.Vaccinator?.Id,
-                VacinatorName = x.Vaccinator?.FullName,
+                VaccinatorId = x.Vaccinator?.Id,
+                VaccinatorName = x.Vaccinator?.FullName,
 
             }).ToArray();
             return Ok(result);
@@ -115,6 +134,8 @@ namespace VacunassistBackend.Controllers
                 Notified = a.Notified,
                 PatientId = a.Patient.Id,
                 PatientName = a.Patient.FullName,
+                PatientAge = a.Patient.GetAge(),
+                PatientRisk = a.Patient.BelongsToRiskGroup,
                 PreferedOfficeId = a.PreferedOffice?.Id,
                 PreferedOfficeName = a.PreferedOffice?.Name,
                 PreferedOfficeAddress = a.PreferedOffice?.Address,
@@ -122,8 +143,8 @@ namespace VacunassistBackend.Controllers
                 Status = a.Status,
                 VaccineId = a.Vaccine.Id,
                 VaccineName = a.Vaccine.Name,
-                VacinatorId = a.Vaccinator?.Id,
-                VacinatorName = a.Vaccinator?.FullName,
+                VaccinatorId = a.Vaccinator?.Id,
+                VaccinatorName = a.Vaccinator?.FullName,
 
             };
             return Ok(result);
@@ -149,6 +170,19 @@ namespace VacunassistBackend.Controllers
             {
                 message = "Turno cancelado correctamente"
             });
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Edit(int? id, [FromBody] UpdateAppointmentRequest model)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _appointmentsService.Update(id.Value, model);
+            return Ok();
         }
     }
 }

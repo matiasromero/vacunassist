@@ -17,12 +17,14 @@ namespace VacunassistBackend.Controllers
     {
         private readonly IUsersService _usersService;
         private readonly IVaccinesService _vaccinesService;
+        private readonly IAppointmentsService _appointmentsService;
         private readonly IConfiguration _configuration;
 
-        public UsersController(IUsersService usersService, IVaccinesService vaccinesService, IConfiguration configuration)
+        public UsersController(IUsersService usersService, IVaccinesService vaccinesService, IAppointmentsService appointmentsService, IConfiguration configuration)
         {
             this._usersService = usersService;
             this._vaccinesService = vaccinesService;
+            this._appointmentsService = appointmentsService;
             this._configuration = configuration;
         }
 
@@ -91,16 +93,33 @@ namespace VacunassistBackend.Controllers
                 {
                     message = "Error, no se encontró la vacuna aplicada"
                 });
-            GeneratePdf(request);
+            GeneratePdf(request.Id);
             return Ok(new
             {
                 message = "Contraseña reseteada correctamente"
             });
         }
 
-        private void GeneratePdf(GenerateCertificateRequest request)
+        [HttpPost]
+        [Route("generate-certificate-appointment")]
+        public IActionResult GenerateCertificateAppointment([FromBody] GenerateCertificateRequest request)
         {
-            var appliedVaccine = _vaccinesService.GetApplied(request.Id);
+            if (_appointmentsService.Exist(request.Id) == false)
+                return BadRequest(new
+                {
+                    message = "Error, no se encontró el turno"
+                });
+            var applied = _vaccinesService.GetAppliedByAppointment(request.Id);
+            GeneratePdf(applied.Id);
+            return Ok(new
+            {
+                message = "Contraseña reseteada correctamente"
+            });
+        }
+
+        private void GeneratePdf(int appliedId)
+        {
+            var appliedVaccine = _vaccinesService.GetApplied(appliedId);
 
             var tempFolder = _configuration["TempFolder"];
             if (Directory.Exists(tempFolder) == false)
@@ -128,7 +147,15 @@ namespace VacunassistBackend.Controllers
             doc.Add(Chunk.NEWLINE);
             doc.Add(new Paragraph("Vacuna: " + appliedVaccine.Vaccine.Name, _standardFont));
             doc.Add(new Paragraph("Paciente: " + appliedVaccine.User.FullName + " (DNI: " + appliedVaccine.User.DNI + ")", _standardFont));
-            doc.Add(new Paragraph("Fecha: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont));
+            doc.Add(new Paragraph("Vacunador/a: " + appliedVaccine.AppliedBy, _standardFont));
+            doc.Add(new Paragraph("Fecha de aplicación: " + appliedVaccine.AppliedDate?.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont));
+            doc.Add(Chunk.NEWLINE);
+            doc.Add(new Paragraph("Fecha certificado: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont));
+            doc.Add(Chunk.NEWLINE);
+            var barcode = new BarcodeQRCode("www.vacunassist.com", 100, 100, null);
+            iTextSharp.text.Image imgBarCode = barcode.GetImage();
+            imgBarCode.SetAbsolutePosition(483, 740);
+            doc.Add(imgBarCode);
 
             doc.Close();
             writer.Close();
@@ -206,6 +233,21 @@ namespace VacunassistBackend.Controllers
             });
         }
 
+        [Helpers.Authorize]
+        [HttpPost]
+        [Route("notify")]
+        public IActionResult Notify([FromBody] NotifyUsersRequest model)
+        {
+            var id = User.GetId()!.Value;
+            var user = _usersService.Get(id);
+            GeneratePdf(user.FullName, model.Comment);
+
+            return Ok(new
+            {
+                message = "Notificaciones enviadas"
+            });
+        }
+
         [HttpGet]
         [Route("profile")]
         [Helpers.Authorize]
@@ -267,6 +309,60 @@ namespace VacunassistBackend.Controllers
             {
                 users = _usersService.GetAll(filter)
             });
+        }
+
+        private void GeneratePdf(string userName, string comment)
+        {
+            iTextSharp.text.Font _titleFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 18, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font _subtitle = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 15, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 13, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+
+            var tempFolder = _configuration["TempFolder"];
+            if (Directory.Exists(tempFolder) == false)
+                Directory.CreateDirectory(tempFolder);
+
+            var filter = new UsersFilterRequest();
+            filter.IsActive = true;
+            filter.Role = "patient";
+            var users = _usersService.GetAll(filter);
+            foreach (var user in users)
+            {
+                var randomName = "notifications_" + user.UserName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                var path = Path.Combine(tempFolder, randomName + ".pdf");
+                var text = new StringBuilder();
+
+                Document doc = new Document(PageSize.A4);
+                PdfWriter writer = PdfWriter.GetInstance(doc,
+                                            new FileStream(path, FileMode.Create));
+
+                doc.AddTitle("Certificado de vacunación");
+                doc.Open();
+
+                var p1 = new Paragraph("VACUNASSIST", _titleFont);
+                p1.Alignment = Element.ALIGN_CENTER;
+                var p2 = new Paragraph("Notificación", _subtitle);
+                p2.Alignment = Element.ALIGN_CENTER;
+                doc.Add(p1);
+                doc.Add(p2);
+                doc.Add(Chunk.NEWLINE);
+                doc.Add(new Paragraph("Sr/a " + user.FullName + ", VACUNASSIST informa:", _standardFont));
+                doc.Add(Chunk.NEWLINE);
+                doc.Add(new Paragraph(comment, _standardFont));
+                doc.Add(Chunk.NEWLINE);
+                var p3 = new Paragraph("Fecha comunicado: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), _standardFont);
+                p3.Alignment = Element.ALIGN_CENTER;
+                doc.Add(p3);
+                var p4 = new Paragraph("Emitido por: " + userName, _standardFont);
+                p4.Alignment = Element.ALIGN_CENTER;
+                doc.Add(p4);
+                var barcode = new BarcodeQRCode("www.vacunassist.com", 100, 100, null);
+                iTextSharp.text.Image imgBarCode = barcode.GetImage();
+                imgBarCode.SetAbsolutePosition(483, 740);
+                doc.Add(imgBarCode);
+
+                doc.Close();
+                writer.Close();
+            }
         }
     }
 }

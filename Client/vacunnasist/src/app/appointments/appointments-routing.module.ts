@@ -1,3 +1,6 @@
+import { AddVaccineToUserComponent } from './add-vaccine-to-user/add-vaccine-to-user.component';
+import { CompleteAppointmentComponent } from './complete-appointment/complete-appointment.component';
+import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
 import { AppointmentsComponent } from './appointments.component';
 import { MyAppointmentsComponent } from './my-appointments/my-appointments.component';
 import { NgModule } from '@angular/core';
@@ -16,6 +19,9 @@ const routes: Routes = [
             { path: 'my-appointments', component: MyAppointmentsComponent },
             { path: 'new', component: NewAppointmentAdminComponent },
             { path: 'confirm/:id', component: ConfirmAppointmentComponent },
+            { path: 'edit/:id', component: EditAppointmentComponent },
+            { path: 'add-vaccine-to-user/:id', component: AddVaccineToUserComponent },
+            { path: 'complete/:id', component: CompleteAppointmentComponent },
         ]
     },
 ];

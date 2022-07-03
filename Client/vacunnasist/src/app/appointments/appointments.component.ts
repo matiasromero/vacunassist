@@ -14,12 +14,14 @@ import Swal from 'sweetalert2';
 import { User } from '../_models/user';
 import { AppointmentsFilter } from '../_models/filters/appointments-filter';
 import { Office } from '../_models/office';
+import { OfficesFilter } from '../_models/filters/offices-filter';
 
 @Component({ templateUrl: 'appointments.component.html' })
 export class AppointmentsComponent implements OnInit {
     formFilter!: FormGroup;
     loading = false;
     submitted = false;
+  role: string;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -33,9 +35,12 @@ export class AppointmentsComponent implements OnInit {
         private dp: DatePipe
     ) { 
         // redirect to home if already logged in
-        if (this.accountService.userValue.role !== 'administrator') {
+        if (this.accountService.userValue.role == 'patient') {
             this.router.navigate(['/']);
         }
+
+        this.role = accountService.userValue.role;
+
 
         this.formFilter = this.formBuilder.group({
             fullName: ['', [Validators.maxLength(100)]],
@@ -84,7 +89,9 @@ export class AppointmentsComponent implements OnInit {
         this.vaccinators = res.users;
     });
 
-    this.officesService.getAll().subscribe((res: any) => {
+    let officesFilter = new OfficesFilter();
+    officesFilter.isActive = true;
+    this.officesService.getAll(officesFilter).subscribe((res: any) => {
       this.offices = res.offices;
   });
     }
@@ -109,64 +116,6 @@ export class AppointmentsComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.formFilter.controls; }
-
-    deleteUserQuestion(u: User) {
-      Swal
-      .fire({
-        title: '¿Está seguro?',
-        text: 'Dar de baja a ' + u.fullName + ' con DNI ' + u.dni,
-        icon: 'warning',
-        showCancelButton: true,
-        cancelButtonText: 'No, cancelar',
-        confirmButtonText: 'Si, dar de baja!'
-      })
-      .then(result => {
-        if (result.value) {
-          this.deleteUser(u);
-          
-        }
-      });
-    }
-
-    deleteUser(u: User) {
-      this.accountService.canBeDeleted(+u.id).subscribe((res: boolean) => {
-        if (!res) {
-          Swal
-      .fire({
-        title: 'Oops...',
-        text: 'No se puede dar de baja ya que posee turnos pendientes y/o confirmados. Por favor, cancelelos primero.',
-        icon: 'error',
-      })
-        } else {
-          this.doDelete(u);
-        }
-    });
-  }
-
-  doDelete(u: User) {
-    this.loading = true;
-    this.accountService.update(+u.id, {isActive: false}).pipe(first())
-      .subscribe({
-          next: () => {
-            Swal
-            .fire({
-              title: 'Hecho',
-              text: 'Usuario desactivado correctamente.',
-              icon: 'success',
-            });
-                this.loadData();
-                this.loading = false;
-          },
-          error: (error: string) => {
-              this.alertService.error(error);
-              this.loading = false;
-          }
-      });
-  }
-
-    editUser(u: User) {
-        this.router.navigate(['users/edit/', u.id]);
-    }
 
     applyFilter() {
         this.submitted = true;
@@ -272,5 +221,14 @@ cancelAppointment(a: Appointment) {
 confirmAppointment(a: Appointment) {
   this.router.navigate(['appointments','confirm', a.id]);
 }
+
+editAppointment(a: Appointment) {
+  this.router.navigate(['appointments','edit', a.id]);
+}
+
+completeAppointment(a: Appointment) {
+  this.router.navigate(['appointments','complete', a.id]);
+}
+
 
 }
