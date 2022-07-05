@@ -10,9 +10,15 @@ services:
       - "5000:5000"
     depends_on:
       - db
+    volumes:
+      - c:/temp/:/app/temp
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sql1
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
     depends_on:
       - migrations
   migrations:

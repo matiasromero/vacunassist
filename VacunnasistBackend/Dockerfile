@@ -1,4 +1,10 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+
+ENV TZ=America/Argentina/Buenos_Aires
+RUN echo "America/Argentina/Buenos_Aires" > /etc/timezone
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime
+RUN dpkg-reconfigure -f noninteractive tzdata
+
 WORKDIR /app
 EXPOSE 5000
 
@@ -22,3 +28,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "VacunnasistBackend.dll"]
+

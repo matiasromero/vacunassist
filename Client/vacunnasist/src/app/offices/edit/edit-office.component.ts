@@ -37,12 +37,14 @@ export class EditOfficeComponent implements OnInit {
         this.form.patchValue({
             id: res.id,
             name: res.name,
+            address: res.address,
             isActive: res.isActive
         });
     });
 
         this.form = this.formBuilder.group({
             name: ['', [Validators.required, Validators.maxLength(100)]],
+            address: ['', [Validators.required, Validators.maxLength(100)]],
             isActive: [true, Validators.required]
         });
     }

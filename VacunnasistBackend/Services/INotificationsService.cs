@@ -89,6 +89,7 @@ namespace VacunassistBackend.Services
             var appointments = query.Include(x => x.Patient)
             .Include(x => x.Vaccine)
             .Include(x => x.Vaccinator)
+            .Include(x => x.PreferedOffice)
             .ToArray();
             foreach (var a in appointments)
             {
